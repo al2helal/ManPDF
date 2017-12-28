@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <style>
+    table.head, table.foot { width: 100%; }
+    td.head-rtitle, td.foot-os { text-align: right; }
+    td.head-vol { text-align: center; }
+    div.Pp { margin: 1ex 0ex; }
+  </style>
+  <title>AptPkg::System(3pm)</title>
+</head>
+<body>
+<table class="head">
+  <tr>
+    <td class="head-ltitle">AptPkg::System(3pm)</td>
+    <td class="head-vol">User Contributed Perl Documentation</td>
+    <td class="head-rtitle">AptPkg::System(3pm)</td>
+  </tr>
+</table>
+<div class="manual-text">
+<h1 class="Sh" title="Sh" id="NAME"><a class="selflink" href="#NAME">NAME</a></h1>
+AptPkg::System - APT system abstraction class
+<h1 class="Sh" title="Sh" id="SYNOPSIS"><a class="selflink" href="#SYNOPSIS">SYNOPSIS</a></h1>
+use AptPkg::System;
+<h1 class="Sh" title="Sh" id="DESCRIPTION"><a class="selflink" href="#DESCRIPTION">DESCRIPTION</a></h1>
+The AptPkg::System module provides an interface to <b>APT</b>'s system
+  abstraction mechanism.
+<h2 class="Ss" title="Ss" id="AptPkg::System"><a class="selflink" href="#AptPkg::System">AptPkg::System</a></h2>
+The AptPkg::System package implements the <b>APT</b> pkgSystem class.
+<div class="Pp"></div>
+An instance of the AptPkg::System class appropriate for the particular back-end
+  packaging system (deb, rpm, etc.) may be fetched using the system method from
+  AptPkg::Config.
+<div class="Pp"></div>
+A global instance of the libapt-pkg _system instance is provided as
+  $AptPkg::System::_system, and may be imported.
+<div class="Pp"></div>
+The following methods are implemented:
+<dl class="Bl-tag">
+  <dt class="It-tag">label</dt>
+  <dd class="It-tag">Return the description of the packaging system, for
+      example:
+    <div style="height: 1.00em;">&#x00A0;</div>
+    <pre>
+    Debian dpkg interface
+    </pre>
+    <div style="height: 1.00em;">&#x00A0;</div>
+    for Debian systems.</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">lock</dt>
+  <dd class="It-tag">Lock the packaging system.</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">unlock(<i>QUIET</i>)</dt>
+  <dd class="It-tag">Unlock the packaging system, ignoring errors if
+      <i>QUIET</i> is non-zero.</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">versioning</dt>
+  <dd class="It-tag">Return an instance of the AptPkg::Version class for this
+      system.</dd>
+</dl>
+<h1 class="Sh" title="Sh" id="SEE_ALSO"><a class="selflink" href="#SEE_ALSO">SEE
+  ALSO</a></h1>
+<i>AptPkg::Config</i>(3pm), <i>AptPkg::Version</i>(3pm), <i>AptPkg</i>(3pm).
+<h1 class="Sh" title="Sh" id="AUTHOR"><a class="selflink" href="#AUTHOR">AUTHOR</a></h1>
+Brendan O'Dea &lt;bod@debian.org&gt;</div>
+<table class="foot">
+  <tr>
+    <td class="foot-date">2013-03-01</td>
+    <td class="foot-os">perl v5.18.1</td>
+  </tr>
+</table>
+</body>
+</html>

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <style>
+    table.head, table.foot { width: 100%; }
+    td.head-rtitle, td.foot-os { text-align: right; }
+    td.head-vol { text-align: center; }
+    div.Pp { margin: 1ex 0ex; }
+  </style>
+  <title>BACKTRACE(3)</title>
+</head>
+<body>
+<table class="head">
+  <tr>
+    <td class="head-ltitle">BACKTRACE(3)</td>
+    <td class="head-vol">Linux Programmer's Manual</td>
+    <td class="head-rtitle">BACKTRACE(3)</td>
+  </tr>
+</table>
+<div class="manual-text">
+<h1 class="Sh" title="Sh" id="NAME"><a class="selflink" href="#NAME">NAME</a></h1>
+backtrace, backtrace_symbols, backtrace_symbols_fd - support for application
+  self-debugging
+<h1 class="Sh" title="Sh" id="SYNOPSIS"><a class="selflink" href="#SYNOPSIS">SYNOPSIS</a></h1>
+<b>#include &lt;execinfo.h&gt;</b>
+<div style="height: 1.00em;">&#x00A0;</div>
+<b>int backtrace(void</b> <b>**</b><i>buffer</i><b>,</b> <b>int</b>
+  <i>size</i><b>);</b>
+<div style="height: 1.00em;">&#x00A0;</div>
+<b>char **backtrace_symbols(void *const</b> <b>*</b><i>buffer</i><b>,</b>
+  <b>int</b> <i>size</i><b>);</b>
+<div style="height: 1.00em;">&#x00A0;</div>
+<b>void backtrace_symbols_fd(void *const</b> <b>*</b><i>buffer</i><b>,</b>
+  <b>int</b> <i>size</i><b>,</b> <b>int</b> <i>fd</i><b>);</b>
+<h1 class="Sh" title="Sh" id="DESCRIPTION"><a class="selflink" href="#DESCRIPTION">DESCRIPTION</a></h1>
+<b>backtrace</b>() returns a backtrace for the calling program, in the array
+  pointed to by <i>buffer</i>. A backtrace is the series of currently active
+  function calls for the program. Each item in the array pointed to by
+  <i>buffer</i> is of type <i>void&#x00A0;*</i>, and is the return address from
+  the corresponding stack frame. The <i>size</i> argument specifies the maximum
+  number of addresses that can be stored in <i>buffer</i>. If the backtrace is
+  larger than <i>size</i>, then the addresses corresponding to the <i>size</i>
+  most recent function calls are returned; to obtain the complete backtrace,
+  make sure that <i>buffer</i> and <i>size</i> are large enough.
+<div style="height: 1.00em;">&#x00A0;</div>
+Given the set of addresses returned by <b>backtrace</b>() in <i>buffer</i>,
+  <b>backtrace_symbols</b>() translates the addresses into an array of strings
+  that describe the addresses symbolically. The <i>size</i> argument specifies
+  the number of addresses in <i>buffer</i>. The symbolic representation of each
+  address consists of the function name (if this can be determined), a
+  hexadecimal offset into the function, and the actual return address (in
+  hexadecimal). The address of the array of string pointers is returned as the
+  function result of <b>backtrace_symbols</b>(). This array is
+  <b>malloc</b>(3)ed by <b>backtrace_symbols</b>(), and must be freed by the
+  caller. (The strings pointed to by the array of pointers need not and should
+  not be freed.)
+<div style="height: 1.00em;">&#x00A0;</div>
+<b>backtrace_symbols_fd</b>() takes the same <i>buffer</i> and <i>size</i>
+  arguments as <b>backtrace_symbols</b>(), but instead of returning an array of
+  strings to the caller, it writes the strings, one per line, to the file
+  descriptor <i>fd</i>. <b>backtrace_symbols_fd</b>() does not call
+  <b>malloc</b>(3), and so can be employed in situations where the latter
+  function might fail.
+<h1 class="Sh" title="Sh" id="RETURN_VALUE"><a class="selflink" href="#RETURN_VALUE">RETURN
+  VALUE</a></h1>
+<b>backtrace</b>() returns the number of addresses returned in <i>buffer</i>,
+  which is not greater than <i>size</i>. If the return value is less than
+  <i>size</i>, then the full backtrace was stored; if it is equal to
+  <i>size</i>, then it may have been truncated, in which case the addresses of
+  the oldest stack frames are not returned.
+<div style="height: 1.00em;">&#x00A0;</div>
+On success, <b>backtrace_symbols</b>() returns a pointer to the array
+  <b>malloc</b>(3)ed by the call; on error, NULL is returned.
+<h1 class="Sh" title="Sh" id="VERSIONS"><a class="selflink" href="#VERSIONS">VERSIONS</a></h1>
+<b>backtrace</b>(), <b>backtrace_symbols</b>(), and
+  <b>backtrace_symbols_fd</b>() are provided in glibc since version 2.1.
+<h1 class="Sh" title="Sh" id="CONFORMING_TO"><a class="selflink" href="#CONFORMING_TO">CONFORMING
+  TO</a></h1>
+These functions are GNU extensions.
+<h1 class="Sh" title="Sh" id="NOTES"><a class="selflink" href="#NOTES">NOTES</a></h1>
+These functions make some assumptions about how a function's return address is
+  stored on the stack. Note the following:
+<dl class="Bl-tag">
+  <dt class="It-tag">*</dt>
+  <dd class="It-tag">Omission of the frame pointers (as implied by any of
+      <b>gcc</b>(1)'s nonzero optimization levels) may cause these assumptions
+      to be violated.</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">*</dt>
+  <dd class="It-tag">Inlined functions do not have stack frames.</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">*</dt>
+  <dd class="It-tag">Tail-call optimization causes one stack frame to replace
+      another.</dd>
+</dl>
+<div class="Pp"></div>
+The symbol names may be unavailable without the use of special linker options.
+  For systems using the GNU linker, it is necessary to use the <i>-rdynamic</i>
+  linker option. Note that names of &quot;static&quot; functions are not
+  exposed, and won't be available in the backtrace.
+<h1 class="Sh" title="Sh" id="EXAMPLE"><a class="selflink" href="#EXAMPLE">EXAMPLE</a></h1>
+The program below demonstrates the use of <b>backtrace</b>() and
+  <b>backtrace_symbols</b>(). The following shell session shows what we might
+  see when running the program:
+<pre>
+<br/>
+<div class="Pp"></div>
+$<b> cc -rdynamic prog.c -o prog</b>
+$<b> ./prog 3</b>
+backtrace() returned 8 addresses
+./prog(myfunc3+0x5c) [0x80487f0]
+./prog [0x8048871]
+./prog(myfunc+0x21) [0x8048894]
+./prog(myfunc+0x1a) [0x804888d]
+./prog(myfunc+0x1a) [0x804888d]
+./prog(main+0x65) [0x80488fb]
+/lib/libc.so.6(__libc_start_main+0xdc) [0xb7e38f9c]
+./prog [0x8048711]
+<br/>
+</pre>
+<h2 class="Ss" title="Ss" id="Program_source"><a class="selflink" href="#Program_source">Program
+  source</a></h2>
+<pre>
+#include &lt;execinfo.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;unistd.h&gt;
+<div class="Pp"></div>
+void
+myfunc3(void)
+{
+    int j, nptrs;
+#define SIZE 100
+    void *buffer[100];
+    char **strings;
+<div class="Pp"></div>
+    nptrs = backtrace(buffer, SIZE);
+    printf(&quot;backtrace() returned %d addresses\n&quot;, nptrs);
+<div class="Pp"></div>
+    /* The call backtrace_symbols_fd(buffer, nptrs, STDOUT_FILENO)
+       would produce similar output to the following: */
+<div class="Pp"></div>
+    strings = backtrace_symbols(buffer, nptrs);
+    if (strings == NULL) {
+        perror(&quot;backtrace_symbols&quot;);
+        exit(EXIT_FAILURE);
+    }
+<div class="Pp"></div>
+    for (j = 0; j &lt; nptrs; j++)
+        printf(&quot;%s\n&quot;, strings[j]);
+<div class="Pp"></div>
+    free(strings);
+}
+<div class="Pp"></div>
+static void   /* &quot;static&quot; means don't export the symbol... */
+myfunc2(void)
+{
+    myfunc3();
+}
+<div class="Pp"></div>
+void
+myfunc(int ncalls)
+{
+    if (ncalls &gt; 1)
+        myfunc(ncalls - 1);
+    else
+        myfunc2();
+}
+<div class="Pp"></div>
+int
+main(int argc, char *argv[])
+{
+    if (argc != 2) {
+        fprintf(stderr, &quot;%s num-calls\n&quot;, argv[0]);
+        exit(EXIT_FAILURE);
+    }
+<div class="Pp"></div>
+    myfunc(atoi(argv[1]));
+    exit(EXIT_SUCCESS);
+}
+</pre>
+<h1 class="Sh" title="Sh" id="SEE_ALSO"><a class="selflink" href="#SEE_ALSO">SEE
+  ALSO</a></h1>
+<b>gcc</b>(1), <b>ld</b>(1), <b>dlopen</b>(3), <b>malloc</b>(3)
+<h1 class="Sh" title="Sh" id="COLOPHON"><a class="selflink" href="#COLOPHON">COLOPHON</a></h1>
+This page is part of release 3.54 of the Linux <i>man-pages</i> project. A
+  description of the project, and information about reporting bugs, can be found
+  at http://www.kernel.org/doc/man-pages/.</div>
+<table class="foot">
+  <tr>
+    <td class="foot-date">2008-06-14</td>
+    <td class="foot-os">GNU</td>
+  </tr>
+</table>
+</body>
+</html>

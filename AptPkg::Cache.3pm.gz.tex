@@ -1,0 +1,615 @@
+\documentclass[]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+    \usepackage{xltxtra,xunicode}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
+  \newcommand{\euro}{€}
+\fi
+% use microtype if available
+\IfFileExists{microtype.sty}{\usepackage{microtype}}{}
+\usepackage{longtable,booktabs}
+\ifxetex
+  \usepackage[setpagesize=false, % page size defined by xetex
+              unicode=false, % unicode breaks when used with xetex
+              xetex]{hyperref}
+\else
+  \usepackage[unicode=true]{hyperref}
+\fi
+\hypersetup{breaklinks=true,
+            bookmarks=true,
+            pdfauthor={},
+            pdftitle={AptPkg::Cache(3pm)},
+            colorlinks=true,
+            citecolor=blue,
+            urlcolor=blue,
+            linkcolor=magenta,
+            pdfborder={0 0 0}}
+\urlstyle{same}  % don't use monospace font for urls
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\setcounter{secnumdepth}{0}
+\usepackage{pagecolor}
+
+% Set background colour (of the page)
+\definecolor{weirdbgcolor}{HTML}{FCF4F0}
+\pagecolor{weirdbgcolor}
+
+% Make bold text appear in a particular colour
+\definecolor{boldcolor}{HTML}{6E0002}
+\let\realtextbf=\textbf
+\renewcommand{\textbf}[1]{\textcolor{boldcolor}{\realtextbf{#1}}}
+
+% Use underlines instead of emphasis (ugh)
+\renewcommand{\emph}[1]{\underline{#1}}
+
+% % Use fixed-width font by default
+% \renewcommand*\familydefault{\ttdefault}
+
+\title{AptPkg::Cache(3pm)}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{longtable}[c]{@{}lll@{}}
+\toprule\addlinespace
+AptPkg::Cache(3pm) & User Contributed Perl Documentation &
+AptPkg::Cache(3pm)
+\\\addlinespace
+\bottomrule
+\end{longtable}
+
+\hyperdef{}{NAME}{\section{\hyperref[NAME]{NAME}}\label{NAME}}
+
+AptPkg::Cache - APT package cache interface
+
+\hyperdef{}{SYNOPSIS}{\section{\hyperref[SYNOPSIS]{SYNOPSIS}}\label{SYNOPSIS}}
+
+use AptPkg::Cache;
+
+\hyperdef{}{DESCRIPTION}{\section{\hyperref[DESCRIPTION]{DESCRIPTION}}\label{DESCRIPTION}}
+
+The AptPkg::Cache module provides an interface to \textbf{APT}'s package
+cache.
+
+\hyperdef{}{AptPkg::Cache}{\subsection{\hyperref[AptPkg::Cache]{AptPkg::Cache}}\label{AptPkg::Cache}}
+
+The AptPkg::Cache package implements the \textbf{APT} pkgCacheFile class
+as a hash reference (inherits from AptPkg::hash). The hash keys are the
+names of packages in the cache, and the values are
+AptPkg::Cache::Package objects (which in turn appear as hash references,
+see below).
+
+\emph{Constructor}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[new({[}\emph{LOCK}{]})]
+Instantiation of the object uses configuration from the
+\$AptPkg::Config::\_config and \$AptPkg::System::\_system objects
+(automatically initialised if not done explicitly).
+
+~
+
+The cache initialisation can be quite verbose--controlled by the value
+of \$\_config-\textgreater{}\{quiet\}, which is set to ``2'' (quiet) if
+the \$\_config object is auto-initialised.
+
+~
+
+The cache directory is locked if LOCK is true.
+
+~
+
+It is important to note that the structure of the returned object
+contains self-referential elements, so some care must be taken if
+attempting to traverse it recursively.
+\end{description}
+
+\emph{Methods}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[files]
+Return a list of AptPkg::Cache::PkgFile objects describing the package
+files.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[packages]
+Return an AptPkg::PkgRecords object which may be used to retrieve
+additional information about packages.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[get, exists, keys]
+These methods are used to implement the hashref abstraction:
+\$obj-\textgreater{}get(\$pack) and \$obj-\textgreater{}\{\$pack\} are
+equivalent.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[is\_multi\_arch]
+Cache is multi-arch enabled.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[native\_arch]
+Native architecture.
+\end{description}
+
+\hyperdef{}{AptPkg::Cache::Package}{\subsection{\hyperref[AptPkg::Cache::Package]{AptPkg::Cache::Package}}\label{AptPkg::Cache::Package}}
+
+Implements the \textbf{APT} pkgCache::PkgIterator class as a hash
+reference.
+
+\emph{Keys}
+
+\begin{description}
+\item[Name]
+\end{description}
+
+\begin{description}
+\item[Section]
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[Arch]
+Package name, section and architecture.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[FullName]
+Fully qualified name, including architecture.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[ShortName]
+The shortest unambiguous package name: the same as ``Name'' for native
+packages, and ``FullName'' for non-native.
+\end{description}
+
+\begin{description}
+\item[SelectedState]
+\end{description}
+
+\begin{description}
+\item[InstState]
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[CurrentState]
+Package state from the status file.
+
+~
+
+SelectedState may be ``Unknown'', ``Install'', ``Hold'', ``DeInstall''
+or ``Purge''.
+
+~
+
+InstState may be ``Ok'', ``ReInstReq'', ``HoldInst'' or
+``HoldReInstReq''.
+
+~
+
+CurrentState may be ``NotInstalled'', ``UnPacked'', ``HalfConfigured'',
+``HalfInstalled'', ``ConfigFiles'' or ``Installed''.
+
+~
+
+In a numeric context, SelectedState, InstState and CurrentState evaluate
+to an AptPkg::State:: constant.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[VersionList]
+A reference to an array of AptPkg::Cache::Version objects describing
+available versions of the package.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[CurrentVer]
+An AptPkg::Cache::Version object describing the currently installed
+version (if any) of the package.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[RevDependsList]
+A reference to an array of AptPkg::Cache::Depends objects describing
+packages which depend upon the current package.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[ProvidesList]
+For virtual packages, this is a reference to an array of
+AptPkg::Cache::Provides objects describing packages which provide the
+current package.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[Flags]
+A comma separated list if flags: ``Auto'', ``Essential'' or
+``Important''.
+
+~
+
+In a numeric context, evaluates to a combination of AptPkg::Flag::
+constants.
+
+~
+
+{[}Note: the only one of these you need worry about is ``Essential'',
+which is set based on the package's header of the same name. ``Auto''
+seems to be used internally by \textbf{APT}, and ``Important'' seems to
+only be set on the apt package.{]}
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[Index]
+Internal \textbf{APT} unique reference for the package record.
+\end{description}
+
+\hyperdef{}{AptPkg::Cache::Version}{\subsection{\hyperref[AptPkg::Cache::Version]{AptPkg::Cache::Version}}\label{AptPkg::Cache::Version}}
+
+Implements the \textbf{APT} pkgCache::VerIterator class as a hash
+reference.
+
+\emph{Keys}
+
+\begin{description}
+\item[VerStr]
+\end{description}
+
+\begin{description}
+\item[Section]
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[Arch]
+The package version, section and architecture.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[MultiArch]
+Multi-arch state: ``None'', ``All'', ``Foreign'', ``Same'', ``Allowed'',
+``AllForeign'' or ``AllAllowed''.
+
+~
+
+In a numeric context, evaluates to an AptPkg::Version:: constant.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[ParentPkg]
+An AptPkg::Cache::Package objct describing the package providing this
+version.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[DescriptionList]
+A list of AptCache::Cache::Description objects describing the files
+which descrie a package version. The list includes both Package files
+and Translation files, which contain translated Description fields.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[TranslatedDescription]
+An AptCache::Cache::Description object for the current locale, which
+will generally be a Translation file.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[DependsList]
+A reference to an array of AptPkg::Cache::Depends objects describing
+packages which the current package depends upon.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[ProvidesList]
+A reference to an array of AptPkg::Cache::Provides objects describing
+virtual packages provided by this version.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[FileList]
+A reference to an array of AptPkg::Cache::VerFile objects describing the
+packages files which include the current version.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[Size]
+The \emph{.deb} file size, in bytes.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[InstalledSize]
+The disk space used when installed, in bytes.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[Index]
+Internal \textbf{APT} unique reference for the version record.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[Priority]
+Package priority: ``important'', ``required'', ``standard'',
+``optional'' or ``extra''.
+
+~
+
+In a numeric context, evaluates to an AptPkg::VerPriority:: constant.
+\end{description}
+
+\hyperdef{}{AptPkg::Cache::Depends}{\subsection{\hyperref[AptPkg::Cache::Depends]{AptPkg::Cache::Depends}}\label{AptPkg::Cache::Depends}}
+
+Implements the \textbf{APT} pkgCache::DepIterator class as a hash
+reference.
+
+\emph{Keys}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[DepType]
+Type of dependency: ``Depends'', ``PreDepends'', ``Suggests'',
+``Recommends'', ``Conflicts'', ``Replaces'' or ``Obsoletes''.
+
+~
+
+In a numeric context, evaluates to an AptPkg::Dep:: constant.
+\end{description}
+
+\begin{description}
+\item[ParentPkg]
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[ParentVer]
+AptPkg::Cache::Package and AptPkg::Cache::Version objects describing the
+package declaring the dependency.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[TargetPkg]
+AptPkg::Cache::Package object describing the depended package.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[TargetVer]
+For versioned dependencies, TargetVer is a string giving the version of
+the target package required.
+\end{description}
+
+\begin{description}
+\item[CompType]
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[CompTypeDeb]
+CompType gives a normalised comparison operator (\textgreater{},
+\textgreater{}=, etc) describing the relationship to TargetVer (``'' if
+none).
+
+~
+
+CompTypeDeb returns Debian-style operators (\textgreater{}\textgreater{}
+rather than \textgreater{}).
+
+~
+
+In a numeric context, both CompType and CompTypeDeb evaluate to an
+AptPkg::Dep:: constant.
+
+~
+
+Alternative dependencies (Depends: a \textbar{} b) are identified by all
+but the last having the AptPkg::Dep::Or bit set in the numeric
+representation of CompType (and CompTypeDeb).
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[Index]
+Internal \textbf{APT} unique reference for the dependency record.
+\end{description}
+
+\hyperdef{}{AptPkg::Cache::Provides}{\subsection{\hyperref[AptPkg::Cache::Provides]{AptPkg::Cache::Provides}}\label{AptPkg::Cache::Provides}}
+
+Implements the \textbf{APT} pkgCache::PrvIterator class as a hash
+reference.
+
+\emph{Keys}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[Name]
+Name of virtual package.
+\end{description}
+
+\begin{description}
+\item[OwnerPkg]
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[OwnerVer]
+AptPkg::Cache::Package and AptPkg::Cache::Version objects describing the
+providing package.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[ProvideVersion]
+Version of the virtual package. {[}Not currently supported by dpkg{]}
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[Index]
+Internal \textbf{APT} unique reference for the provides record.
+\end{description}
+
+\hyperdef{}{AptPkg::Cache::VerFile}{\subsection{\hyperref[AptPkg::Cache::VerFile]{AptPkg::Cache::VerFile}}\label{AptPkg::Cache::VerFile}}
+
+Implements the \textbf{APT} pkgCache::VerFileIterator class as a hash
+reference.
+
+\emph{Keys}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[File]
+An AptPkg::Cache::PkgFile object describing the packages file.
+\end{description}
+
+\begin{description}
+\item[Offset]
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[Size]
+The byte offset and length of the entry in the file.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[Index]
+Internal \textbf{APT} unique reference for the version file record.
+\end{description}
+
+\hyperdef{}{AptPkg::Cache::PkgFile}{\subsection{\hyperref[AptPkg::Cache::PkgFile]{AptPkg::Cache::PkgFile}}\label{AptPkg::Cache::PkgFile}}
+
+Implements the \textbf{APT} pkgCache::PkgFileIterator class as a hash
+reference.
+
+\emph{Keys}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[FileName]
+Packages file path.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[IndexType]
+File type: ``Debian Package Index'', ``Debian dpkg status file''.
+\end{description}
+
+\begin{description}
+\item[Archive]
+\end{description}
+
+\begin{description}
+\item[Component]
+\end{description}
+
+\begin{description}
+\item[Version]
+\end{description}
+
+\begin{description}
+\item[Origin]
+\end{description}
+
+\begin{description}
+\item[Label]
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[Site]
+Fields from the Release file.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[IsOk]
+True if the cache is in sync with this file.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[Index]
+Internal \textbf{APT} unique reference for the package file record.
+\end{description}
+
+\hyperdef{}{AptPkg::Cache::DescFile}{\subsection{\hyperref[AptPkg::Cache::DescFile]{AptPkg::Cache::DescFile}}\label{AptPkg::Cache::DescFile}}
+
+Implements the \textbf{APT} pkgCache::DescFileIterator class as a hash
+reference.
+
+\emph{Keys}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[File]
+An AptPkg::Cache::PkgFile object describing the packages file.
+\end{description}
+
+\hyperdef{}{SEEux5fALSO}{\section{\hyperref[SEEux5fALSO]{SEE
+ALSO}}\label{SEEux5fALSO}}
+
+\emph{AptPkg::Config}(3pm), \emph{AptPkg::System}(3pm),
+\emph{AptPkg}(3pm), \emph{AptPkg::hash}(3pm),
+\emph{AptPkg::PkgRecords}(3pm), \emph{AptPkg::Policy}(3pm).
+
+\hyperdef{}{AUTHOR}{\section{\hyperref[AUTHOR]{AUTHOR}}\label{AUTHOR}}
+
+Brendan O'Dea \textless{}bod@debian.org\textgreater{}
+
+\begin{longtable}[c]{@{}ll@{}}
+\toprule\addlinespace
+2013-06-18 & perl v5.18.1
+\\\addlinespace
+\bottomrule
+\end{longtable}
+
+\end{document}

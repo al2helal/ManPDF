@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <style>
+    table.head, table.foot { width: 100%; }
+    td.head-rtitle, td.foot-os { text-align: right; }
+    td.head-vol { text-align: center; }
+    div.Pp { margin: 1ex 0ex; }
+  </style>
+  <title>ALLOCA(3)</title>
+</head>
+<body>
+<table class="head">
+  <tr>
+    <td class="head-ltitle">ALLOCA(3)</td>
+    <td class="head-vol">Linux Programmer's Manual</td>
+    <td class="head-rtitle">ALLOCA(3)</td>
+  </tr>
+</table>
+<div class="manual-text">
+<h1 class="Sh" title="Sh" id="NAME"><a class="selflink" href="#NAME">NAME</a></h1>
+alloca - allocate memory that is automatically freed
+<h1 class="Sh" title="Sh" id="SYNOPSIS"><a class="selflink" href="#SYNOPSIS">SYNOPSIS</a></h1>
+<b>#include &lt;alloca.h&gt;</b>
+<div style="height: 1.00em;">&#x00A0;</div>
+<b>void *alloca(size_t </b><i>size</i><b>);</b>
+<h1 class="Sh" title="Sh" id="DESCRIPTION"><a class="selflink" href="#DESCRIPTION">DESCRIPTION</a></h1>
+The <b>alloca</b>() function allocates <i>size</i> bytes of space in the stack
+  frame of the caller. This temporary space is automatically freed when the
+  function that called <b>alloca</b>() returns to its caller.
+<h1 class="Sh" title="Sh" id="RETURN_VALUE"><a class="selflink" href="#RETURN_VALUE">RETURN
+  VALUE</a></h1>
+The <b>alloca</b>() function returns a pointer to the beginning of the allocated
+  space. If the allocation causes stack overflow, program behavior is undefined.
+<h1 class="Sh" title="Sh" id="CONFORMING_TO"><a class="selflink" href="#CONFORMING_TO">CONFORMING
+  TO</a></h1>
+This function is not in POSIX.1-2001.
+<div style="height: 1.00em;">&#x00A0;</div>
+There is evidence that the <b>alloca</b>() function appeared in 32V, PWB, PWB.2,
+  3BSD, and 4BSD. There is a man page for it in 4.3BSD. Linux uses the GNU
+  version.
+<h1 class="Sh" title="Sh" id="NOTES"><a class="selflink" href="#NOTES">NOTES</a></h1>
+The <b>alloca</b>() function is machine- and compiler-dependent. For certain
+  applications, its use can improve efficiency compared to the use of
+  <b>malloc</b>(3) plus <b>free</b>(3). In certain cases, it can also simplify
+  memory deallocation in applications that use <b>longjmp</b>(3) or
+  <b>siglongjmp</b>(3). Otherwise, its use is discouraged.
+<div style="height: 1.00em;">&#x00A0;</div>
+Because the space allocated by <b>alloca</b>() is allocated within the stack
+  frame, that space is automatically freed if the function return is jumped over
+  by a call to <b>longjmp</b>(3) or <b>siglongjmp</b>(3).
+<div style="height: 1.00em;">&#x00A0;</div>
+Do not attempt to <b>free</b>(3) space allocated by <b>alloca</b>()!
+<h2 class="Ss" title="Ss" id="Notes_on_the_GNU_version"><a class="selflink" href="#Notes_on_the_GNU_version">Notes
+  on the GNU version</a></h2>
+Normally, <b>gcc</b>(1) translates calls to <b>alloca</b>() with inlined code.
+  This is not done when either the <i>-ansi</i>, <i>-std=c89</i>,
+  <i>-std=c99</i>, or the <i>-std=c11</i> option is given <b>and</b> the header
+  <i>&lt;alloca.h&gt;</i> is not included. Otherwise (without an -ansi or
+  -std=c* option) the glibc version of <i>&lt;stdlib.h&gt;</i> includes
+  <i>&lt;alloca.h&gt;</i> and that contains the lines:
+<pre>
+<div class="Pp"></div>
+    #ifdef  __GNUC__
+    #define alloca(size)   __builtin_alloca (size)
+    #endif
+<div class="Pp"></div>
+</pre>
+with messy consequences if one has a private version of this function.
+<div class="Pp"></div>
+The fact that the code is inlined means that it is impossible to take the
+  address of this function, or to change its behavior by linking with a
+  different library.
+<div class="Pp"></div>
+The inlined code often consists of a single instruction adjusting the stack
+  pointer, and does not check for stack overflow. Thus, there is no NULL error
+  return.
+<h1 class="Sh" title="Sh" id="BUGS"><a class="selflink" href="#BUGS">BUGS</a></h1>
+There is no error indication if the stack frame cannot be extended. (However,
+  after a failed allocation, the program is likely to receive a <b>SIGSEGV</b>
+  signal if it attempts to access the unallocated space.)
+<div style="height: 1.00em;">&#x00A0;</div>
+On many systems <b>alloca</b>() cannot be used inside the list of arguments of a
+  function call, because the stack space reserved by <b>alloca</b>() would
+  appear on the stack in the middle of the space for the function arguments.
+<h1 class="Sh" title="Sh" id="SEE_ALSO"><a class="selflink" href="#SEE_ALSO">SEE
+  ALSO</a></h1>
+<b>brk</b>(2), <b>longjmp</b>(3), <b>malloc</b>(3)
+<h1 class="Sh" title="Sh" id="COLOPHON"><a class="selflink" href="#COLOPHON">COLOPHON</a></h1>
+This page is part of release 3.54 of the Linux <i>man-pages</i> project. A
+  description of the project, and information about reporting bugs, can be found
+  at http://www.kernel.org/doc/man-pages/.</div>
+<table class="foot">
+  <tr>
+    <td class="foot-date">2013-05-12</td>
+    <td class="foot-os">GNU</td>
+  </tr>
+</table>
+</body>
+</html>

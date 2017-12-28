@@ -1,0 +1,208 @@
+\documentclass[]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+    \usepackage{xltxtra,xunicode}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
+  \newcommand{\euro}{€}
+\fi
+% use microtype if available
+\IfFileExists{microtype.sty}{\usepackage{microtype}}{}
+\usepackage{longtable,booktabs}
+\ifxetex
+  \usepackage[setpagesize=false, % page size defined by xetex
+              unicode=false, % unicode breaks when used with xetex
+              xetex]{hyperref}
+\else
+  \usepackage[unicode=true]{hyperref}
+\fi
+\hypersetup{breaklinks=true,
+            bookmarks=true,
+            pdfauthor={},
+            pdftitle={ATAN2(3)},
+            colorlinks=true,
+            citecolor=blue,
+            urlcolor=blue,
+            linkcolor=magenta,
+            pdfborder={0 0 0}}
+\urlstyle{same}  % don't use monospace font for urls
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\setcounter{secnumdepth}{0}
+\usepackage{pagecolor}
+
+% Set background colour (of the page)
+\definecolor{weirdbgcolor}{HTML}{FCF4F0}
+\pagecolor{weirdbgcolor}
+
+% Make bold text appear in a particular colour
+\definecolor{boldcolor}{HTML}{6E0002}
+\let\realtextbf=\textbf
+\renewcommand{\textbf}[1]{\textcolor{boldcolor}{\realtextbf{#1}}}
+
+% Use underlines instead of emphasis (ugh)
+\renewcommand{\emph}[1]{\underline{#1}}
+
+% % Use fixed-width font by default
+% \renewcommand*\familydefault{\ttdefault}
+
+\title{ATAN2(3)}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{longtable}[c]{@{}lll@{}}
+\toprule\addlinespace
+ATAN2(3) & Linux Programmer's Manual & ATAN2(3)
+\\\addlinespace
+\bottomrule
+\end{longtable}
+
+\hyperdef{}{NAME}{\section{\hyperref[NAME]{NAME}}\label{NAME}}
+
+atan2, atan2f, atan2l - arc tangent function of two variables
+
+\hyperdef{}{SYNOPSIS}{\section{\hyperref[SYNOPSIS]{SYNOPSIS}}\label{SYNOPSIS}}
+
+\begin{verbatim}
+#include <math.h>
+
+double atan2(double y, double x);
+float atan2f(float y, float x);
+long double atan2l(long double y, long double x);
+\end{verbatim}
+
+Link with \emph{-lm}.
+
+~
+
+Feature Test Macro Requirements for glibc (see
+\textbf{feature\_test\_macros}(7)): \\
+
+~
+
+\textbf{atan2f}(), \textbf{atan2l}():
+
+\_BSD\_SOURCE \textbar{}\textbar{} \_SVID\_SOURCE \textbar{}\textbar{}
+\_XOPEN\_SOURCE~\textgreater{}=~600 \textbar{}\textbar{}
+\_ISOC99\_SOURCE \textbar{}\textbar{}
+\_POSIX\_C\_SOURCE~\textgreater{}=~200112L;
+
+~
+
+or \emph{cc~-std=c99}
+
+\hyperdef{}{DESCRIPTION}{\section{\hyperref[DESCRIPTION]{DESCRIPTION}}\label{DESCRIPTION}}
+
+The \textbf{atan2}() function calculates the principal value of the arc
+tangent of \emph{y/x}, using the signs of the two arguments to determine
+the quadrant of the result.
+
+\hyperdef{}{RETURNux5fVALUE}{\section{\hyperref[RETURNux5fVALUE]{RETURN
+VALUE}}\label{RETURNux5fVALUE}}
+
+On success, these functions return the principal value of the arc
+tangent of \emph{y/x} in radians; the return value is in the range
+{[}-pi,~pi{]}.
+
+~
+
+If \emph{y} is +0 (-0) and \emph{x} is less than 0, +pi (-pi) is
+returned.
+
+~
+
+If \emph{y} is +0 (-0) and \emph{x} is greater than 0, +0 (-0) is
+returned.
+
+~
+
+If \emph{y} is less than 0 and \emph{x} is +0 or -0, -pi/2 is returned.
+
+~
+
+If \emph{y} is greater than 0 and \emph{x} is +0 or -0, pi/2 is
+returned.
+
+~
+
+If either \emph{x} or \emph{y} is NaN, a NaN is returned.
+
+~
+
+If \emph{y} is +0 (-0) and \emph{x} is -0, +pi (-pi) is returned.
+
+~
+
+If \emph{y} is +0 (-0) and \emph{x} is +0, +0 (-0) is returned.
+
+~
+
+If \emph{y} is a finite value greater (less) than 0, and \emph{x} is
+negative infinity, +pi (-pi) is returned.
+
+~
+
+If \emph{y} is a finite value greater (less) than 0, and \emph{x} is
+positive infinity, +0 (-0) is returned.
+
+~
+
+If \emph{y} is positive infinity (negative infinity), and \emph{x} is
+finite, pi/2 (-pi/2) is returned.
+
+~
+
+If \emph{y} is positive infinity (negative infinity) and \emph{x} is
+negative infinity, +3*pi/4 (-3*pi/4) is returned.
+
+~
+
+If \emph{y} is positive infinity (negative infinity) and \emph{x} is
+positive infinity, +pi/4 (-pi/4) is returned.
+
+\hyperdef{}{ERRORS}{\section{\hyperref[ERRORS]{ERRORS}}\label{ERRORS}}
+
+No errors occur.
+
+\hyperdef{}{CONFORMINGux5fTO}{\section{\hyperref[CONFORMINGux5fTO]{CONFORMING
+TO}}\label{CONFORMINGux5fTO}}
+
+C99, POSIX.1-2001. The variant returning \emph{double} also conforms to
+SVr4, 4.3BSD, C89.
+
+\hyperdef{}{SEEux5fALSO}{\section{\hyperref[SEEux5fALSO]{SEE
+ALSO}}\label{SEEux5fALSO}}
+
+\textbf{acos}(3), \textbf{asin}(3), \textbf{atan}(3), \textbf{carg}(3),
+\textbf{cos}(3), \textbf{sin}(3), \textbf{tan}(3)
+
+\hyperdef{}{COLOPHON}{\section{\hyperref[COLOPHON]{COLOPHON}}\label{COLOPHON}}
+
+This page is part of release 3.54 of the Linux \emph{man-pages} project.
+A description of the project, and information about reporting bugs, can
+be found at http://www.kernel.org/doc/man-pages/.
+
+\begin{longtable}[c]{@{}ll@{}}
+\toprule\addlinespace
+2010-09-20 &
+\\\addlinespace
+\bottomrule
+\end{longtable}
+
+\end{document}

@@ -1,0 +1,356 @@
+\documentclass[]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+    \usepackage{xltxtra,xunicode}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
+  \newcommand{\euro}{€}
+\fi
+% use microtype if available
+\IfFileExists{microtype.sty}{\usepackage{microtype}}{}
+\usepackage{longtable,booktabs}
+\ifxetex
+  \usepackage[setpagesize=false, % page size defined by xetex
+              unicode=false, % unicode breaks when used with xetex
+              xetex]{hyperref}
+\else
+  \usepackage[unicode=true]{hyperref}
+\fi
+\hypersetup{breaklinks=true,
+            bookmarks=true,
+            pdfauthor={},
+            pdftitle={AptPkg(3pm)},
+            colorlinks=true,
+            citecolor=blue,
+            urlcolor=blue,
+            linkcolor=magenta,
+            pdfborder={0 0 0}}
+\urlstyle{same}  % don't use monospace font for urls
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\setcounter{secnumdepth}{0}
+\usepackage{pagecolor}
+
+% Set background colour (of the page)
+\definecolor{weirdbgcolor}{HTML}{FCF4F0}
+\pagecolor{weirdbgcolor}
+
+% Make bold text appear in a particular colour
+\definecolor{boldcolor}{HTML}{6E0002}
+\let\realtextbf=\textbf
+\renewcommand{\textbf}[1]{\textcolor{boldcolor}{\realtextbf{#1}}}
+
+% Use underlines instead of emphasis (ugh)
+\renewcommand{\emph}[1]{\underline{#1}}
+
+% % Use fixed-width font by default
+% \renewcommand*\familydefault{\ttdefault}
+
+\title{AptPkg(3pm)}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{longtable}[c]{@{}lll@{}}
+\toprule\addlinespace
+AptPkg(3pm) & User Contributed Perl Documentation & AptPkg(3pm)
+\\\addlinespace
+\bottomrule
+\end{longtable}
+
+\hyperdef{}{NAME}{\section{\hyperref[NAME]{NAME}}\label{NAME}}
+
+AptPkg - interface to libapt-pkg
+
+\hyperdef{}{SYNOPSIS}{\section{\hyperref[SYNOPSIS]{SYNOPSIS}}\label{SYNOPSIS}}
+
+use AptPkg;
+
+\hyperdef{}{DESCRIPTION}{\section{\hyperref[DESCRIPTION]{DESCRIPTION}}\label{DESCRIPTION}}
+
+The AptPkg module provides a low-level XS interface to libapt-pkg.
+
+Note that this interface is intended to be internal, and may change, see
+the AptPkg::Config, AptPkg::System, AptPkg::Version, AptPkg::Cache,
+Apt::Policy and AptPkg::Source classes for a higher level interface.
+
+\hyperdef{}{AptPkg}{\subsection{\hyperref[AptPkg]{AptPkg}}\label{AptPkg}}
+
+The AptPkg package provides the following functions:
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[\_init\_config(\emph{CONF})]
+Initialise a Configuration object (pkgInitConfig). See the init method
+in AptPkg::Config.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[\_init\_system(\emph{CONF})]
+Return a pointer to the system object (pkgInitSystem). See the system
+method in AptPkg::Config.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[\_parse\_cmdline(\emph{CONF}, \emph{ARG\_DEFS}, \ldots{})]
+Constructs a CommandLine instance, invokes the Parse method and returns
+the remaining arguments. See the parse\_cmdline method in
+AptPkg::Config.
+\end{description}
+
+\hyperdef{}{AptPkg::ux5fconfig}{\subsection{\hyperref[AptPkg::ux5fconfig]{AptPkg::\_config}}\label{AptPkg::ux5fconfig}}
+
+The AptPkg::\_config package wraps a Perl class around the Configuration
+class. It provides an instance of the global \_config object, and
+exposes the following methods:
+
+\begin{verbatim}
+    Find, FindFile, FindDir, FindB, FindAny, Set, Exists,
+    ExistsAny, Tree and Dump.
+\end{verbatim}
+
+The functions ReadConfigFile and ReadConfigDir are also provided within
+the package and may be used as methods.
+
+\hyperdef{}{AptPkg::ux5fconfig::item}{\subsection{\hyperref[AptPkg::ux5fconfig::item]{AptPkg::\_config::item}}\label{AptPkg::ux5fconfig::item}}
+
+The AptPkg::\_config::item package wraps a Perl class around the
+Configuration::Item class. The AptPkg::\_config Tree method returns an
+instance of this class.
+
+Methods:
+
+\begin{verbatim}
+    Value, Tag, FullTag, Parent, Child and Next.
+\end{verbatim}
+
+\hyperdef{}{AptPkg::System}{\subsection{\hyperref[AptPkg::System]{AptPkg::System}}\label{AptPkg::System}}
+
+The AptPkg::System package wraps a Perl class around the pkgSystem
+class. It provides an instance of the global \_system object, and
+exposes the following methods:
+
+\begin{verbatim}
+    Label, VS, Lock and UnLock.
+\end{verbatim}
+
+\hyperdef{}{AptPkg::Version}{\subsection{\hyperref[AptPkg::Version]{AptPkg::Version}}\label{AptPkg::Version}}
+
+The AptPkg::Version package wraps a Perl class around the
+pkgVersioningSystem class. It exposes the following methods:
+
+\begin{verbatim}
+    Label, CmpVersion, CmpReleaseVer, CheckDep and UpstreamVersion.
+\end{verbatim}
+
+\hyperdef{}{AptPkg::ux5fcache}{\subsection{\hyperref[AptPkg::ux5fcache]{AptPkg::\_cache}}\label{AptPkg::ux5fcache}}
+
+The AptPkg::\_cache package wraps a Perl class around the pkgCacheFile
+class. It exposes the following methods:
+
+\begin{verbatim}
+    Open, Close, FindPkg, PkgBegin, FileList, Packages, Policy, MultiArchCache
+    and NativeArch.
+\end{verbatim}
+
+\hyperdef{}{AptPkg::Cache::ux5fpackage}{\subsection{\hyperref[AptPkg::Cache::ux5fpackage]{AptPkg::Cache::\_package}}\label{AptPkg::Cache::ux5fpackage}}
+
+The AptPkg::Cache::\_package package wraps a Perl class around the
+pkgCache::PkgIterator class. It exposes the following methods:
+
+\begin{verbatim}
+    Next, Name, FullName, Arch, Section, VersionList, CurrentVer,
+    RevDependsList, ProvidesList, Index, SelectedState, InstState,
+    CurrentState and Flags.
+\end{verbatim}
+
+\hyperdef{}{AptPkg::Cache::ux5fversion}{\subsection{\hyperref[AptPkg::Cache::ux5fversion]{AptPkg::Cache::\_version}}\label{AptPkg::Cache::ux5fversion}}
+
+The AptPkg::Cache::\_version package wraps a Perl class around the
+pkgCache::VerIterator class. It exposes the following methods:
+
+\begin{verbatim}
+    VerStr, Section, MultiArch, Arch, ParentPkg, DescriptionList,
+    TranslatedDescription, DependsList, ProvidesList, FileList, Index
+    and Priority.
+\end{verbatim}
+
+\hyperdef{}{AptPkg::Cache::ux5fdepends}{\subsection{\hyperref[AptPkg::Cache::ux5fdepends]{AptPkg::Cache::\_depends}}\label{AptPkg::Cache::ux5fdepends}}
+
+The AptPkg::Cache::\_depends package wraps a Perl class around the
+pkgCache::DepIterator class. It exposes the following methods:
+
+\begin{verbatim}
+    TargetVer, TargetPkg, ParentVer, ParentPkg, Index, CompType and
+    DepType.
+\end{verbatim}
+
+\hyperdef{}{AptPkg::Cache::ux5fprovides}{\subsection{\hyperref[AptPkg::Cache::ux5fprovides]{AptPkg::Cache::\_provides}}\label{AptPkg::Cache::ux5fprovides}}
+
+The AptPkg::Cache::\_provides package wraps a Perl class around the
+pkgCache::PrvIterator class. It exposes the following methods:
+
+\begin{verbatim}
+    Name, ProvideVersion, OwnerVer, OwnerPkg and Index.
+\end{verbatim}
+
+\hyperdef{}{AptPkg::Cache::ux5fdescription}{\subsection{\hyperref[AptPkg::Cache::ux5fdescription]{AptPkg::Cache::\_description}}\label{AptPkg::Cache::ux5fdescription}}
+
+The AptPkg::Cache::\_description package wraps a Perl class around the
+pkgCache::DescIterator class. It exposes the following methods:
+
+\begin{verbatim}
+    LanguageCode, md5 and FileList.
+\end{verbatim}
+
+\hyperdef{}{AptPkg::Cache::ux5fpkgux5ffile}{\subsection{\hyperref[AptPkg::Cache::ux5fpkgux5ffile]{AptPkg::Cache::\_pkg\_file}}\label{AptPkg::Cache::ux5fpkgux5ffile}}
+
+The AptPkg::Cache::\_pkg\_file package wraps a Perl class around the
+pkgCache::PkgFileIterator class. It exposes the following methods:
+
+\begin{verbatim}
+    FileName, Archive, Component, Version, Origin, Label, Site,
+    IndexType and Index.
+\end{verbatim}
+
+\hyperdef{}{AptPkg::Cache::ux5fverux5ffile}{\subsection{\hyperref[AptPkg::Cache::ux5fverux5ffile]{AptPkg::Cache::\_ver\_file}}\label{AptPkg::Cache::ux5fverux5ffile}}
+
+The AptPkg::Cache::\_ver\_file package wraps a Perl class around the
+pkgCache::VerFileIterator class. It exposes the following methods:
+
+\begin{verbatim}
+    File, Index, Offset and Size.
+\end{verbatim}
+
+\hyperdef{}{AptPkg::Cache::ux5fdescux5ffile}{\subsection{\hyperref[AptPkg::Cache::ux5fdescux5ffile]{AptPkg::Cache::\_desc\_file}}\label{AptPkg::Cache::ux5fdescux5ffile}}
+
+The AptPkg::Cache::\_desc\_file package wraps a Perl class around the
+pkgCache::DescFileIterator class. It exposes the following methods:
+
+\begin{verbatim}
+    File
+\end{verbatim}
+
+\hyperdef{}{AptPkg::Cache::ux5fpkgux5frecords}{\subsection{\hyperref[AptPkg::Cache::ux5fpkgux5frecords]{AptPkg::Cache::\_pkg\_records}}\label{AptPkg::Cache::ux5fpkgux5frecords}}
+
+The AptPkg::Cache::\_pkg\_records package wraps a Perl class around the
+pkgRecords class. It exposes the following methods:
+
+\begin{verbatim}
+    Lookup.
+\end{verbatim}
+
+\hyperdef{}{AptPkg::ux5fpolicy}{\subsection{\hyperref[AptPkg::ux5fpolicy]{AptPkg::\_policy}}\label{AptPkg::ux5fpolicy}}
+
+The AptPkg::\_policy package wraps a Perl class around the pkgPolicy
+class. It exposes the following methods:
+
+\begin{verbatim}
+    GetPriority, GetMatch and GetCandidateVer.
+\end{verbatim}
+
+\hyperdef{}{AptPkg::ux5fsourceux5flist}{\subsection{\hyperref[AptPkg::ux5fsourceux5flist]{AptPkg::\_source\_list}}\label{AptPkg::ux5fsourceux5flist}}
+
+The AptPkg::\_source\_list package wraps a Perl class around the
+pkgSourceList class. Required as an argument to the
+AptPkg::\_src\_records constructor.
+
+\hyperdef{}{AptPkg::ux5fsrcux5frecords}{\subsection{\hyperref[AptPkg::ux5fsrcux5frecords]{AptPkg::\_src\_records}}\label{AptPkg::ux5fsrcux5frecords}}
+
+The AptPkg::\_src\_records package wraps a Perl class around the
+pkgSrcRecords class. It exposes the following methods:
+
+\begin{verbatim}
+    Restart, Find.
+\end{verbatim}
+
+\hyperdef{}{Constants}{\subsection{\hyperref[Constants]{Constants}}\label{Constants}}
+
+The following \textbf{APT} enumerations are included, used by attributes
+of AptPkg::Cache.
+
+\emph{pkgCache::Version::VerMultiArch}
+
+``AptPkg::Version::None'', ``AptPkg::Version::All'',
+``AptPkg::Version::Foreign'', ``AptPkg::Version::Same'',
+``AptPkg::Version::Allowed'', ``AptPkg::Version::AllForeign'' and
+``AptPkg::Version::AllAllowed''.
+
+\emph{pkgCache::Dep::DepType}
+
+``AptPkg::Dep::Depends'', ``AptPkg::Dep::PreDepends'',
+``AptPkg::Dep::Suggests'', ``AptPkg::Dep::Recommends'',
+``AptPkg::Dep::Conflicts'', ``AptPkg::Dep::Replaces'' and
+``AptPkg::Dep::Obsoletes''.
+
+\emph{pkgCache::Dep::DepCompareOp}
+
+``AptPkg::Dep::Or'', ``AptPkg::Dep::NoOp'', ``AptPkg::Dep::LessEq'',
+``AptPkg::Dep::GreaterEq'', ``AptPkg::Dep::Less'',
+``AptPkg::Dep::Greater'', ``AptPkg::Dep::Equals'' and
+``AptPkg::Dep::NotEquals''.
+
+\emph{pkgCache::State::VerPriority}
+
+``AptPkg::State::Important'', ``AptPkg::State::Required'',
+``AptPkg::State::Standard'', ``AptPkg::State::Optional'' and
+``AptPkg::State::Extra''.
+
+\emph{pkgCache::State::PkgSelectedState}
+
+``AptPkg::State::Unknown'', ``AptPkg::State::Install'',
+``AptPkg::State::Hold'', ``AptPkg::State::DeInstall'' and
+``AptPkg::State::Purge''.
+
+\emph{pkgCache::State::PkgInstState}
+
+``AptPkg::State::Ok'', ``AptPkg::State::ReInstReq'',
+``AptPkg::State::HoldInst'' and ``AptPkg::State::HoldReInstReq''.
+
+\emph{pkgCache::State::PkgCurrentState}
+
+``AptPkg::State::NotInstalled'', ``AptPkg::State::UnPacked'',
+``AptPkg::State::HalfConfigured'', ``AptPkg::State::HalfInstalled'',
+``AptPkg::State::ConfigFiles'' and ``AptPkg::State::Installed''.
+
+\emph{pkgCache::Flag::PkgFlags}
+
+``AptPkg::Flag::Auto'', ``AptPkg::Flag::Essential'' and
+``AptPkg::Flag::Important''.
+
+\hyperdef{}{SEEux5fALSO}{\section{\hyperref[SEEux5fALSO]{SEE
+ALSO}}\label{SEEux5fALSO}}
+
+\emph{AptPkg::Config}(3pm), \emph{AptPkg::System}(3pm),
+\emph{AptPkg::Version}(3pm), \emph{AptPkg::Cache}(3pm),
+\emph{AptPkg::Source}(3pm).
+
+\hyperdef{}{AUTHOR}{\section{\hyperref[AUTHOR]{AUTHOR}}\label{AUTHOR}}
+
+Brendan O'Dea \textless{}bod@debian.org\textgreater{}
+
+\begin{longtable}[c]{@{}ll@{}}
+\toprule\addlinespace
+2013-05-11 & perl v5.18.1
+\\\addlinespace
+\bottomrule
+\end{longtable}
+
+\end{document}

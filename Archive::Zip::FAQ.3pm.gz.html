@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <style>
+    table.head, table.foot { width: 100%; }
+    td.head-rtitle, td.foot-os { text-align: right; }
+    td.head-vol { text-align: center; }
+    div.Pp { margin: 1ex 0ex; }
+  </style>
+  <title>Archive::Zip::FAQ(3pm)</title>
+</head>
+<body>
+<table class="head">
+  <tr>
+    <td class="head-ltitle">Archive::Zip::FAQ(3pm)</td>
+    <td class="head-vol">User Contributed Perl Documentation</td>
+    <td class="head-rtitle">Archive::Zip::FAQ(3pm)</td>
+  </tr>
+</table>
+<div class="manual-text">
+<h1 class="Sh" title="Sh" id="NAME"><a class="selflink" href="#NAME">NAME</a></h1>
+Archive::Zip::FAQ - Answers to a few frequently asked questions about
+  Archive::Zip
+<h1 class="Sh" title="Sh" id="DESCRIPTION"><a class="selflink" href="#DESCRIPTION">DESCRIPTION</a></h1>
+It seems that I keep answering the same questions over and over again. I assume
+  that this is because my documentation is deficient, rather than that people
+  don't read the documentation.
+<div class="Pp"></div>
+So this FAQ is an attempt to cut down on the number of personal answers I have
+  to give. At least I can now say &quot;You <i>did</i> read the FAQ,
+  right?&quot;.
+<div class="Pp"></div>
+The questions are not in any particular order. The answers assume the current
+  version of Archive::Zip; some of the answers depend on newly added/fixed
+  functionality.
+<h1 class="Sh" title="Sh" id="Install_problems_on_RedHat_8_or_9_with_Perl_5.8.0"><a class="selflink" href="#Install_problems_on_RedHat_8_or_9_with_Perl_5.8.0">Install
+  problems on RedHat 8 or 9 with Perl 5.8.0</a></h1>
+<b>Q:</b> Archive::Zip won't install on my RedHat 9 system! It's broke!
+<div class="Pp"></div>
+<b>A:</b> This has become something of a FAQ. Basically, RedHat broke some
+  versions of Perl by setting LANG to UTF8. They apparently have a fixed version
+  out as an update.
+<div class="Pp"></div>
+You might try running CPAN or creating your Makefile after exporting the LANG
+  environment variable as
+<div class="Pp"></div>
+&quot;LANG=C&quot;
+<div class="Pp"></div>
+&lt;https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=87682&gt;
+<h1 class="Sh" title="Sh" id="Why_is_my_zip_file_so_big?"><a class="selflink" href="#Why_is_my_zip_file_so_big?">Why
+  is my zip file so big?</a></h1>
+<b>Q:</b> My zip file is actually bigger than what I stored in it! Why?
+<div class="Pp"></div>
+<b>A:</b> Some things to make sure of:
+<dl class="Bl-tag">
+  <dt class="It-tag">Make sure that you are requesting COMPRESSION_DEFLATED if
+    you are storing strings.</dt>
+  <dd class="It-tag">$member-&gt;desiredCompressionMethod( COMPRESSION_DEFLATED
+      );</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">Don't make lots of little files if you can help it.</dt>
+  <dd class="It-tag">Since zip computes the compression tables for each member,
+      small members without much entropy won't compress well. Instead, if you've
+      got lots of repeated strings in your data, try to combine them into one
+      big member.</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">Make sure that you are requesting COMPRESSION_STORED if you
+    are storing things that are already compressed.</dt>
+  <dd class="It-tag">If you're storing a .zip, .jpg, .mp3, or other compressed
+      file in a zip, then don't compress them again. They'll get bigger.</dd>
+</dl>
+<h1 class="Sh" title="Sh" id="Sample_code?"><a class="selflink" href="#Sample_code?">Sample
+  code?</a></h1>
+<b>Q:</b> Can you send me code to do (whatever)?
+<div class="Pp"></div>
+<b>A:</b> Have you looked in the &quot;examples/&quot; directory yet? It
+  contains:
+<dl class="Bl-tag">
+  <dt class="It-tag">examples/calcSizes.pl -- How to find out how big a Zip file
+    will be before writing it</dt>
+  <dd class="It-tag"></dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">examples/copy.pl -- Copies one Zip file to another</dt>
+  <dd class="It-tag"></dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">examples/extract.pl -- extract file(s) from a Zip</dt>
+  <dd class="It-tag"></dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">examples/mailZip.pl -- make and mail a zip file</dt>
+  <dd class="It-tag"></dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">examples/mfh.pl -- demo for use of MockFileHandle</dt>
+  <dd class="It-tag"></dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">examples/readScalar.pl -- shows how to use IO::Scalar as
+    the source of a Zip read</dt>
+  <dd class="It-tag"></dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">examples/selfex.pl -- a brief example of a self-extracting
+    Zip</dt>
+  <dd class="It-tag"></dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">examples/unzipAll.pl -- uses Archive::Zip::Tree to unzip an
+    entire Zip</dt>
+  <dd class="It-tag"></dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">examples/updateZip.pl -- shows how to read/modify/write a
+    Zip</dt>
+  <dd class="It-tag"></dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">examples/updateTree.pl -- shows how to update a Zip in
+    place</dt>
+  <dd class="It-tag"></dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">examples/writeScalar.pl -- shows how to use IO::Scalar as
+    the destination of a Zip write</dt>
+  <dd class="It-tag"></dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">examples/writeScalar2.pl -- shows how to use IO::String as
+    the destination of a Zip write</dt>
+  <dd class="It-tag"></dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">examples/zip.pl -- Constructs a Zip file</dt>
+  <dd class="It-tag"></dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">examples/zipcheck.pl -- One way to check a Zip file for
+    validity</dt>
+  <dd class="It-tag"></dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">examples/zipinfo.pl -- Prints out information about a Zip
+    archive file</dt>
+  <dd class="It-tag"></dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">examples/zipGrep.pl -- Searches for text in Zip files</dt>
+  <dd class="It-tag"></dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">examples/ziptest.pl -- Lists a Zip file and checks member
+    CRCs</dt>
+  <dd class="It-tag"></dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">examples/ziprecent.pl -- Puts recent files into a
+    zipfile</dt>
+  <dd class="It-tag"></dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">examples/ziptest.pl -- Another way to check a Zip file for
+    validity</dt>
+  <dd class="It-tag"></dd>
+</dl>
+<h1 class="Sh" title="Sh" id="Can't_Read/modify/write_same_Zip_file"><a class="selflink" href="#Can't_Read/modify/write_same_Zip_file">Can't
+  Read/modify/write same Zip file</a></h1>
+<b>Q:</b> Why can't I open a Zip file, add a member, and write it back? I get an
+  error message when I try.
+<div class="Pp"></div>
+<b>A:</b> Because Archive::Zip doesn't (and can't, generally) read file contents
+  into memory, the original Zip file is required to stay around until the
+  writing of the new file is completed.
+<div class="Pp"></div>
+The best way to do this is to write the Zip to a temporary file and then rename
+  the temporary file to have the old name (possibly after deleting the old one).
+<div class="Pp"></div>
+Archive::Zip v1.02 added the archive methods &quot;overwrite()&quot; and
+  &quot;overwriteAs()&quot; to do this simply and carefully.
+<div class="Pp"></div>
+See &quot;examples/updateZip.pl&quot; for an example of this technique.
+<h1 class="Sh" title="Sh" id="File_creation_time_not_set"><a class="selflink" href="#File_creation_time_not_set">File
+  creation time not set</a></h1>
+<b>Q:</b> Upon extracting files, I see that their modification (and access)
+  times are set to the time in the Zip archive. However, their creation time is
+  not set to the same time. Why?
+<div class="Pp"></div>
+<b>A:</b> Mostly because Perl doesn't give cross-platform access to <i>creation
+  time</i>. Indeed, many systems (like Unix) don't support such a concept.
+  However, if yours does, you can easily set it. Get the modification time from
+  the member using &quot;lastModTime()&quot;.
+<h1 class="Sh" title="Sh" id="Can't_use_Archive::Zip_on_gzip_files"><a class="selflink" href="#Can't_use_Archive::Zip_on_gzip_files">Can't
+  use Archive::Zip on gzip files</a></h1>
+<b>Q:</b> Can I use Archive::Zip to extract Unix gzip files?
+<div class="Pp"></div>
+<b>A:</b> No.
+<div class="Pp"></div>
+There is a distinction between Unix gzip files, and Zip archives that also can
+  use the gzip compression.
+<div class="Pp"></div>
+Depending on the format of the gzip file, you can use Compress::Raw::Zlib, or
+  Archive::Tar to decompress it (and de-archive it in the case of Tar files).
+<div class="Pp"></div>
+You can unzip PKZIP/WinZip/etc/ archives using Archive::Zip (that's what it's
+  for) as long as any compressed members are compressed using Deflate
+  compression.
+<h1 class="Sh" title="Sh" id="Add_a_directory/tree_to_a_Zip"><a class="selflink" href="#Add_a_directory/tree_to_a_Zip">Add
+  a directory/tree to a Zip</a></h1>
+<b>Q:</b> How can I add a directory (or tree) full of files to a Zip?
+<div class="Pp"></div>
+<b>A:</b> You can use the Archive::Zip::addTree*() methods:
+<div class="Pp"></div>
+<pre>
+   use Archive::Zip;
+   my $zip = Archive::Zip-&gt;new();
+   # add all readable files and directories below . as xyz/*
+   $zip-&gt;addTree( '.', 'xyz' ); 
+   # add all readable plain files below /abc as def/*
+   $zip-&gt;addTree( '/abc', 'def', sub { -f &amp;&amp; -r } );    
+   # add all .c files below /tmp as stuff/*
+   $zip-&gt;addTreeMatching( '/tmp', 'stuff', '\.c$' );
+   # add all .o files below /tmp as stuff/* if they aren't writable
+   $zip-&gt;addTreeMatching( '/tmp', 'stuff', '\.o$', sub { ! -w } );
+   # add all .so files below /tmp that are smaller than 200 bytes as stuff/*
+   $zip-&gt;addTreeMatching( '/tmp', 'stuff', '\.o$', sub { -s &lt; 200 } );
+   # and write them into a file
+   $zip-&gt;writeToFileNamed('xxx.zip');
+</pre>
+<h1 class="Sh" title="Sh" id="Extract_a_directory/tree"><a class="selflink" href="#Extract_a_directory/tree">Extract
+  a directory/tree</a></h1>
+<b>Q:</b> How can I extract some (or all) files from a Zip into a different
+  directory?
+<div class="Pp"></div>
+<b>A:</b> You can use the <i>Archive::Zip::extractTree()</i> method: ??? ||
+<div class="Pp"></div>
+<pre>
+   # now extract the same files into /tmpx
+   $zip-&gt;extractTree( 'stuff', '/tmpx' );
+</pre>
+<h1 class="Sh" title="Sh" id="Update_a_directory/tree"><a class="selflink" href="#Update_a_directory/tree">Update
+  a directory/tree</a></h1>
+<b>Q:</b> How can I update a Zip from a directory tree, adding or replacing only
+  the newer files?
+<div class="Pp"></div>
+<b>A:</b> You can use the <i>Archive::Zip::updateTree()</i> method that was
+  added in version 1.09.
+<h1 class="Sh" title="Sh" id="Zip_times_might_be_off_by_1_second"><a class="selflink" href="#Zip_times_might_be_off_by_1_second">Zip
+  times might be off by 1 second</a></h1>
+<b>Q:</b> It bothers me greatly that my file times are wrong by one second about
+  half the time. Why don't you do something about it?
+<div class="Pp"></div>
+<b>A:</b> Get over it. This is a result of the Zip format storing times in DOS
+  format, which has a resolution of only two seconds.
+<h1 class="Sh" title="Sh" id="Zip_times_don't_include_time_zone_information"><a class="selflink" href="#Zip_times_don't_include_time_zone_information">Zip
+  times don't include time zone information</a></h1>
+<b>Q:</b> My file times don't respect time zones. What gives?
+<div class="Pp"></div>
+<b>A:</b> If this is important to you, please submit patches to read the various
+  Extra Fields that encode times with time zones. I'm just using the DOS
+  Date/Time, which doesn't have a time zone.
+<h1 class="Sh" title="Sh" id="How_do_I_make_a_self-extracting_Zip"><a class="selflink" href="#How_do_I_make_a_self-extracting_Zip">How
+  do I make a self-extracting Zip</a></h1>
+<b>Q:</b> I want to make a self-extracting Zip file. Can I do this?
+<div class="Pp"></div>
+<b>A:</b> Yes. You can write a self-extracting archive stub (that is, a version
+  of unzip) to the output filehandle that you pass to
+  <i>writeToFileHandle()</i>. See examples/selfex.pl for how to write a
+  self-extracting archive.
+<div class="Pp"></div>
+However, you should understand that this will only work on one kind of platform
+  (the one for which the stub was compiled).
+<h1 class="Sh" title="Sh" id="How_can_I_deal_with_Zips_with_prepended_garbage_(i.e._from_Sircam)"><a class="selflink" href="#How_can_I_deal_with_Zips_with_prepended_garbage_(i.e._from_Sircam)">How
+  can I deal with Zips with prepended garbage (i.e. from Sircam)</a></h1>
+<b>Q:</b> How can I tell if a Zip has been damaged by adding garbage to the
+  beginning or inside the file?
+<div class="Pp"></div>
+<b>A:</b> I added code for this for the Amavis virus scanner. You can query
+  archives for their 'eocdOffset' property, which should be 0:
+<div class="Pp"></div>
+<pre>
+  if ($zip-&gt;eocdOffset &gt; 0)
+    { warn($zip-&gt;eocdOffset . &quot; bytes of garbage at beginning or within Zip&quot;) }
+</pre>
+<div class="Pp"></div>
+When members are extracted, this offset will be used to adjust the start of the
+  member if necessary.
+<h1 class="Sh" title="Sh" id="Can't_extract_Shrunk_files"><a class="selflink" href="#Can't_extract_Shrunk_files">Can't
+  extract Shrunk files</a></h1>
+<b>Q:</b> I'm trying to extract a file out of a Zip produced by PKZIP, and keep
+  getting this error message:
+<div class="Pp"></div>
+<pre>
+  error: Unsupported compression combination: read 6, write 0
+</pre>
+<div class="Pp"></div>
+<b>A:</b> You can't uncompress this archive member. Archive::Zip only supports
+  uncompressed members, and compressed members that are compressed using the
+  compression supported by Compress::Raw::Zlib. That means only Deflated and
+  Stored members.
+<div class="Pp"></div>
+Your file is compressed using the Shrink format, which isn't supported by
+  Compress::Raw::Zlib.
+<div class="Pp"></div>
+You could, perhaps, use a command-line UnZip program (like the Info-Zip one) to
+  extract this.
+<h1 class="Sh" title="Sh" id="Can't_do_decryption"><a class="selflink" href="#Can't_do_decryption">Can't
+  do decryption</a></h1>
+<b>Q:</b> How do I decrypt encrypted Zip members?
+<div class="Pp"></div>
+<b>A:</b> With some other program or library. Archive::Zip doesn't support
+  decryption, and probably never will (unless <i>you</i> write it).
+<h1 class="Sh" title="Sh" id="How_to_test_file_integrity?"><a class="selflink" href="#How_to_test_file_integrity?">How
+  to test file integrity?</a></h1>
+<b>Q:</b> How can Archive::Zip can test the validity of a Zip file?
+<div class="Pp"></div>
+<b>A:</b> If you try to decompress the file, the gzip streams will report errors
+  if you have garbage. Most of the time.
+<div class="Pp"></div>
+If you try to open the file and a central directory structure can't be found, an
+  error will be reported.
+<div class="Pp"></div>
+When a file is being read, if we can't find a proper PK.. signature in the right
+  places we report a format error.
+<div class="Pp"></div>
+If there is added garbage at the beginning of a Zip file (as inserted by some
+  viruses), you can find out about it, but Archive::Zip will ignore it, and you
+  can still use the archive. When it gets written back out the added stuff will
+  be gone.
+<div class="Pp"></div>
+There are two ready-to-use utilities in the examples directory that can be used
+  to test file integrity, or that you can use as examples for your own code:
+<dl class="Bl-tag">
+  <dt class="It-tag">examples/zipcheck.pl shows how to use an attempted
+    extraction to test a file.</dt>
+  <dd class="It-tag"></dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">examples/ziptest.pl shows how to test CRCs in a file.</dt>
+  <dd class="It-tag"></dd>
+</dl>
+<h1 class="Sh" title="Sh" id="Duplicate_files_in_Zip?"><a class="selflink" href="#Duplicate_files_in_Zip?">Duplicate
+  files in Zip?</a></h1>
+<b>Q:</b> Archive::Zip let me put the same file in my Zip twice! Why don't you
+  prevent this?
+<div class="Pp"></div>
+<b>A:</b> As far as I can tell, this is not disallowed by the Zip spec. If you
+  think it's a bad idea, check for it yourself:
+<div class="Pp"></div>
+<pre>
+  $zip-&gt;addFile($someFile, $someName) unless $zip-&gt;memberNamed($someName);
+</pre>
+<div class="Pp"></div>
+I can even imagine cases where this might be useful (for instance, multiple
+  versions of files).
+<h1 class="Sh" title="Sh" id="File_ownership/permissions/ACLS/etc"><a class="selflink" href="#File_ownership/permissions/ACLS/etc">File
+  ownership/permissions/ACLS/etc</a></h1>
+<b>Q:</b> Why doesn't Archive::Zip deal with file ownership, ACLs, etc.?
+<div class="Pp"></div>
+<b>A:</b> There is no standard way to represent these in the Zip file format. If
+  you want to send me code to properly handle the various extra fields that have
+  been used to represent these through the years, I'll look at it.
+<h1 class="Sh" title="Sh" id="I_can't_compile_but_ActiveState_only_has_an_old_version_of_Archive::Zip"><a class="selflink" href="#I_can't_compile_but_ActiveState_only_has_an_old_version_of_Archive::Zip">I
+  can't compile but ActiveState only has an old version of Archive::Zip</a></h1>
+<b>Q:</b> I've only installed modules using ActiveState's PPM program and
+  repository. But they have a much older version of Archive::Zip than is in
+  CPAN. Will you send me a newer PPM?
+<div class="Pp"></div>
+<b>A:</b> Probably not, unless I get lots of extra time. But there's no reason
+  you can't install the version from CPAN. Archive::Zip is pure Perl, so all you
+  need is NMAKE, which you can get for free from Microsoft (see the FAQ in the
+  ActiveState documentation for details on how to install CPAN modules).
+<h1 class="Sh" title="Sh" id="My_JPEGs_(or_MP3's)_don't_compress_when_I_put_them_into_Zips!"><a class="selflink" href="#My_JPEGs_(or_MP3's)_don't_compress_when_I_put_them_into_Zips!">My
+  JPEGs (or MP3's) don't compress when I put them into Zips!</a></h1>
+<b>Q:</b> How come my JPEGs and MP3's don't compress much when I put them into
+  Zips?
+<div class="Pp"></div>
+<b>A:</b> Because they're already compressed.
+<h1 class="Sh" title="Sh" id="Under_Windows,_things_lock_up/get_damaged"><a class="selflink" href="#Under_Windows,_things_lock_up/get_damaged">Under
+  Windows, things lock up/get damaged</a></h1>
+<b>Q:</b> I'm using Windows. When I try to use Archive::Zip, my machine locks
+  up/makes funny sounds/displays a BSOD/corrupts data. How can I fix this?
+<div class="Pp"></div>
+<b>A:</b> First, try the newest version of Compress::Raw::Zlib. I know of
+  Windows-related problems prior to v1.14 of that library.
+<div class="Pp"></div>
+If that doesn't get rid of the problem, fix your computer or get rid of Windows.
+<h1 class="Sh" title="Sh" id="Zip_contents_in_a_scalar"><a class="selflink" href="#Zip_contents_in_a_scalar">Zip
+  contents in a scalar</a></h1>
+<b>Q:</b> I want to read a Zip file from (or write one to) a scalar variable
+  instead of a file. How can I do this?
+<div class="Pp"></div>
+<b>A:</b> Use &quot;IO::String&quot; and the &quot;readFromFileHandle()&quot;
+  and &quot;writeToFileHandle()&quot; methods. See
+  &quot;examples/readScalar.pl&quot; and &quot;examples/writeScalar.pl&quot;.
+<h1 class="Sh" title="Sh" id="Reading_from_streams"><a class="selflink" href="#Reading_from_streams">Reading
+  from streams</a></h1>
+<b>Q:</b> How do I read from a stream (like for the Info-Zip &quot;funzip&quot;
+  program)?
+<div class="Pp"></div>
+<b>A:</b>	This isn't currently supported, though writing to a stream is.</div>
+<table class="foot">
+  <tr>
+    <td class="foot-date">2009-06-30</td>
+    <td class="foot-os">perl v5.14.2</td>
+  </tr>
+</table>
+</body>
+</html>

@@ -1,0 +1,384 @@
+\documentclass[]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+    \usepackage{xltxtra,xunicode}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
+  \newcommand{\euro}{€}
+\fi
+% use microtype if available
+\IfFileExists{microtype.sty}{\usepackage{microtype}}{}
+\usepackage{longtable,booktabs}
+\ifxetex
+  \usepackage[setpagesize=false, % page size defined by xetex
+              unicode=false, % unicode breaks when used with xetex
+              xetex]{hyperref}
+\else
+  \usepackage[unicode=true]{hyperref}
+\fi
+\hypersetup{breaklinks=true,
+            bookmarks=true,
+            pdfauthor={},
+            pdftitle={ASN1\_generate\_nconf(3SSL)},
+            colorlinks=true,
+            citecolor=blue,
+            urlcolor=blue,
+            linkcolor=magenta,
+            pdfborder={0 0 0}}
+\urlstyle{same}  % don't use monospace font for urls
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\setcounter{secnumdepth}{0}
+\usepackage{pagecolor}
+
+% Set background colour (of the page)
+\definecolor{weirdbgcolor}{HTML}{FCF4F0}
+\pagecolor{weirdbgcolor}
+
+% Make bold text appear in a particular colour
+\definecolor{boldcolor}{HTML}{6E0002}
+\let\realtextbf=\textbf
+\renewcommand{\textbf}[1]{\textcolor{boldcolor}{\realtextbf{#1}}}
+
+% Use underlines instead of emphasis (ugh)
+\renewcommand{\emph}[1]{\underline{#1}}
+
+% % Use fixed-width font by default
+% \renewcommand*\familydefault{\ttdefault}
+
+\title{ASN1\_generate\_nconf(3SSL)}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{longtable}[c]{@{}lll@{}}
+\toprule\addlinespace
+ASN1\_generate\_nconf(3SSL) & OpenSSL & ASN1\_generate\_nconf(3SSL)
+\\\addlinespace
+\bottomrule
+\end{longtable}
+
+\hyperdef{}{NAME}{\section{\hyperref[NAME]{NAME}}\label{NAME}}
+
+ASN1\_generate\_nconf, ASN1\_generate\_v3 - ASN1 generation functions
+
+\hyperdef{}{SYNOPSIS}{\section{\hyperref[SYNOPSIS]{SYNOPSIS}}\label{SYNOPSIS}}
+
+\begin{verbatim}
+ #include <openssl/asn1.h>
+ ASN1_TYPE *ASN1_generate_nconf(char *str, CONF *nconf);
+ ASN1_TYPE *ASN1_generate_v3(char *str, X509V3_CTX *cnf);
+\end{verbatim}
+
+\hyperdef{}{DESCRIPTION}{\section{\hyperref[DESCRIPTION]{DESCRIPTION}}\label{DESCRIPTION}}
+
+These functions generate the ASN1 encoding of a string in an
+\textbf{ASN1\_TYPE} structure.
+
+\textbf{str} contains the string to encode \textbf{nconf} or
+\textbf{cnf} contains the optional configuration information where
+additional strings will be read from. \textbf{nconf} will typically come
+from a config file wherease \textbf{cnf} is obtained from an
+\textbf{X509V3\_CTX} structure which will typically be used by X509 v3
+certificate extension functions. \textbf{cnf} or \textbf{nconf} can be
+set to \textbf{NULL} if no additional configuration will be used.
+
+\hyperdef{}{GENERATIONux5fSTRINGux5fFORMAT}{\section{\hyperref[GENERATIONux5fSTRINGux5fFORMAT]{GENERATION
+STRING FORMAT}}\label{GENERATIONux5fSTRINGux5fFORMAT}}
+
+The actual data encoded is determined by the string \textbf{str} and the
+configuration information. The general format of the string is:
+
+\begin{description}
+\item[\textbf{{[}modifier,{]}type{[}:value{]}}]
+\end{description}
+
+That is zero or more comma separated modifiers followed by a type
+followed by an optional colon and a value. The formats of \textbf{type},
+\textbf{value} and \textbf{modifier} are explained below.
+
+\hyperdef{}{SUPPORTEDux5fTYPES}{\subsection{\hyperref[SUPPORTEDux5fTYPES]{SUPPORTED
+TYPES}}\label{SUPPORTEDux5fTYPES}}
+
+The supported types are listed below. Unless otherwise specified only
+the \textbf{ASCII} format is permissible.
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[\textbf{BOOLEAN}, \textbf{BOOL}]
+This encodes a boolean type. The \textbf{value} string is mandatory and
+should be \textbf{TRUE} or \textbf{FALSE}. Additionally \textbf{TRUE},
+\textbf{true}, \textbf{Y}, \textbf{y}, \textbf{YES}, \textbf{yes},
+\textbf{FALSE}, \textbf{false}, \textbf{N}, \textbf{n}, \textbf{NO} and
+\textbf{no} are acceptable.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[\textbf{NULL}]
+Encode the \textbf{NULL} type, the \textbf{value} string must not be
+present.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[\textbf{INTEGER}, \textbf{INT}]
+Encodes an ASN1 \textbf{INTEGER} type. The \textbf{value} string
+represents the value of the integer, it can be preceded by a minus sign
+and is normally interpreted as a decimal value unless the prefix
+\textbf{0x} is included.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[\textbf{ENUMERATED}, \textbf{ENUM}]
+Encodes the ASN1 \textbf{ENUMERATED} type, it is otherwise identical to
+\textbf{INTEGER}.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[\textbf{OBJECT}, \textbf{OID}]
+Encodes an ASN1 \textbf{OBJECT IDENTIFIER}, the \textbf{value} string
+can be a short name, a long name or numerical format.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[\textbf{UTCTIME}, \textbf{UTC}]
+Encodes an ASN1 \textbf{UTCTime} structure, the value should be in the
+format \textbf{YYMMDDHHMMSSZ}.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[\textbf{GENERALIZEDTIME}, \textbf{GENTIME}]
+Encodes an ASN1 \textbf{GeneralizedTime} structure, the value should be
+in the format \textbf{YYYYMMDDHHMMSSZ}.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[\textbf{OCTETSTRING}, \textbf{OCT}]
+Encodes an ASN1 \textbf{OCTET STRING}. \textbf{value} represents the
+contents of this structure, the format strings \textbf{ASCII} and
+\textbf{HEX} can be used to specify the format of \textbf{value}.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[\textbf{BITSTRING}, \textbf{BITSTR}]
+Encodes an ASN1 \textbf{BIT STRING}. \textbf{value} represents the
+contents of this structure, the format strings \textbf{ASCII},
+\textbf{HEX} and \textbf{BITLIST} can be used to specify the format of
+\textbf{value}.
+
+~
+
+If the format is anything other than \textbf{BITLIST} the number of
+unused bits is set to zero.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[\textbf{UNIVERSALSTRING}, \textbf{UNIV}, \textbf{IA5},
+\textbf{IA5STRING}, \textbf{UTF8}, \textbf{UTF8String}, \textbf{BMP},
+\textbf{BMPSTRING}, \textbf{VISIBLESTRING}, \textbf{VISIBLE},
+\textbf{PRINTABLESTRING}, \textbf{PRINTABLE}, \textbf{T61},
+\textbf{T61STRING}, \textbf{TELETEXSTRING}, \textbf{GeneralString},
+\textbf{NUMERICSTRING}, \textbf{NUMERIC}]
+These encode the corresponding string types. \textbf{value} represents
+the contents of this structure. The format can be \textbf{ASCII} or
+\textbf{UTF8}.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[\textbf{SEQUENCE}, \textbf{SEQ}, \textbf{SET}]
+Formats the result as an ASN1 \textbf{SEQUENCE} or \textbf{SET} type.
+\textbf{value} should be a section name which will contain the contents.
+The field names in the section are ignored and the values are in the
+generated string format. If \textbf{value} is absent then an empty
+SEQUENCE will be encoded.
+\end{description}
+
+\hyperdef{}{MODIFIERS}{\subsection{\hyperref[MODIFIERS]{MODIFIERS}}\label{MODIFIERS}}
+
+Modifiers affect the following structure, they can be used to add
+EXPLICIT or IMPLICIT tagging, add wrappers or to change the string
+format of the final type and value. The supported formats are documented
+below.
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[\textbf{EXPLICIT}, \textbf{EXP}]
+Add an explicit tag to the following structure. This string should be
+followed by a colon and the tag value to use as a decimal value.
+
+~
+
+By following the number with \textbf{U}, \textbf{A}, \textbf{P} or
+\textbf{C} UNIVERSAL, APPLICATION, PRIVATE or CONTEXT SPECIFIC tagging
+can be used, the default is CONTEXT SPECIFIC.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[\textbf{IMPLICIT}, \textbf{IMP}]
+This is the same as \textbf{EXPLICIT} except IMPLICIT tagging is used
+instead.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[\textbf{OCTWRAP}, \textbf{SEQWRAP}, \textbf{SETWRAP},
+\textbf{BITWRAP}]
+The following structure is surrounded by an OCTET STRING, a SEQUENCE, a
+SET or a BIT STRING respectively. For a BIT STRING the number of unused
+bits is set to zero.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[\textbf{FORMAT}]
+This specifies the format of the ultimate value. It should be followed
+by a colon and one of the strings \textbf{ASCII}, \textbf{UTF8},
+\textbf{HEX} or \textbf{BITLIST}.
+
+~
+
+If no format specifier is included then \textbf{ASCII} is used. If
+\textbf{UTF8} is specified then the value string must be a valid
+\textbf{UTF8} string. For \textbf{HEX} the output must be a set of hex
+digits. \textbf{BITLIST} (which is only valid for a BIT STRING) is a
+comma separated list of the indices of the set bits, all other bits are
+zero.
+\end{description}
+
+\hyperdef{}{EXAMPLES}{\section{\hyperref[EXAMPLES]{EXAMPLES}}\label{EXAMPLES}}
+
+A simple IA5String:
+
+\begin{verbatim}
+ IA5STRING:Hello World
+\end{verbatim}
+
+An IA5String explicitly tagged:
+
+\begin{verbatim}
+ EXPLICIT:0,IA5STRING:Hello World
+\end{verbatim}
+
+An IA5String explicitly tagged using APPLICATION tagging:
+
+\begin{verbatim}
+ EXPLICIT:0A,IA5STRING:Hello World
+\end{verbatim}
+
+A BITSTRING with bits 1 and 5 set and all others zero:
+
+\begin{verbatim}
+ FORMAT:BITLIST,BITSTRING:1,5
+\end{verbatim}
+
+A more complex example using a config file to produce a SEQUENCE
+consiting of a BOOL an OID and a UTF8String:
+
+\begin{verbatim}
+ asn1 = SEQUENCE:seq_section
+ [seq_section]
+ field1 = BOOLEAN:TRUE
+ field2 = OID:commonName
+ field3 = UTF8:Third field
+\end{verbatim}
+
+This example produces an RSAPrivateKey structure, this is the key
+contained in the file client.pem in all OpenSSL distributions (note: the
+field names such as `coeff' are ignored and are present just for
+clarity):
+
+\begin{verbatim}
+ asn1=SEQUENCE:private_key
+ [private_key]
+ version=INTEGER:0
+ n=INTEGER:0xBB6FE79432CC6EA2D8F970675A5A87BFBE1AFF0BE63E879F2AFFB93644\
+ D4D2C6D000430DEC66ABF47829E74B8C5108623A1C0EE8BE217B3AD8D36D5EB4FCA1D9
+ e=INTEGER:0x010001
+ d=INTEGER:0x6F05EAD2F27FFAEC84BEC360C4B928FD5F3A9865D0FCAAD291E2A52F4A\
+ F810DC6373278C006A0ABBA27DC8C63BF97F7E666E27C5284D7D3B1FFFE16B7A87B51D
+ p=INTEGER:0xF3929B9435608F8A22C208D86795271D54EBDFB09DDEF539AB083DA912\
+ D4BD57
+ q=INTEGER:0xC50016F89DFF2561347ED1186A46E150E28BF2D0F539A1594BBD7FE467\
+ 46EC4F
+ exp1=INTEGER:0x9E7D4326C924AFC1DEA40B45650134966D6F9DFA3A7F9D698CD4ABEA\
+ 9C0A39B9
+ exp2=INTEGER:0xBA84003BB95355AFB7C50DF140C60513D0BA51D637272E355E397779\
+ E7B2458F
+ coeff=INTEGER:0x30B9E4F2AFA5AC679F920FC83F1F2DF1BAF1779CF989447FABC2F5\
+ 628657053A
+\end{verbatim}
+
+This example is the corresponding public key in a SubjectPublicKeyInfo
+structure:
+
+\begin{verbatim}
+ # Start with a SEQUENCE
+ asn1=SEQUENCE:pubkeyinfo
+ # pubkeyinfo contains an algorithm identifier and the public key wrapped
+ # in a BIT STRING
+ [pubkeyinfo]
+ algorithm=SEQUENCE:rsa_alg
+ pubkey=BITWRAP,SEQUENCE:rsapubkey
+ # algorithm ID for RSA is just an OID and a NULL
+ [rsa_alg]
+ algorithm=OID:rsaEncryption
+ parameter=NULL
+ # Actual public key: modulus and exponent
+ [rsapubkey]
+ n=INTEGER:0xBB6FE79432CC6EA2D8F970675A5A87BFBE1AFF0BE63E879F2AFFB93644\
+ D4D2C6D000430DEC66ABF47829E74B8C5108623A1C0EE8BE217B3AD8D36D5EB4FCA1D9
+ e=INTEGER:0x010001
+\end{verbatim}
+
+\hyperdef{}{RETURNux5fVALUES}{\section{\hyperref[RETURNux5fVALUES]{RETURN
+VALUES}}\label{RETURNux5fVALUES}}
+
+\emph{ASN1\_generate\_nconf()} and \emph{ASN1\_generate\_v3()} return
+the encoded data as an \textbf{ASN1\_TYPE} structure or \textbf{NULL} if
+an error occurred.
+
+The error codes that can be obtained by \emph{ERR\_get\_error}(3).
+
+\hyperdef{}{SEEux5fALSO}{\section{\hyperref[SEEux5fALSO]{SEE
+ALSO}}\label{SEEux5fALSO}}
+
+\emph{ERR\_get\_error}(3)
+
+\hyperdef{}{HISTORY}{\section{\hyperref[HISTORY]{HISTORY}}\label{HISTORY}}
+
+\emph{ASN1\_generate\_nconf()} and \emph{ASN1\_generate\_v3()} were
+added to OpenSSL 0.9.8
+
+\begin{longtable}[c]{@{}ll@{}}
+\toprule\addlinespace
+2017-11-02 & 1.0.1f
+\\\addlinespace
+\bottomrule
+\end{longtable}
+
+\end{document}

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <style>
+    table.head, table.foot { width: 100%; }
+    td.head-rtitle, td.foot-os { text-align: right; }
+    td.head-vol { text-align: center; }
+    div.Pp { margin: 1ex 0ex; }
+  </style>
+  <title>ASSERT_PERROR(3)</title>
+</head>
+<body>
+<table class="head">
+  <tr>
+    <td class="head-ltitle">ASSERT_PERROR(3)</td>
+    <td class="head-vol">Linux Programmer's Manual</td>
+    <td class="head-rtitle">ASSERT_PERROR(3)</td>
+  </tr>
+</table>
+<div class="manual-text">
+<h1 class="Sh" title="Sh" id="NAME"><a class="selflink" href="#NAME">NAME</a></h1>
+assert_perror - test errnum and abort
+<h1 class="Sh" title="Sh" id="SYNOPSIS"><a class="selflink" href="#SYNOPSIS">SYNOPSIS</a></h1>
+<pre>
+<b>#define _GNU_SOURCE</b>         /* See feature_test_macros(7) */
+<b>#include &lt;assert.h&gt;</b>
+<div style="height: 1.00em;">&#x00A0;</div>
+<b>void assert_perror(int </b><i>errnum</i><b>);</b>
+</pre>
+<h1 class="Sh" title="Sh" id="DESCRIPTION"><a class="selflink" href="#DESCRIPTION">DESCRIPTION</a></h1>
+If the macro <b>NDEBUG</b> was defined at the moment <i>&lt;assert.h&gt;</i> was
+  last included, the macro <b>assert_perror</b>() generates no code, and hence
+  does nothing at all. Otherwise, the macro <b>assert_perror</b>() prints an
+  error message to standard error and terminates the program by calling
+  <b>abort</b>(3) if <i>errnum</i> is nonzero. The message contains the
+  filename, function name and line number of the macro call, and the output of
+  <i>strerror(errnum)</i>.
+<h1 class="Sh" title="Sh" id="RETURN_VALUE"><a class="selflink" href="#RETURN_VALUE">RETURN
+  VALUE</a></h1>
+No value is returned.
+<h1 class="Sh" title="Sh" id="CONFORMING_TO"><a class="selflink" href="#CONFORMING_TO">CONFORMING
+  TO</a></h1>
+This is a GNU extension.
+<h1 class="Sh" title="Sh" id="BUGS"><a class="selflink" href="#BUGS">BUGS</a></h1>
+The purpose of the assert macros is to help the programmer find bugs in his
+  program, things that cannot happen unless there was a coding mistake. However,
+  with system or library calls the situation is rather different, and error
+  returns can happen, and will happen, and should be tested for. Not by an
+  assert, where the test goes away when <b>NDEBUG</b> is defined, but by proper
+  error handling code. Never use this macro.
+<h1 class="Sh" title="Sh" id="SEE_ALSO"><a class="selflink" href="#SEE_ALSO">SEE
+  ALSO</a></h1>
+<b>abort</b>(3), <b>assert</b>(3), <b>exit</b>(3), <b>strerror</b>(3)
+<h1 class="Sh" title="Sh" id="COLOPHON"><a class="selflink" href="#COLOPHON">COLOPHON</a></h1>
+This page is part of release 3.54 of the Linux <i>man-pages</i> project. A
+  description of the project, and information about reporting bugs, can be found
+  at http://www.kernel.org/doc/man-pages/.</div>
+<table class="foot">
+  <tr>
+    <td class="foot-date">2002-08-25</td>
+    <td class="foot-os">GNU</td>
+  </tr>
+</table>
+</body>
+</html>

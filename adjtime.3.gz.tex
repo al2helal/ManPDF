@@ -1,0 +1,200 @@
+\documentclass[]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+    \usepackage{xltxtra,xunicode}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
+  \newcommand{\euro}{€}
+\fi
+% use microtype if available
+\IfFileExists{microtype.sty}{\usepackage{microtype}}{}
+\usepackage{longtable,booktabs}
+\ifxetex
+  \usepackage[setpagesize=false, % page size defined by xetex
+              unicode=false, % unicode breaks when used with xetex
+              xetex]{hyperref}
+\else
+  \usepackage[unicode=true]{hyperref}
+\fi
+\hypersetup{breaklinks=true,
+            bookmarks=true,
+            pdfauthor={},
+            pdftitle={ADJTIME(3)},
+            colorlinks=true,
+            citecolor=blue,
+            urlcolor=blue,
+            linkcolor=magenta,
+            pdfborder={0 0 0}}
+\urlstyle{same}  % don't use monospace font for urls
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\setcounter{secnumdepth}{0}
+\usepackage{pagecolor}
+
+% Set background colour (of the page)
+\definecolor{weirdbgcolor}{HTML}{FCF4F0}
+\pagecolor{weirdbgcolor}
+
+% Make bold text appear in a particular colour
+\definecolor{boldcolor}{HTML}{6E0002}
+\let\realtextbf=\textbf
+\renewcommand{\textbf}[1]{\textcolor{boldcolor}{\realtextbf{#1}}}
+
+% Use underlines instead of emphasis (ugh)
+\renewcommand{\emph}[1]{\underline{#1}}
+
+% % Use fixed-width font by default
+% \renewcommand*\familydefault{\ttdefault}
+
+\title{ADJTIME(3)}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{longtable}[c]{@{}lll@{}}
+\toprule\addlinespace
+ADJTIME(3) & Linux Programmer's Manual & ADJTIME(3)
+\\\addlinespace
+\bottomrule
+\end{longtable}
+
+\hyperdef{}{NAME}{\section{\hyperref[NAME]{NAME}}\label{NAME}}
+
+adjtime - correct the time to synchronize the system clock
+
+\hyperdef{}{SYNOPSIS}{\section{\hyperref[SYNOPSIS]{SYNOPSIS}}\label{SYNOPSIS}}
+
+\begin{verbatim}
+int adjtime(const struct timeval *delta, struct timeval *olddelta);
+\end{verbatim}
+
+~
+
+Feature Test Macro Requirements for glibc (see
+\textbf{feature\_test\_macros}(7)): \\
+
+~
+
+\textbf{adjtime}(): \_BSD\_SOURCE
+
+\hyperdef{}{DESCRIPTION}{\section{\hyperref[DESCRIPTION]{DESCRIPTION}}\label{DESCRIPTION}}
+
+The \textbf{adjtime}() function gradually adjusts the system clock (as
+returned by \textbf{gettimeofday}(2)). The amount of time by which the
+clock is to be adjusted is specified in the structure pointed to by
+\emph{delta}. This structure has the following form: \\
+
+\begin{verbatim}
+
+struct timeval {
+    time_t      tv_sec;     /* seconds */
+    suseconds_t tv_usec;    /* microseconds */
+};
+\end{verbatim}
+
+If the adjustment in \emph{delta} is positive, then the system clock is
+speeded up by some small percentage (i.e., by adding a small amount of
+time to the clock value in each second) until the adjustment has been
+completed. If the adjustment in \emph{delta} is negative, then the clock
+is slowed down in a similar fashion.
+
+~
+
+If a clock adjustment from an earlier \textbf{adjtime}() call is already
+in progress at the time of a later \textbf{adjtime}() call, and
+\emph{delta} is not NULL for the later call, then the earlier adjustment
+is stopped, but any already completed part of that adjustment is not
+undone.
+
+~
+
+If \emph{olddelta} is not NULL, then the buffer that it points to is
+used to return the amount of time remaining from any previous adjustment
+that has not yet been completed.
+
+\hyperdef{}{RETURNux5fVALUE}{\section{\hyperref[RETURNux5fVALUE]{RETURN
+VALUE}}\label{RETURNux5fVALUE}}
+
+On success, \textbf{adjtime}() returns 0. On failure, -1 is returned,
+and \emph{errno} is set to indicate the error.
+
+\hyperdef{}{ERRORS}{\section{\hyperref[ERRORS]{ERRORS}}\label{ERRORS}}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[\textbf{EINVAL}]
+The adjustment in \emph{delta} is outside the permitted range.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[\textbf{EPERM}]
+The caller does not have sufficient privilege to adjust the time. Under
+Linux the \textbf{CAP\_SYS\_TIME} capability is required.
+\end{description}
+
+\hyperdef{}{CONFORMINGux5fTO}{\section{\hyperref[CONFORMINGux5fTO]{CONFORMING
+TO}}\label{CONFORMINGux5fTO}}
+
+4.3BSD, System V.
+
+\hyperdef{}{NOTES}{\section{\hyperref[NOTES]{NOTES}}\label{NOTES}}
+
+The adjustment that \textbf{adjtime}() makes to the clock is carried out
+in such a manner that the clock is always monotonically increasing.
+Using \textbf{adjtime}() to adjust the time prevents the problems that
+can be caused for certain applications (e.g., \textbf{make}(1)) by
+abrupt positive or negative jumps in the system time.
+
+~
+
+\textbf{adjtime}() is intended to be used to make small adjustments to
+the system time. Most systems impose a limit on the adjustment that can
+be specified in \emph{delta}. In the glibc implementation, \emph{delta}
+must be less than or equal to (INT\_MAX / 1000000 - 2) and greater than
+or equal to (INT\_MIN / 1000000 + 2) (respectively 2145 and -2145
+seconds on i386).
+
+\hyperdef{}{BUGS}{\section{\hyperref[BUGS]{BUGS}}\label{BUGS}}
+
+A longstanding bug meant that if \emph{delta} was specified as NULL, no
+valid information about the outstanding clock adjustment was returned in
+\emph{olddelta}. (In this circumstance, \textbf{adjtime}() should return
+the outstanding clock adjustment, without changing it.) This bug is
+fixed on systems with glibc 2.8 or later and Linux kernel 2.6.26 or
+later.
+
+\hyperdef{}{SEEux5fALSO}{\section{\hyperref[SEEux5fALSO]{SEE
+ALSO}}\label{SEEux5fALSO}}
+
+\textbf{adjtimex}(2), \textbf{gettimeofday}(2), \textbf{time}(7)
+
+\hyperdef{}{COLOPHON}{\section{\hyperref[COLOPHON]{COLOPHON}}\label{COLOPHON}}
+
+This page is part of release 3.54 of the Linux \emph{man-pages} project.
+A description of the project, and information about reporting bugs, can
+be found at http://www.kernel.org/doc/man-pages/.
+
+\begin{longtable}[c]{@{}ll@{}}
+\toprule\addlinespace
+2008-06-22 & Linux
+\\\addlinespace
+\bottomrule
+\end{longtable}
+
+\end{document}

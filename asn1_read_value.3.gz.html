@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <style>
+    table.head, table.foot { width: 100%; }
+    td.head-rtitle, td.foot-os { text-align: right; }
+    td.head-vol { text-align: center; }
+    div.Pp { margin: 1ex 0ex; }
+  </style>
+  <title>asn1_read_value(3)</title>
+</head>
+<body>
+<table class="head">
+  <tr>
+    <td class="head-ltitle">asn1_read_value(3)</td>
+    <td class="head-vol">libtasn1</td>
+    <td class="head-rtitle">asn1_read_value(3)</td>
+  </tr>
+</table>
+<div class="manual-text">
+<h1 class="Sh" title="Sh" id="NAME"><a class="selflink" href="#NAME">NAME</a></h1>
+asn1_read_value - API function
+<h1 class="Sh" title="Sh" id="SYNOPSIS"><a class="selflink" href="#SYNOPSIS">SYNOPSIS</a></h1>
+<b>#include &lt;libtasn1.h&gt;</b>
+<div style="height: 1.00em;">&#x00A0;</div>
+<b>int asn1_read_value(asn1_node </b><i>root</i><b>, const char *
+  </b><i>name</i><b>, void * </b><i>ivalue</i><b>, int * </b><i>len</i><b>);</b>
+<h1 class="Sh" title="Sh" id="ARGUMENTS"><a class="selflink" href="#ARGUMENTS">ARGUMENTS</a></h1>
+<dl class="Bl-tag">
+  <dt class="It-tag">asn1_node root</dt>
+  <dd class="It-tag">pointer to a structure.</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">const char * name</dt>
+  <dd class="It-tag">the name of the element inside a structure that you want to
+      read.</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">void * ivalue</dt>
+  <dd class="It-tag">vector that will contain the element's content, must be a
+      pointer to memory cells already allocated (may be <b>NULL</b>).</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">int * len</dt>
+  <dd class="It-tag">number of bytes of *value: value[0]..value[len-1]. Initialy
+      holds the sizeof value.</dd>
+</dl>
+<h1 class="Sh" title="Sh" id="DESCRIPTION"><a class="selflink" href="#DESCRIPTION">DESCRIPTION</a></h1>
+Returns the value of one element inside a structure. If an element is OPTIONAL
+  and this returns <b>ASN1_ELEMENT_NOT_FOUND</b>, it means that this element
+  wasn't present in the der encoding that created the structure. The first
+  element of a SEQUENCE_OF or SET_OF is named &quot;?1&quot;. The second one
+  &quot;?2&quot; and so on.
+<div style="height: 1.00em;">&#x00A0;</div>
+Note that there can be valid values with length zero. In these case this
+  function will succeed and <i>len</i> will be zero.
+<h1 class="Sh" title="Sh" id="INTEGER"><a class="selflink" href="#INTEGER">INTEGER</a></h1>
+VALUE will contain a two's complement form integer.
+<div style="height: 1.00em;">&#x00A0;</div>
+integer=-1 -&gt; value[0]=0xFF , len=1. integer=1 -&gt; value[0]=0x01 , len=1.
+<h1 class="Sh" title="Sh" id="ENUMERATED"><a class="selflink" href="#ENUMERATED">ENUMERATED</a></h1>
+As INTEGER (but only with not negative numbers).
+<h1 class="Sh" title="Sh" id="BOOLEAN"><a class="selflink" href="#BOOLEAN">BOOLEAN</a></h1>
+VALUE will be the null terminated string &quot;TRUE&quot; or &quot;FALSE&quot;
+  and LEN=5 or LEN=6.
+<div style="height: 1.00em;">&#x00A0;</div>
+OBJECT IDENTIFIER: VALUE will be a null terminated string with each number
+  separated by a dot (i.e. &quot;1.2.3.543.1&quot;).
+<div style="height: 1.00em;">&#x00A0;</div>
+LEN = strlen(VALUE)+1
+<h1 class="Sh" title="Sh" id="UTCTIME"><a class="selflink" href="#UTCTIME">UTCTIME</a></h1>
+VALUE will be a null terminated string in one of these formats:
+  &quot;YYMMDDhhmmss+hh'mm'&quot; or &quot;YYMMDDhhmmss-hh'mm'&quot;.
+  LEN=strlen(VALUE)+1.
+<h1 class="Sh" title="Sh" id="GENERALIZEDTIME"><a class="selflink" href="#GENERALIZEDTIME">GENERALIZEDTIME</a></h1>
+VALUE will be a null terminated string in the same format used to set the value.
+<div style="height: 1.00em;">&#x00A0;</div>
+OCTET STRING: VALUE will contain the octet string and LEN will be the number of
+  octets.
+<h1 class="Sh" title="Sh" id="GENERALSTRING"><a class="selflink" href="#GENERALSTRING">GENERALSTRING</a></h1>
+VALUE will contain the generalstring and LEN will be the number of octets.
+<div style="height: 1.00em;">&#x00A0;</div>
+BIT STRING: VALUE will contain the bit string organized by bytes and LEN will be
+  the number of bits.
+<h1 class="Sh" title="Sh" id="CHOICE"><a class="selflink" href="#CHOICE">CHOICE</a></h1>
+If NAME indicates a choice type, VALUE will specify the alternative selected.
+<h1 class="Sh" title="Sh" id="ANY"><a class="selflink" href="#ANY">ANY</a></h1>
+If NAME indicates an any type, VALUE will indicate the DER encoding of the
+  structure actually used.
+<h1 class="Sh" title="Sh" id="RETURNS"><a class="selflink" href="#RETURNS">RETURNS</a></h1>
+<b>ASN1_SUCCESS</b> if value is returned, <b>ASN1_ELEMENT_NOT_FOUND</b> if
+  <i>name</i> is not a valid element, <b>ASN1_VALUE_NOT_FOUND</b> if there isn't
+  any value for the element selected, and <b>ASN1_MEM_ERROR</b> if The value
+  vector isn't big enough to store the result, and in this case <i>len</i> will
+  contain the number of bytes needed.
+<h1 class="Sh" title="Sh" id="COPYRIGHT"><a class="selflink" href="#COPYRIGHT">COPYRIGHT</a></h1>
+Copyright &#x00A9; 2006-2013 Free Software Foundation, Inc..
+<div>&#x00A0;</div>
+Copying and distribution of this file, with or without modification, are
+  permitted in any medium without royalty provided the copyright notice and this
+  notice are preserved.
+<h1 class="Sh" title="Sh" id="SEE_ALSO"><a class="selflink" href="#SEE_ALSO">SEE
+  ALSO</a></h1>
+The full documentation for <b>libtasn1</b> is maintained as a Texinfo manual. If
+  the <b>info</b> and <b>libtasn1</b> programs are properly installed at your
+  site, the command
+<dl class="Bl-tag">
+  <dt class="It-tag"></dt>
+  <dd class="It-tag"><b>info libtasn1</b></dd>
+</dl>
+<div class="Pp"></div>
+should give you access to the complete manual. As an alternative you may obtain
+  the manual from:
+<dl class="Bl-tag">
+  <dt class="It-tag"></dt>
+  <dd class="It-tag"><b>http://www.gnu.org/software/libtasn1/manual/</b></dd>
+</dl>
+</div>
+<table class="foot">
+  <tr>
+    <td class="foot-date">3.4</td>
+    <td class="foot-os">libtasn1</td>
+  </tr>
+</table>
+</body>
+</html>

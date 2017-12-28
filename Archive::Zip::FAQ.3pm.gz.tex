@@ -1,0 +1,542 @@
+\documentclass[]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+    \usepackage{xltxtra,xunicode}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
+  \newcommand{\euro}{€}
+\fi
+% use microtype if available
+\IfFileExists{microtype.sty}{\usepackage{microtype}}{}
+\usepackage{longtable,booktabs}
+\ifxetex
+  \usepackage[setpagesize=false, % page size defined by xetex
+              unicode=false, % unicode breaks when used with xetex
+              xetex]{hyperref}
+\else
+  \usepackage[unicode=true]{hyperref}
+\fi
+\hypersetup{breaklinks=true,
+            bookmarks=true,
+            pdfauthor={},
+            pdftitle={Archive::Zip::FAQ(3pm)},
+            colorlinks=true,
+            citecolor=blue,
+            urlcolor=blue,
+            linkcolor=magenta,
+            pdfborder={0 0 0}}
+\urlstyle{same}  % don't use monospace font for urls
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\setcounter{secnumdepth}{0}
+\usepackage{pagecolor}
+
+% Set background colour (of the page)
+\definecolor{weirdbgcolor}{HTML}{FCF4F0}
+\pagecolor{weirdbgcolor}
+
+% Make bold text appear in a particular colour
+\definecolor{boldcolor}{HTML}{6E0002}
+\let\realtextbf=\textbf
+\renewcommand{\textbf}[1]{\textcolor{boldcolor}{\realtextbf{#1}}}
+
+% Use underlines instead of emphasis (ugh)
+\renewcommand{\emph}[1]{\underline{#1}}
+
+% % Use fixed-width font by default
+% \renewcommand*\familydefault{\ttdefault}
+
+\title{Archive::Zip::FAQ(3pm)}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{longtable}[c]{@{}lll@{}}
+\toprule\addlinespace
+Archive::Zip::FAQ(3pm) & User Contributed Perl Documentation &
+Archive::Zip::FAQ(3pm)
+\\\addlinespace
+\bottomrule
+\end{longtable}
+
+\hyperdef{}{NAME}{\section{\hyperref[NAME]{NAME}}\label{NAME}}
+
+Archive::Zip::FAQ - Answers to a few frequently asked questions about
+Archive::Zip
+
+\hyperdef{}{DESCRIPTION}{\section{\hyperref[DESCRIPTION]{DESCRIPTION}}\label{DESCRIPTION}}
+
+It seems that I keep answering the same questions over and over again. I
+assume that this is because my documentation is deficient, rather than
+that people don't read the documentation.
+
+So this FAQ is an attempt to cut down on the number of personal answers
+I have to give. At least I can now say "You \emph{did} read the FAQ,
+right?".
+
+The questions are not in any particular order. The answers assume the
+current version of Archive::Zip; some of the answers depend on newly
+added/fixed functionality.
+
+\hyperdef{}{Installux5fproblemsux5fonux5fRedHatux5f8ux5forux5f9ux5fwithux5fPerlux5f5.8.0}{\section{\hyperref[Installux5fproblemsux5fonux5fRedHatux5f8ux5forux5f9ux5fwithux5fPerlux5f5.8.0]{Install
+problems on RedHat 8 or 9 with Perl
+5.8.0}}\label{Installux5fproblemsux5fonux5fRedHatux5f8ux5forux5f9ux5fwithux5fPerlux5f5.8.0}}
+
+\textbf{Q:} Archive::Zip won't install on my RedHat 9 system! It's
+broke!
+
+\textbf{A:} This has become something of a FAQ. Basically, RedHat broke
+some versions of Perl by setting LANG to UTF8. They apparently have a
+fixed version out as an update.
+
+You might try running CPAN or creating your Makefile after exporting the
+LANG environment variable as
+
+``LANG=C''
+
+\textless{}https://bugzilla.redhat.com/bugzilla/show\_bug.cgi?id=87682\textgreater{}
+
+\hyperdef{}{Whyux5fisux5fmyux5fzipux5ffileux5fsoux5fbigux3f}{\section{\hyperref[Whyux5fisux5fmyux5fzipux5ffileux5fsoux5fbigux3f]{Why
+is my zip file so
+big?}}\label{Whyux5fisux5fmyux5fzipux5ffileux5fsoux5fbigux3f}}
+
+\textbf{Q:} My zip file is actually bigger than what I stored in it!
+Why?
+
+\textbf{A:} Some things to make sure of:
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[Make sure that you are requesting COMPRESSION\_DEFLATED if you are
+storing strings.]
+\$member-\textgreater{}desiredCompressionMethod( COMPRESSION\_DEFLATED
+);
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[Don't make lots of little files if you can help it.]
+Since zip computes the compression tables for each member, small members
+without much entropy won't compress well. Instead, if you've got lots of
+repeated strings in your data, try to combine them into one big member.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[Make sure that you are requesting COMPRESSION\_STORED if you are
+storing things that are already compressed.]
+If you're storing a .zip, .jpg, .mp3, or other compressed file in a zip,
+then don't compress them again. They'll get bigger.
+\end{description}
+
+\hyperdef{}{Sampleux5fcodeux3f}{\section{\hyperref[Sampleux5fcodeux3f]{Sample
+code?}}\label{Sampleux5fcodeux3f}}
+
+\textbf{Q:} Can you send me code to do (whatever)?
+
+\textbf{A:} Have you looked in the ``examples/'' directory yet? It
+contains:
+
+\begin{description}
+\item[examples/calcSizes.pl -- How to find out how big a Zip file will
+be before writing it]
+\end{description}
+
+\begin{description}
+\item[examples/copy.pl -- Copies one Zip file to another]
+\end{description}
+
+\begin{description}
+\item[examples/extract.pl -- extract file(s) from a Zip]
+\end{description}
+
+\begin{description}
+\item[examples/mailZip.pl -- make and mail a zip file]
+\end{description}
+
+\begin{description}
+\item[examples/mfh.pl -- demo for use of MockFileHandle]
+\end{description}
+
+\begin{description}
+\item[examples/readScalar.pl -- shows how to use IO::Scalar as the
+source of a Zip read]
+\end{description}
+
+\begin{description}
+\item[examples/selfex.pl -- a brief example of a self-extracting Zip]
+\end{description}
+
+\begin{description}
+\item[examples/unzipAll.pl -- uses Archive::Zip::Tree to unzip an entire
+Zip]
+\end{description}
+
+\begin{description}
+\item[examples/updateZip.pl -- shows how to read/modify/write a Zip]
+\end{description}
+
+\begin{description}
+\item[examples/updateTree.pl -- shows how to update a Zip in place]
+\end{description}
+
+\begin{description}
+\item[examples/writeScalar.pl -- shows how to use IO::Scalar as the
+destination of a Zip write]
+\end{description}
+
+\begin{description}
+\item[examples/writeScalar2.pl -- shows how to use IO::String as the
+destination of a Zip write]
+\end{description}
+
+\begin{description}
+\item[examples/zip.pl -- Constructs a Zip file]
+\end{description}
+
+\begin{description}
+\item[examples/zipcheck.pl -- One way to check a Zip file for validity]
+\end{description}
+
+\begin{description}
+\item[examples/zipinfo.pl -- Prints out information about a Zip archive
+file]
+\end{description}
+
+\begin{description}
+\item[examples/zipGrep.pl -- Searches for text in Zip files]
+\end{description}
+
+\begin{description}
+\item[examples/ziptest.pl -- Lists a Zip file and checks member CRCs]
+\end{description}
+
+\begin{description}
+\item[examples/ziprecent.pl -- Puts recent files into a zipfile]
+\end{description}
+
+\begin{description}
+\item[examples/ziptest.pl -- Another way to check a Zip file for
+validity]
+\end{description}
+
+\hyperdef{}{Canux27tux5fReadux2fmodifyux2fwriteux5fsameux5fZipux5ffile}{\section{\hyperref[Canux27tux5fReadux2fmodifyux2fwriteux5fsameux5fZipux5ffile]{Can't
+Read/modify/write same Zip
+file}}\label{Canux27tux5fReadux2fmodifyux2fwriteux5fsameux5fZipux5ffile}}
+
+\textbf{Q:} Why can't I open a Zip file, add a member, and write it
+back? I get an error message when I try.
+
+\textbf{A:} Because Archive::Zip doesn't (and can't, generally) read
+file contents into memory, the original Zip file is required to stay
+around until the writing of the new file is completed.
+
+The best way to do this is to write the Zip to a temporary file and then
+rename the temporary file to have the old name (possibly after deleting
+the old one).
+
+Archive::Zip v1.02 added the archive methods ``overwrite()'' and
+``overwriteAs()'' to do this simply and carefully.
+
+See ``examples/updateZip.pl'' for an example of this technique.
+
+\hyperdef{}{Fileux5fcreationux5ftimeux5fnotux5fset}{\section{\hyperref[Fileux5fcreationux5ftimeux5fnotux5fset]{File
+creation time not set}}\label{Fileux5fcreationux5ftimeux5fnotux5fset}}
+
+\textbf{Q:} Upon extracting files, I see that their modification (and
+access) times are set to the time in the Zip archive. However, their
+creation time is not set to the same time. Why?
+
+\textbf{A:} Mostly because Perl doesn't give cross-platform access to
+\emph{creation time}. Indeed, many systems (like Unix) don't support
+such a concept. However, if yours does, you can easily set it. Get the
+modification time from the member using ``lastModTime()''.
+
+\hyperdef{}{Canux27tux5fuseux5fArchive::Zipux5fonux5fgzipux5ffiles}{\section{\hyperref[Canux27tux5fuseux5fArchive::Zipux5fonux5fgzipux5ffiles]{Can't
+use Archive::Zip on gzip
+files}}\label{Canux27tux5fuseux5fArchive::Zipux5fonux5fgzipux5ffiles}}
+
+\textbf{Q:} Can I use Archive::Zip to extract Unix gzip files?
+
+\textbf{A:} No.
+
+There is a distinction between Unix gzip files, and Zip archives that
+also can use the gzip compression.
+
+Depending on the format of the gzip file, you can use
+Compress::Raw::Zlib, or Archive::Tar to decompress it (and de-archive it
+in the case of Tar files).
+
+You can unzip PKZIP/WinZip/etc/ archives using Archive::Zip (that's what
+it's for) as long as any compressed members are compressed using Deflate
+compression.
+
+\hyperdef{}{Addux5faux5fdirectoryux2ftreeux5ftoux5faux5fZip}{\section{\hyperref[Addux5faux5fdirectoryux2ftreeux5ftoux5faux5fZip]{Add
+a directory/tree to a
+Zip}}\label{Addux5faux5fdirectoryux2ftreeux5ftoux5faux5fZip}}
+
+\textbf{Q:} How can I add a directory (or tree) full of files to a Zip?
+
+\textbf{A:} You can use the Archive::Zip::addTree*() methods:
+
+\begin{verbatim}
+   use Archive::Zip;
+   my $zip = Archive::Zip->new();
+   # add all readable files and directories below . as xyz/*
+   $zip->addTree( '.', 'xyz' ); 
+   # add all readable plain files below /abc as def/*
+   $zip->addTree( '/abc', 'def', sub { -f && -r } );    
+   # add all .c files below /tmp as stuff/*
+   $zip->addTreeMatching( '/tmp', 'stuff', '\.c$' );
+   # add all .o files below /tmp as stuff/* if they aren't writable
+   $zip->addTreeMatching( '/tmp', 'stuff', '\.o$', sub { ! -w } );
+   # add all .so files below /tmp that are smaller than 200 bytes as stuff/*
+   $zip->addTreeMatching( '/tmp', 'stuff', '\.o$', sub { -s < 200 } );
+   # and write them into a file
+   $zip->writeToFileNamed('xxx.zip');
+\end{verbatim}
+
+\hyperdef{}{Extractux5faux5fdirectoryux2ftree}{\section{\hyperref[Extractux5faux5fdirectoryux2ftree]{Extract
+a directory/tree}}\label{Extractux5faux5fdirectoryux2ftree}}
+
+\textbf{Q:} How can I extract some (or all) files from a Zip into a
+different directory?
+
+\textbf{A:} You can use the \emph{Archive::Zip::extractTree()} method:
+??? \textbar{}\textbar{}
+
+\begin{verbatim}
+   # now extract the same files into /tmpx
+   $zip->extractTree( 'stuff', '/tmpx' );
+\end{verbatim}
+
+\hyperdef{}{Updateux5faux5fdirectoryux2ftree}{\section{\hyperref[Updateux5faux5fdirectoryux2ftree]{Update
+a directory/tree}}\label{Updateux5faux5fdirectoryux2ftree}}
+
+\textbf{Q:} How can I update a Zip from a directory tree, adding or
+replacing only the newer files?
+
+\textbf{A:} You can use the \emph{Archive::Zip::updateTree()} method
+that was added in version 1.09.
+
+\hyperdef{}{Zipux5ftimesux5fmightux5fbeux5foffux5fbyux5f1ux5fsecond}{\section{\hyperref[Zipux5ftimesux5fmightux5fbeux5foffux5fbyux5f1ux5fsecond]{Zip
+times might be off by 1
+second}}\label{Zipux5ftimesux5fmightux5fbeux5foffux5fbyux5f1ux5fsecond}}
+
+\textbf{Q:} It bothers me greatly that my file times are wrong by one
+second about half the time. Why don't you do something about it?
+
+\textbf{A:} Get over it. This is a result of the Zip format storing
+times in DOS format, which has a resolution of only two seconds.
+
+\hyperdef{}{Zipux5ftimesux5fdonux27tux5fincludeux5ftimeux5fzoneux5finformation}{\section{\hyperref[Zipux5ftimesux5fdonux27tux5fincludeux5ftimeux5fzoneux5finformation]{Zip
+times don't include time zone
+information}}\label{Zipux5ftimesux5fdonux27tux5fincludeux5ftimeux5fzoneux5finformation}}
+
+\textbf{Q:} My file times don't respect time zones. What gives?
+
+\textbf{A:} If this is important to you, please submit patches to read
+the various Extra Fields that encode times with time zones. I'm just
+using the DOS Date/Time, which doesn't have a time zone.
+
+\hyperdef{}{Howux5fdoux5fIux5fmakeux5faux5fself-extractingux5fZip}{\section{\hyperref[Howux5fdoux5fIux5fmakeux5faux5fself-extractingux5fZip]{How
+do I make a self-extracting
+Zip}}\label{Howux5fdoux5fIux5fmakeux5faux5fself-extractingux5fZip}}
+
+\textbf{Q:} I want to make a self-extracting Zip file. Can I do this?
+
+\textbf{A:} Yes. You can write a self-extracting archive stub (that is,
+a version of unzip) to the output filehandle that you pass to
+\emph{writeToFileHandle()}. See examples/selfex.pl for how to write a
+self-extracting archive.
+
+However, you should understand that this will only work on one kind of
+platform (the one for which the stub was compiled).
+
+\hyperdef{}{Howux5fcanux5fIux5fdealux5fwithux5fZipsux5fwithux5fprependedux5fgarbageux5fux28i.e.ux5ffromux5fSircamux29}{\section{\hyperref[Howux5fcanux5fIux5fdealux5fwithux5fZipsux5fwithux5fprependedux5fgarbageux5fux28i.e.ux5ffromux5fSircamux29]{How
+can I deal with Zips with prepended garbage (i.e. from
+Sircam)}}\label{Howux5fcanux5fIux5fdealux5fwithux5fZipsux5fwithux5fprependedux5fgarbageux5fux28i.e.ux5ffromux5fSircamux29}}
+
+\textbf{Q:} How can I tell if a Zip has been damaged by adding garbage
+to the beginning or inside the file?
+
+\textbf{A:} I added code for this for the Amavis virus scanner. You can
+query archives for their `eocdOffset' property, which should be 0:
+
+\begin{verbatim}
+  if ($zip->eocdOffset > 0)
+    { warn($zip->eocdOffset . " bytes of garbage at beginning or within Zip") }
+\end{verbatim}
+
+When members are extracted, this offset will be used to adjust the start
+of the member if necessary.
+
+\hyperdef{}{Canux27tux5fextractux5fShrunkux5ffiles}{\section{\hyperref[Canux27tux5fextractux5fShrunkux5ffiles]{Can't
+extract Shrunk files}}\label{Canux27tux5fextractux5fShrunkux5ffiles}}
+
+\textbf{Q:} I'm trying to extract a file out of a Zip produced by PKZIP,
+and keep getting this error message:
+
+\begin{verbatim}
+  error: Unsupported compression combination: read 6, write 0
+\end{verbatim}
+
+\textbf{A:} You can't uncompress this archive member. Archive::Zip only
+supports uncompressed members, and compressed members that are
+compressed using the compression supported by Compress::Raw::Zlib. That
+means only Deflated and Stored members.
+
+Your file is compressed using the Shrink format, which isn't supported
+by Compress::Raw::Zlib.
+
+You could, perhaps, use a command-line UnZip program (like the Info-Zip
+one) to extract this.
+
+\hyperdef{}{Canux27tux5fdoux5fdecryption}{\section{\hyperref[Canux27tux5fdoux5fdecryption]{Can't
+do decryption}}\label{Canux27tux5fdoux5fdecryption}}
+
+\textbf{Q:} How do I decrypt encrypted Zip members?
+
+\textbf{A:} With some other program or library. Archive::Zip doesn't
+support decryption, and probably never will (unless \emph{you} write
+it).
+
+\hyperdef{}{Howux5ftoux5ftestux5ffileux5fintegrityux3f}{\section{\hyperref[Howux5ftoux5ftestux5ffileux5fintegrityux3f]{How
+to test file
+integrity?}}\label{Howux5ftoux5ftestux5ffileux5fintegrityux3f}}
+
+\textbf{Q:} How can Archive::Zip can test the validity of a Zip file?
+
+\textbf{A:} If you try to decompress the file, the gzip streams will
+report errors if you have garbage. Most of the time.
+
+If you try to open the file and a central directory structure can't be
+found, an error will be reported.
+
+When a file is being read, if we can't find a proper PK.. signature in
+the right places we report a format error.
+
+If there is added garbage at the beginning of a Zip file (as inserted by
+some viruses), you can find out about it, but Archive::Zip will ignore
+it, and you can still use the archive. When it gets written back out the
+added stuff will be gone.
+
+There are two ready-to-use utilities in the examples directory that can
+be used to test file integrity, or that you can use as examples for your
+own code:
+
+\begin{description}
+\item[examples/zipcheck.pl shows how to use an attempted extraction to
+test a file.]
+\end{description}
+
+\begin{description}
+\item[examples/ziptest.pl shows how to test CRCs in a file.]
+\end{description}
+
+\hyperdef{}{Duplicateux5ffilesux5finux5fZipux3f}{\section{\hyperref[Duplicateux5ffilesux5finux5fZipux3f]{Duplicate
+files in Zip?}}\label{Duplicateux5ffilesux5finux5fZipux3f}}
+
+\textbf{Q:} Archive::Zip let me put the same file in my Zip twice! Why
+don't you prevent this?
+
+\textbf{A:} As far as I can tell, this is not disallowed by the Zip
+spec. If you think it's a bad idea, check for it yourself:
+
+\begin{verbatim}
+  $zip->addFile($someFile, $someName) unless $zip->memberNamed($someName);
+\end{verbatim}
+
+I can even imagine cases where this might be useful (for instance,
+multiple versions of files).
+
+\hyperdef{}{Fileux5fownershipux2fpermissionsux2fACLSux2fetc}{\section{\hyperref[Fileux5fownershipux2fpermissionsux2fACLSux2fetc]{File
+ownership/permissions/ACLS/etc}}\label{Fileux5fownershipux2fpermissionsux2fACLSux2fetc}}
+
+\textbf{Q:} Why doesn't Archive::Zip deal with file ownership, ACLs,
+etc.?
+
+\textbf{A:} There is no standard way to represent these in the Zip file
+format. If you want to send me code to properly handle the various extra
+fields that have been used to represent these through the years, I'll
+look at it.
+
+\hyperdef{}{Iux5fcanux27tux5fcompileux5fbutux5fActiveStateux5fonlyux5fhasux5fanux5foldux5fversionux5fofux5fArchive::Zip}{\section{\hyperref[Iux5fcanux27tux5fcompileux5fbutux5fActiveStateux5fonlyux5fhasux5fanux5foldux5fversionux5fofux5fArchive::Zip]{I
+can't compile but ActiveState only has an old version of
+Archive::Zip}}\label{Iux5fcanux27tux5fcompileux5fbutux5fActiveStateux5fonlyux5fhasux5fanux5foldux5fversionux5fofux5fArchive::Zip}}
+
+\textbf{Q:} I've only installed modules using ActiveState's PPM program
+and repository. But they have a much older version of Archive::Zip than
+is in CPAN. Will you send me a newer PPM?
+
+\textbf{A:} Probably not, unless I get lots of extra time. But there's
+no reason you can't install the version from CPAN. Archive::Zip is pure
+Perl, so all you need is NMAKE, which you can get for free from
+Microsoft (see the FAQ in the ActiveState documentation for details on
+how to install CPAN modules).
+
+\hyperdef{}{Myux5fJPEGsux5fux28orux5fMP3ux27sux29ux5fdonux27tux5fcompressux5fwhenux5fIux5fputux5fthemux5fintoux5fZipsux21}{\section{\hyperref[Myux5fJPEGsux5fux28orux5fMP3ux27sux29ux5fdonux27tux5fcompressux5fwhenux5fIux5fputux5fthemux5fintoux5fZipsux21]{My
+JPEGs (or MP3's) don't compress when I put them into
+Zips!}}\label{Myux5fJPEGsux5fux28orux5fMP3ux27sux29ux5fdonux27tux5fcompressux5fwhenux5fIux5fputux5fthemux5fintoux5fZipsux21}}
+
+\textbf{Q:} How come my JPEGs and MP3's don't compress much when I put
+them into Zips?
+
+\textbf{A:} Because they're already compressed.
+
+\hyperdef{}{Underux5fWindowsux2cux5fthingsux5flockux5fupux2fgetux5fdamaged}{\section{\hyperref[Underux5fWindowsux2cux5fthingsux5flockux5fupux2fgetux5fdamaged]{Under
+Windows, things lock up/get
+damaged}}\label{Underux5fWindowsux2cux5fthingsux5flockux5fupux2fgetux5fdamaged}}
+
+\textbf{Q:} I'm using Windows. When I try to use Archive::Zip, my
+machine locks up/makes funny sounds/displays a BSOD/corrupts data. How
+can I fix this?
+
+\textbf{A:} First, try the newest version of Compress::Raw::Zlib. I know
+of Windows-related problems prior to v1.14 of that library.
+
+If that doesn't get rid of the problem, fix your computer or get rid of
+Windows.
+
+\hyperdef{}{Zipux5fcontentsux5finux5faux5fscalar}{\section{\hyperref[Zipux5fcontentsux5finux5faux5fscalar]{Zip
+contents in a scalar}}\label{Zipux5fcontentsux5finux5faux5fscalar}}
+
+\textbf{Q:} I want to read a Zip file from (or write one to) a scalar
+variable instead of a file. How can I do this?
+
+\textbf{A:} Use ``IO::String'' and the ``readFromFileHandle()'' and
+``writeToFileHandle()'' methods. See ``examples/readScalar.pl'' and
+``examples/writeScalar.pl''.
+
+\hyperdef{}{Readingux5ffromux5fstreams}{\section{\hyperref[Readingux5ffromux5fstreams]{Reading
+from streams}}\label{Readingux5ffromux5fstreams}}
+
+\textbf{Q:} How do I read from a stream (like for the Info-Zip
+``funzip'' program)?
+
+\textbf{A:} This isn't currently supported, though writing to a stream
+is.
+
+\begin{longtable}[c]{@{}ll@{}}
+\toprule\addlinespace
+2009-06-30 & perl v5.14.2
+\\\addlinespace
+\bottomrule
+\end{longtable}
+
+\end{document}

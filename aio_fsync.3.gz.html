@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <style>
+    table.head, table.foot { width: 100%; }
+    td.head-rtitle, td.foot-os { text-align: right; }
+    td.head-vol { text-align: center; }
+    div.Pp { margin: 1ex 0ex; }
+  </style>
+  <title>AIO_FSYNC(3)</title>
+</head>
+<body>
+<table class="head">
+  <tr>
+    <td class="head-ltitle">AIO_FSYNC(3)</td>
+    <td class="head-vol">Linux Programmer's Manual</td>
+    <td class="head-rtitle">AIO_FSYNC(3)</td>
+  </tr>
+</table>
+<div class="manual-text">
+<h1 class="Sh" title="Sh" id="NAME"><a class="selflink" href="#NAME">NAME</a></h1>
+aio_fsync - asynchronous file synchronization
+<h1 class="Sh" title="Sh" id="SYNOPSIS"><a class="selflink" href="#SYNOPSIS">SYNOPSIS</a></h1>
+<b>#include &lt;aio.h&gt;</b>
+<div style="height: 1.00em;">&#x00A0;</div>
+<b>int aio_fsync(int </b><i>op</i><b>, struct aiocb *</b><i>aiocbp</i><b>);</b>
+<div style="height: 1.00em;">&#x00A0;</div>
+Link with <i>-lrt</i>.
+<h1 class="Sh" title="Sh" id="DESCRIPTION"><a class="selflink" href="#DESCRIPTION">DESCRIPTION</a></h1>
+The <b>aio_fsync</b>() function does a sync on all outstanding asynchronous I/O
+  operations associated with <i>aiocbp-&gt;aio_fildes</i>. (See <b>aio</b>(7)
+  for a description of the <i>aiocb</i> structure.)
+<div class="Pp"></div>
+More precisely, if <i>op</i> is <b>O_SYNC</b>, then all currently queued I/O
+  operations shall be completed as if by a call of <b>fsync</b>(2), and if
+  <i>op</i> is <b>O_DSYNC</b>, this call is the asynchronous analog of
+  <b>fdatasync</b>(2).
+<div style="height: 1.00em;">&#x00A0;</div>
+Note that this is a request only; it does not wait for I/O completion.
+<div class="Pp"></div>
+Apart from <i>aio_fildes</i>, the only field in the structure pointed to by
+  <i>aiocbp</i> that is used by this call is the <i>aio_sigevent</i> field (a
+  <i>sigevent</i> structure, described in <b>sigevent</b>(7)), which indicates
+  the desired type of asynchronous notification at completion. All other fields
+  are ignored.
+<h1 class="Sh" title="Sh" id="RETURN_VALUE"><a class="selflink" href="#RETURN_VALUE">RETURN
+  VALUE</a></h1>
+On success (the sync request was successfully queued) this function returns 0.
+  On error -1 is returned, and <i>errno</i> is set appropriately.
+<h1 class="Sh" title="Sh" id="ERRORS"><a class="selflink" href="#ERRORS">ERRORS</a></h1>
+<dl class="Bl-tag">
+  <dt class="It-tag"><b>EAGAIN</b></dt>
+  <dd class="It-tag">Out of resources.</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag"><b>EBADF</b></dt>
+  <dd class="It-tag"><i>aio_fildes</i> is not a valid file descriptor open for
+      writing.</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag"><b>EINVAL</b></dt>
+  <dd class="It-tag">Synchronized I/O is not supported for this file, or
+      <i>op</i> is not <b>O_SYNC</b> or <b>O_DSYNC</b>.</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag"><b>ENOSYS</b></dt>
+  <dd class="It-tag"><b>aio_fsync</b>() is not implemented.</dd>
+</dl>
+<h1 class="Sh" title="Sh" id="VERSIONS"><a class="selflink" href="#VERSIONS">VERSIONS</a></h1>
+The <b>aio_fsync</b>() function is available since glibc 2.1.
+<h1 class="Sh" title="Sh" id="CONFORMING_TO"><a class="selflink" href="#CONFORMING_TO">CONFORMING
+  TO</a></h1>
+POSIX.1-2001, POSIX.1-2008.
+<h1 class="Sh" title="Sh" id="SEE_ALSO"><a class="selflink" href="#SEE_ALSO">SEE
+  ALSO</a></h1>
+<b>aio_cancel</b>(3), <b>aio_error</b>(3), <b>aio_read</b>(3),
+  <b>aio_return</b>(3), <b>aio_suspend</b>(3), <b>aio_write</b>(3),
+  <b>lio_listio</b>(3), <b>aio</b>(7), <b>sigevent</b>(7)
+<h1 class="Sh" title="Sh" id="COLOPHON"><a class="selflink" href="#COLOPHON">COLOPHON</a></h1>
+This page is part of release 3.54 of the Linux <i>man-pages</i> project. A
+  description of the project, and information about reporting bugs, can be found
+  at http://www.kernel.org/doc/man-pages/.</div>
+<table class="foot">
+  <tr>
+    <td class="foot-date">2012-05-08</td>
+    <td class="foot-os"></td>
+  </tr>
+</table>
+</body>
+</html>

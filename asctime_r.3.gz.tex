@@ -1,0 +1,373 @@
+\documentclass[]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+    \usepackage{xltxtra,xunicode}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
+  \newcommand{\euro}{€}
+\fi
+% use microtype if available
+\IfFileExists{microtype.sty}{\usepackage{microtype}}{}
+\usepackage{longtable,booktabs}
+\ifxetex
+  \usepackage[setpagesize=false, % page size defined by xetex
+              unicode=false, % unicode breaks when used with xetex
+              xetex]{hyperref}
+\else
+  \usepackage[unicode=true]{hyperref}
+\fi
+\hypersetup{breaklinks=true,
+            bookmarks=true,
+            pdfauthor={},
+            pdftitle={CTIME(3)},
+            colorlinks=true,
+            citecolor=blue,
+            urlcolor=blue,
+            linkcolor=magenta,
+            pdfborder={0 0 0}}
+\urlstyle{same}  % don't use monospace font for urls
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\setcounter{secnumdepth}{0}
+\usepackage{pagecolor}
+
+% Set background colour (of the page)
+\definecolor{weirdbgcolor}{HTML}{FCF4F0}
+\pagecolor{weirdbgcolor}
+
+% Make bold text appear in a particular colour
+\definecolor{boldcolor}{HTML}{6E0002}
+\let\realtextbf=\textbf
+\renewcommand{\textbf}[1]{\textcolor{boldcolor}{\realtextbf{#1}}}
+
+% Use underlines instead of emphasis (ugh)
+\renewcommand{\emph}[1]{\underline{#1}}
+
+% % Use fixed-width font by default
+% \renewcommand*\familydefault{\ttdefault}
+
+\title{CTIME(3)}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{longtable}[c]{@{}lll@{}}
+\toprule\addlinespace
+CTIME(3) & Linux Programmer's Manual & CTIME(3)
+\\\addlinespace
+\bottomrule
+\end{longtable}
+
+\hyperdef{}{NAME}{\section{\hyperref[NAME]{NAME}}\label{NAME}}
+
+asctime, ctime, gmtime, localtime, mktime, asctime\_r, ctime\_r,
+gmtime\_r, localtime\_r - transform date and time to broken-down time or
+ASCII
+
+\hyperdef{}{SYNOPSIS}{\section{\hyperref[SYNOPSIS]{SYNOPSIS}}\label{SYNOPSIS}}
+
+\begin{verbatim}
+#include <time.h>
+ 
+char *asctime(const struct tm *tm);
+ 
+char *asctime_r(const struct tm *tm, char *buf);
+ 
+char *ctime(const time_t *timep);
+ 
+char *ctime_r(const time_t *timep, char *buf);
+ 
+struct tm *gmtime(const time_t *timep);
+ 
+struct tm *gmtime_r(const time_t *timep, struct tm *result);
+ 
+struct tm *localtime(const time_t *timep);
+ 
+struct tm *localtime_r(const time_t *timep, struct tm *result);
+ 
+time_t mktime(struct tm *tm);
+\end{verbatim}
+
+~
+
+Feature Test Macro Requirements for glibc (see
+\textbf{feature\_test\_macros}(7)): \\
+
+~
+
+\textbf{asctime\_r}(), \textbf{ctime\_r}(), \textbf{gmtime\_r}(),
+\textbf{localtime\_r}():
+
+\_POSIX\_C\_SOURCE~\textgreater{}=~1 \textbar{}\textbar{}
+\_XOPEN\_SOURCE \textbar{}\textbar{} \_BSD\_SOURCE \textbar{}\textbar{}
+\_SVID\_SOURCE \textbar{}\textbar{} \_POSIX\_SOURCE
+
+\hyperdef{}{DESCRIPTION}{\section{\hyperref[DESCRIPTION]{DESCRIPTION}}\label{DESCRIPTION}}
+
+The \textbf{ctime}(), \textbf{gmtime}() and \textbf{localtime}()
+functions all take an argument of data type \emph{time\_t} which
+represents calendar time. When interpreted as an absolute time value, it
+represents the number of seconds elapsed since the Epoch, 1970-01-01
+00:00:00 +0000 (UTC).
+
+The \textbf{asctime}() and \textbf{mktime}() functions both take an
+argument representing broken-down time which is a representation
+separated into year, month, day, and so on.
+
+Broken-down time is stored in the structure \emph{tm} which is defined
+in \emph{\textless{}time.h\textgreater{}} as follows:
+
+~
+
+\begin{verbatim}
+struct tm {
+    int tm_sec;         /* seconds */
+    int tm_min;         /* minutes */
+    int tm_hour;        /* hours */
+    int tm_mday;        /* day of the month */
+    int tm_mon;         /* month */
+    int tm_year;        /* year */
+    int tm_wday;        /* day of the week */
+    int tm_yday;        /* day in the year */
+    int tm_isdst;       /* daylight saving time */
+};
+\end{verbatim}
+
+The members of the \emph{tm} structure are:
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[\emph{tm\_sec}]
+The number of seconds after the minute, normally in the range 0 to 59,
+but can be up to 60 to allow for leap seconds.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[\emph{tm\_min}]
+The number of minutes after the hour, in the range 0 to 59.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[\emph{tm\_hour}]
+The number of hours past midnight, in the range 0 to 23.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[\emph{tm\_mday}]
+The day of the month, in the range 1 to 31.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[\emph{tm\_mon}]
+The number of months since January, in the range 0 to 11.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[\emph{tm\_year}]
+The number of years since 1900.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[\emph{tm\_wday}]
+The number of days since Sunday, in the range 0 to 6.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[\emph{tm\_yday}]
+The number of days since January 1, in the range 0 to 365.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[\emph{tm\_isdst}]
+A flag that indicates whether daylight saving time is in effect at the
+time described. The value is positive if daylight saving time is in
+effect, zero if it is not, and negative if the information is not
+available.
+\end{description}
+
+The call \textbf{ctime(}\emph{t}\textbf{)} is equivalent to
+\textbf{asctime(localtime(}\emph{t}\textbf{))}\emph{.} It converts the
+calendar time \emph{t} into a null-terminated string of the form
+
+~
+
+``Wed Jun 30 21:49:08 1993\textbackslash{}n''
+
+~
+
+The abbreviations for the days of the week are ``Sun'', ``Mon'',
+``Tue'', ``Wed'', ``Thu'', ``Fri'', and ``Sat''. The abbreviations for
+the months are ``Jan'', ``Feb'', ``Mar'', ``Apr'', ``May'', ``Jun'',
+``Jul'', ``Aug'', ``Sep'', ``Oct'', ``Nov'', and ``Dec''. The return
+value points to a statically allocated string which might be overwritten
+by subsequent calls to any of the date and time functions. The function
+also sets the external variables \emph{tzname}, \emph{timezone}, and
+\emph{daylight} (see \textbf{tzset}(3)) with information about the
+current timezone. The reentrant version \textbf{ctime\_r}() does the
+same, but stores the string in a user-supplied buffer which should have
+room for at least 26 bytes. It need not set \emph{tzname},
+\emph{timezone}, and \emph{daylight}.
+
+The \textbf{gmtime}() function converts the calendar time \emph{timep}
+to broken-down time representation, expressed in Coordinated Universal
+Time (UTC). It may return NULL when the year does not fit into an
+integer. The return value points to a statically allocated struct which
+might be overwritten by subsequent calls to any of the date and time
+functions. The \textbf{gmtime\_r}() function does the same, but stores
+the data in a user-supplied struct.
+
+The \textbf{localtime}() function converts the calendar time
+\emph{timep} to broken-down time representation, expressed relative to
+the user's specified timezone. The function acts as if it called
+\textbf{tzset}(3) and sets the external variables \emph{tzname} with
+information about the current timezone, \emph{timezone} with the
+difference between Coordinated Universal Time (UTC) and local standard
+time in seconds, and \emph{daylight} to a nonzero value if daylight
+savings time rules apply during some part of the year. The return value
+points to a statically allocated struct which might be overwritten by
+subsequent calls to any of the date and time functions. The
+\textbf{localtime\_r}() function does the same, but stores the data in a
+user-supplied struct. It need not set \emph{tzname}, \emph{timezone},
+and \emph{daylight}.
+
+The \textbf{asctime}() function converts the broken-down time value
+\emph{tm} into a null-terminated string with the same format as
+\textbf{ctime}(). The return value points to a statically allocated
+string which might be overwritten by subsequent calls to any of the date
+and time functions. The \textbf{asctime\_r}() function does the same,
+but stores the string in a user-supplied buffer which should have room
+for at least 26 bytes.
+
+The \textbf{mktime}() function converts a broken-down time structure,
+expressed as local time, to calendar time representation. The function
+ignores the values supplied by the caller in the \emph{tm\_wday} and
+\emph{tm\_yday} fields. The value specified in the \emph{tm\_isdst}
+field informs \textbf{mktime}() whether or not daylight saving time
+(DST) is in effect for the time supplied in the \emph{tm} structure: a
+positive value means DST is in effect; zero means that DST is not in
+effect; and a negative value means that \textbf{mktime}() should (use
+timezone information and system databases to) attempt to determine
+whether DST is in effect at the specified time.
+
+~
+
+The \textbf{mktime}() function modifies the fields of the \emph{tm}
+structure as follows: \emph{tm\_wday} and \emph{tm\_yday} are set to
+values determined from the contents of the other fields; if structure
+members are outside their valid interval, they will be normalized (so
+that, for example, 40 October is changed into 9 November);
+\emph{tm\_isdst} is set (regardless of its initial value) to a positive
+value or to 0, respectively, to indicate whether DST is or is not in
+effect at the specified time. Calling \textbf{mktime}() also sets the
+external variable \emph{tzname} with information about the current
+timezone.
+
+~
+
+If the specified broken-down time cannot be represented as calendar time
+(seconds since the Epoch), \textbf{mktime}() returns \emph{(time\_t)~-1}
+and does not alter the members of the broken-down time structure.
+
+\hyperdef{}{RETURNux5fVALUE}{\section{\hyperref[RETURNux5fVALUE]{RETURN
+VALUE}}\label{RETURNux5fVALUE}}
+
+Each of these functions returns the value described, or NULL (-1 in case
+of \textbf{mktime}()) in case an error was detected.
+
+\hyperdef{}{CONFORMINGux5fTO}{\section{\hyperref[CONFORMINGux5fTO]{CONFORMING
+TO}}\label{CONFORMINGux5fTO}}
+
+POSIX.1-2001. C89 and C99 specify \textbf{asctime}(), \textbf{ctime}(),
+\textbf{gmtime}(), \textbf{localtime}(), and \textbf{mktime}().
+POSIX.1-2008 marks \textbf{asctime}(), \textbf{asctime\_r}(),
+\textbf{ctime}(), and \textbf{ctime\_r}() as obsolete, recommending the
+use of \textbf{strftime}(3) instead.
+
+\hyperdef{}{NOTES}{\section{\hyperref[NOTES]{NOTES}}\label{NOTES}}
+
+The four functions \textbf{asctime}(), \textbf{ctime}(),
+\textbf{gmtime}() and \textbf{localtime}() return a pointer to static
+data and hence are not thread-safe. Thread-safe versions
+\textbf{asctime\_r}(), \textbf{ctime\_r}(), \textbf{gmtime\_r}() and
+\textbf{localtime\_r}() are specified by SUSv2, and available since libc
+5.2.5.
+
+~
+
+POSIX.1-2001 says: "The \textbf{asctime}(), \textbf{ctime}(),
+\textbf{gmtime}(), and \textbf{localtime}() functions shall return
+values in one of two static objects: a broken-down time structure and an
+array of type \emph{char}. Execution of any of the functions may
+overwrite the information returned in either of these objects by any of
+the other functions." This can occur in the glibc implementation.
+
+In many implementations, including glibc, a 0 in \emph{tm\_mday} is
+interpreted as meaning the last day of the preceding month.
+
+The glibc version of \emph{struct tm} has additional fields
+
+~
+
+\begin{verbatim}
+long tm_gmtoff;           /* Seconds east of UTC */
+const char *tm_zone;      /* Timezone abbreviation */
+\end{verbatim}
+
+~
+
+defined when \textbf{\_BSD\_SOURCE} was set before including
+\emph{\textless{}time.h\textgreater{}}. This is a BSD extension, present
+in 4.3BSD-Reno.
+
+~
+
+According to POSIX.1-2004, \textbf{localtime}() is required to behave as
+though \textbf{tzset}(3) was called, while \textbf{localtime\_r}() does
+not have this requirement. For portable code \textbf{tzset}(3) should be
+called before \textbf{localtime\_r}().
+
+\hyperdef{}{SEEux5fALSO}{\section{\hyperref[SEEux5fALSO]{SEE
+ALSO}}\label{SEEux5fALSO}}
+
+\textbf{date}(1), \textbf{gettimeofday}(2), \textbf{time}(2),
+\textbf{utime}(2), \textbf{clock}(3), \textbf{difftime}(3),
+\textbf{strftime}(3), \textbf{strptime}(3), \textbf{timegm}(3),
+\textbf{tzset}(3), \textbf{time}(7)
+
+\hyperdef{}{COLOPHON}{\section{\hyperref[COLOPHON]{COLOPHON}}\label{COLOPHON}}
+
+This page is part of release 3.54 of the Linux \emph{man-pages} project.
+A description of the project, and information about reporting bugs, can
+be found at http://www.kernel.org/doc/man-pages/.
+
+\begin{longtable}[c]{@{}ll@{}}
+\toprule\addlinespace
+2010-02-25 &
+\\\addlinespace
+\bottomrule
+\end{longtable}
+
+\end{document}

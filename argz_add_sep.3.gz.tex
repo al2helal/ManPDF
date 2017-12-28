@@ -1,0 +1,224 @@
+\documentclass[]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+    \usepackage{xltxtra,xunicode}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
+  \newcommand{\euro}{€}
+\fi
+% use microtype if available
+\IfFileExists{microtype.sty}{\usepackage{microtype}}{}
+\usepackage{longtable,booktabs}
+\ifxetex
+  \usepackage[setpagesize=false, % page size defined by xetex
+              unicode=false, % unicode breaks when used with xetex
+              xetex]{hyperref}
+\else
+  \usepackage[unicode=true]{hyperref}
+\fi
+\hypersetup{breaklinks=true,
+            bookmarks=true,
+            pdfauthor={},
+            pdftitle={ARGZ\_ADD(3)},
+            colorlinks=true,
+            citecolor=blue,
+            urlcolor=blue,
+            linkcolor=magenta,
+            pdfborder={0 0 0}}
+\urlstyle{same}  % don't use monospace font for urls
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\setcounter{secnumdepth}{0}
+\usepackage{pagecolor}
+
+% Set background colour (of the page)
+\definecolor{weirdbgcolor}{HTML}{FCF4F0}
+\pagecolor{weirdbgcolor}
+
+% Make bold text appear in a particular colour
+\definecolor{boldcolor}{HTML}{6E0002}
+\let\realtextbf=\textbf
+\renewcommand{\textbf}[1]{\textcolor{boldcolor}{\realtextbf{#1}}}
+
+% Use underlines instead of emphasis (ugh)
+\renewcommand{\emph}[1]{\underline{#1}}
+
+% % Use fixed-width font by default
+% \renewcommand*\familydefault{\ttdefault}
+
+\title{ARGZ\_ADD(3)}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{longtable}[c]{@{}lll@{}}
+\toprule\addlinespace
+ARGZ\_ADD(3) & Linux Programmer's Manual & ARGZ\_ADD(3)
+\\\addlinespace
+\bottomrule
+\end{longtable}
+
+\hyperdef{}{NAME}{\section{\hyperref[NAME]{NAME}}\label{NAME}}
+
+argz\_add, argz\_add\_sep, argz\_append, argz\_count, argz\_create,
+argz\_create\_sep, argz\_delete, argz\_extract, argz\_insert,
+argz\_next, argz\_replace, argz\_stringify - functions to handle an argz
+list
+
+\hyperdef{}{SYNOPSIS}{\section{\hyperref[SYNOPSIS]{SYNOPSIS}}\label{SYNOPSIS}}
+
+\begin{verbatim}
+#include <argz.h>
+ 
+error_t argz_add(char **argz, size_t *argz_len, const char *str);
+ 
+error_t argz_add_sep(char **argz, size_t *argz_len,
+                     const char *str, int delim);
+ 
+error_t argz_append(char **argz, size_t *argz_len,
+                     const char *buf, size_t buf_len);
+ 
+size_t argz_count(const char *argz, size_t argz_len);
+ 
+error_t argz_create(char * const argv[], char **argz,
+                     size_t *argz_len);
+ 
+error_t argz_create_sep(const char *str, int sep, char **argz,
+                     size_t *argz_len);
+ 
+error_t argz_delete(char **argz, size_t *argz_len, char *entry);
+ 
+void argz_extract(char *argz, size_t argz_len, char  **argv);
+ 
+error_t argz_insert(char **argz, size_t *argz_len, char *before,
+                     const char *entry);
+ 
+char *argz_next(char *argz, size_t argz_len, const char *entry);
+ 
+error_t argz_replace(char **argz, size_t *argz_len, const char *str,
+                     const char *with, unsigned int *replace_count);
+ 
+void argz_stringify(char *argz, size_t len, int sep);
+\end{verbatim}
+
+\hyperdef{}{DESCRIPTION}{\section{\hyperref[DESCRIPTION]{DESCRIPTION}}\label{DESCRIPTION}}
+
+These functions are glibc-specific.
+
+An argz vector is a pointer to a character buffer together with a
+length. The intended interpretation of the character buffer is an array
+of strings, where the strings are separated by null bytes
+('\textbackslash{}0'). If the length is nonzero, the last byte of the
+buffer must be a null byte.
+
+These functions are for handling argz vectors. The pair (NULL,0) is an
+argz vector, and, conversely, argz vectors of length 0 must have NULL
+pointer. Allocation of nonempty argz vectors is done using
+\textbf{malloc}(3), so that \textbf{free}(3) can be used to dispose of
+them again.
+
+\textbf{argz\_add}() adds the string \emph{str} at the end of the array
+\emph{*argz}, and updates \emph{*argz} and \emph{*argz\_len}.
+
+\textbf{argz\_add\_sep}() is similar, but splits the string \emph{str}
+into substrings separated by the delimiter \emph{delim}. For example,
+one might use this on a UNIX search path with delimiter `:'.
+
+\textbf{argz\_append}() appends the argz vector
+(\emph{buf},~\emph{buf\_len}) after (\emph{*argz},~\emph{*argz\_len})
+and updates \emph{*argz} and \emph{*argz\_len}. (Thus, \emph{*argz\_len}
+will be increased by \emph{buf\_len}.)
+
+\textbf{argz\_count}() counts the number of strings, that is, the number
+of null bytes ('\textbackslash{}0'), in (\emph{argz},~\emph{argz\_len}).
+
+\textbf{argz\_create}() converts a UNIX-style argument vector
+\emph{argv}, terminated by \emph{(char~*)~0}, into an argz vector
+(\emph{*argz},~\emph{*argz\_len}).
+
+\textbf{argz\_create\_sep}() converts the null-terminated string
+\emph{str} into an argz vector (\emph{*argz},~\emph{*argz\_len}) by
+breaking it up at every occurrence of the separator \emph{sep}.
+
+\textbf{argz\_delete}() removes the substring pointed to by \emph{entry}
+from the argz vector (\emph{*argz},~\emph{*argz\_len}) and updates
+\emph{*argz} and \emph{*argz\_len}.
+
+\textbf{argz\_extract}() is the opposite of \textbf{argz\_create}(). It
+takes the argz vector (\emph{argz},~\emph{argz\_len}) and fills the
+array starting at \emph{argv} with pointers to the substrings, and a
+final NULL, making a UNIX-style argv vector. The array \emph{argv} must
+have room for \emph{argz\_count}(\emph{argz}, \emph{argz\_len}) + 1
+pointers.
+
+\textbf{argz\_insert}() is the opposite of \textbf{argz\_delete}(). It
+inserts the argument \emph{entry} at position \emph{before} into the
+argz vector (\emph{*argz},~\emph{*argz\_len}) and updates \emph{*argz}
+and \emph{*argz\_len}. If \emph{before} is NULL, then \emph{entry} will
+inserted at the end.
+
+\textbf{argz\_next}() is a function to step trough the argz vector. If
+\emph{entry} is NULL, the first entry is returned. Otherwise, the entry
+following is returned. It returns NULL if there is no following entry.
+
+\textbf{argz\_replace}() replaces each occurrence of \emph{str} with
+\emph{with}, reallocating argz as necessary. If \emph{replace\_count} is
+non-NULL, \emph{*replace\_count} will be incremented by the number of
+replacements.
+
+\textbf{argz\_stringify}() is the opposite of
+\textbf{argz\_create\_sep}(). It transforms the argz vector into a
+normal string by replacing all null bytes ('\textbackslash{}0') except
+the last by \emph{sep}.
+
+\hyperdef{}{RETURNux5fVALUE}{\section{\hyperref[RETURNux5fVALUE]{RETURN
+VALUE}}\label{RETURNux5fVALUE}}
+
+All argz functions that do memory allocation have a return type of
+\emph{error\_t}, and return 0 for success, and \textbf{ENOMEM} if an
+allocation error occurs.
+
+\hyperdef{}{CONFORMINGux5fTO}{\section{\hyperref[CONFORMINGux5fTO]{CONFORMING
+TO}}\label{CONFORMINGux5fTO}}
+
+These functions are a GNU extension. Handle with care.
+
+\hyperdef{}{BUGS}{\section{\hyperref[BUGS]{BUGS}}\label{BUGS}}
+
+Argz vectors without a terminating null byte may lead to Segmentation
+Faults.
+
+\hyperdef{}{SEEux5fALSO}{\section{\hyperref[SEEux5fALSO]{SEE
+ALSO}}\label{SEEux5fALSO}}
+
+\textbf{envz\_add}(3)
+
+\hyperdef{}{COLOPHON}{\section{\hyperref[COLOPHON]{COLOPHON}}\label{COLOPHON}}
+
+This page is part of release 3.54 of the Linux \emph{man-pages} project.
+A description of the project, and information about reporting bugs, can
+be found at http://www.kernel.org/doc/man-pages/.
+
+\begin{longtable}[c]{@{}ll@{}}
+\toprule\addlinespace
+2007-05-18 &
+\\\addlinespace
+\bottomrule
+\end{longtable}
+
+\end{document}

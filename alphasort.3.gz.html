@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <style>
+    table.head, table.foot { width: 100%; }
+    td.head-rtitle, td.foot-os { text-align: right; }
+    td.head-vol { text-align: center; }
+    div.Pp { margin: 1ex 0ex; }
+  </style>
+  <title>SCANDIR(3)</title>
+</head>
+<body>
+<table class="head">
+  <tr>
+    <td class="head-ltitle">SCANDIR(3)</td>
+    <td class="head-vol">Linux Programmer's Manual</td>
+    <td class="head-rtitle">SCANDIR(3)</td>
+  </tr>
+</table>
+<div class="manual-text">
+<h1 class="Sh" title="Sh" id="NAME"><a class="selflink" href="#NAME">NAME</a></h1>
+scandir, alphasort, versionsort - scan a directory for matching entries
+<h1 class="Sh" title="Sh" id="SYNOPSIS"><a class="selflink" href="#SYNOPSIS">SYNOPSIS</a></h1>
+<pre>
+<b>#include &lt;dirent.h&gt;</b>
+<div style="height: 1.00em;">&#x00A0;</div>
+<b>int scandir(const char *</b><i>dirp</i><b>, struct dirent ***</b><i>namelist</i><b>,</b>
+</pre>
+<div style="margin-left: 5.00ex;">
+<pre>
+<b>int (*</b><i>filter</i><b>)(const struct dirent *),</b>
+<b>int (*</b><i>compar</i><b>)(const struct dirent **, const struct dirent **));</b>
+</pre>
+</div>
+<pre>
+<div style="height: 1.00em;">&#x00A0;</div>
+<b>int alphasort(const void *</b><i>a</i><b>, const void *</b><i>b</i><b>);</b>
+<div style="height: 1.00em;">&#x00A0;</div>
+<b>int versionsort(const void *</b><i>a</i><b>, const void *</b><i>b</i><b>);</b>
+</pre>
+<div style="height: 1.00em;">&#x00A0;</div>
+<br/>
+Feature Test Macro Requirements for glibc (see <b>feature_test_macros</b>(7)):
+<br/>
+<div style="height: 1.00em;">&#x00A0;</div>
+<b>scandir</b>(), <b>alphasort</b>(): _BSD_SOURCE || _SVID_SOURCE
+<div>&#x00A0;</div>
+<b>versionsort</b>(): _GNU_SOURCE
+<h1 class="Sh" title="Sh" id="DESCRIPTION"><a class="selflink" href="#DESCRIPTION">DESCRIPTION</a></h1>
+The <b>scandir</b>() function scans the directory <i>dirp</i>, calling
+  <i>filter</i>() on each directory entry. Entries for which <i>filter</i>()
+  returns nonzero are stored in strings allocated via <b>malloc</b>(3), sorted
+  using <b>qsort</b>(3) with the comparison function <i>compar</i>(), and
+  collected in array <i>namelist</i> which is allocated via <b>malloc</b>(3). If
+  <i>filter</i> is NULL, all entries are selected.
+<div class="Pp"></div>
+The <b>alphasort</b>() and <b>versionsort</b>() functions can be used as the
+  comparison function <i>compar</i>(). The former sorts directory entries using
+  <b>strcoll</b>(3), the latter using <b>strverscmp</b>(3) on the strings
+  <i>(*a)-&gt;d_name</i> and <i>(*b)-&gt;d_name</i>.
+<h1 class="Sh" title="Sh" id="RETURN_VALUE"><a class="selflink" href="#RETURN_VALUE">RETURN
+  VALUE</a></h1>
+The <b>scandir</b>() function returns the number of directory entries selected.
+  On error, -1 is returned, with <i>errno</i> set to indicate the cause of the
+  error.
+<div class="Pp"></div>
+The <b>alphasort</b>() and <b>versionsort</b>() functions return an integer less
+  than, equal to, or greater than zero if the first argument is considered to be
+  respectively less than, equal to, or greater than the second.
+<h1 class="Sh" title="Sh" id="ERRORS"><a class="selflink" href="#ERRORS">ERRORS</a></h1>
+<dl class="Bl-tag">
+  <dt class="It-tag"><b>ENOENT</b></dt>
+  <dd class="It-tag">The path in <i>dirp</i> does not exist.</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag"><b>ENOMEM</b></dt>
+  <dd class="It-tag">Insufficient memory to complete the operation.</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag"><b>ENOTDIR</b></dt>
+  <dd class="It-tag">The path in <i>dirp</i> is not a directory.</dd>
+</dl>
+<h1 class="Sh" title="Sh" id="VERSIONS"><a class="selflink" href="#VERSIONS">VERSIONS</a></h1>
+<b>versionsort</b>() was added to glibc in version 2.1.
+<h1 class="Sh" title="Sh" id="CONFORMING_TO"><a class="selflink" href="#CONFORMING_TO">CONFORMING
+  TO</a></h1>
+<b>alphasort</b>() and <b>scandir</b>() are specified in POSIX.1-2008, and are
+  widely available. <b>versionsort</b>() is a GNU extension.
+<div class="Pp"></div>
+The functions <b>scandir</b>() and <b>alphasort</b>() are from 4.3BSD, and have
+  been available under Linux since libc4. Libc4 and libc5 use the more precise
+  prototype
+<div style="height: 1.00em;">&#x00A0;</div>
+<pre>
+    int alphasort(const struct dirent ** a,
+                  const struct dirent **b);
+</pre>
+<div style="height: 1.00em;">&#x00A0;</div>
+but glibc 2.0 returns to the imprecise BSD prototype.
+<div class="Pp"></div>
+The function <b>versionsort</b>() is a GNU extension, available since glibc 2.1.
+<div class="Pp"></div>
+Since glibc 2.1, <b>alphasort</b>() calls <b>strcoll</b>(3); earlier it used
+  <b>strcmp</b>(3).
+<h1 class="Sh" title="Sh" id="EXAMPLE"><a class="selflink" href="#EXAMPLE">EXAMPLE</a></h1>
+<pre>
+#define _SVID_SOURCE
+/* print files in current directory in reverse order */
+#include &lt;dirent.h&gt;
+<div class="Pp"></div>
+int
+main(void)
+{
+    struct dirent **namelist;
+    int n;
+<div class="Pp"></div>
+    n = scandir(&quot;.&quot;, &amp;namelist, NULL, alphasort);
+    if (n &lt; 0)
+        perror(&quot;scandir&quot;);
+    else {
+        while (n--) {
+            printf(&quot;%s\n&quot;, namelist[n]-&gt;d_name);
+            free(namelist[n]);
+        }
+        free(namelist);
+    }
+}
+</pre>
+<h1 class="Sh" title="Sh" id="SEE_ALSO"><a class="selflink" href="#SEE_ALSO">SEE
+  ALSO</a></h1>
+<b>closedir</b>(3), <b>fnmatch</b>(3), <b>opendir</b>(3), <b>readdir</b>(3),
+  <b>rewinddir</b>(3), <b>scandirat</b>(3), <b>seekdir</b>(3), <b>strcmp</b>(3),
+  <b>strcoll</b>(3), <b>strverscmp</b>(3), <b>telldir</b>(3)
+<h1 class="Sh" title="Sh" id="COLOPHON"><a class="selflink" href="#COLOPHON">COLOPHON</a></h1>
+This page is part of release 3.54 of the Linux <i>man-pages</i> project. A
+  description of the project, and information about reporting bugs, can be found
+  at http://www.kernel.org/doc/man-pages/.</div>
+<table class="foot">
+  <tr>
+    <td class="foot-date">2013-04-19</td>
+    <td class="foot-os">GNU</td>
+  </tr>
+</table>
+</body>
+</html>

@@ -1,0 +1,138 @@
+\documentclass[]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+    \usepackage{xltxtra,xunicode}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
+  \newcommand{\euro}{€}
+\fi
+% use microtype if available
+\IfFileExists{microtype.sty}{\usepackage{microtype}}{}
+\usepackage{longtable,booktabs}
+\ifxetex
+  \usepackage[setpagesize=false, % page size defined by xetex
+              unicode=false, % unicode breaks when used with xetex
+              xetex]{hyperref}
+\else
+  \usepackage[unicode=true]{hyperref}
+\fi
+\hypersetup{breaklinks=true,
+            bookmarks=true,
+            pdfauthor={},
+            pdftitle={ASSERT(3)},
+            colorlinks=true,
+            citecolor=blue,
+            urlcolor=blue,
+            linkcolor=magenta,
+            pdfborder={0 0 0}}
+\urlstyle{same}  % don't use monospace font for urls
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\setcounter{secnumdepth}{0}
+\usepackage{pagecolor}
+
+% Set background colour (of the page)
+\definecolor{weirdbgcolor}{HTML}{FCF4F0}
+\pagecolor{weirdbgcolor}
+
+% Make bold text appear in a particular colour
+\definecolor{boldcolor}{HTML}{6E0002}
+\let\realtextbf=\textbf
+\renewcommand{\textbf}[1]{\textcolor{boldcolor}{\realtextbf{#1}}}
+
+% Use underlines instead of emphasis (ugh)
+\renewcommand{\emph}[1]{\underline{#1}}
+
+% % Use fixed-width font by default
+% \renewcommand*\familydefault{\ttdefault}
+
+\title{ASSERT(3)}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{longtable}[c]{@{}lll@{}}
+\toprule\addlinespace
+ASSERT(3) & Linux Programmer's Manual & ASSERT(3)
+\\\addlinespace
+\bottomrule
+\end{longtable}
+
+\hyperdef{}{NAME}{\section{\hyperref[NAME]{NAME}}\label{NAME}}
+
+assert - abort the program if assertion is false
+
+\hyperdef{}{SYNOPSIS}{\section{\hyperref[SYNOPSIS]{SYNOPSIS}}\label{SYNOPSIS}}
+
+\begin{verbatim}
+#include <assert.h>
+ 
+void assert(scalar expression);
+\end{verbatim}
+
+\hyperdef{}{DESCRIPTION}{\section{\hyperref[DESCRIPTION]{DESCRIPTION}}\label{DESCRIPTION}}
+
+If the macro \textbf{NDEBUG} was defined at the moment
+\emph{\textless{}assert.h\textgreater{}} was last included, the macro
+\textbf{assert}() generates no code, and hence does nothing at all.
+Otherwise, the macro \textbf{assert}() prints an error message to
+standard error and terminates the program by calling \textbf{abort}(3)
+if \emph{expression} is false (i.e., compares equal to zero).
+
+The purpose of this macro is to help the programmer find bugs in his
+program. The message ``assertion failed in file foo.c, function
+do\_bar(), line 1287'' is of no help at all to a user.
+
+\hyperdef{}{RETURNux5fVALUE}{\section{\hyperref[RETURNux5fVALUE]{RETURN
+VALUE}}\label{RETURNux5fVALUE}}
+
+No value is returned.
+
+\hyperdef{}{CONFORMINGux5fTO}{\section{\hyperref[CONFORMINGux5fTO]{CONFORMING
+TO}}\label{CONFORMINGux5fTO}}
+
+POSIX.1-2001, C89, C99. In C89, \emph{expression} is required to be of
+type \emph{int} and undefined behavior results if it is not, but in C99
+it may have any scalar type.
+
+\hyperdef{}{BUGS}{\section{\hyperref[BUGS]{BUGS}}\label{BUGS}}
+
+\textbf{assert}() is implemented as a macro; if the expression tested
+has side-effects, program behavior will be different depending on
+whether \textbf{NDEBUG} is defined. This may create Heisenbugs which go
+away when debugging is turned on.
+
+\hyperdef{}{SEEux5fALSO}{\section{\hyperref[SEEux5fALSO]{SEE
+ALSO}}\label{SEEux5fALSO}}
+
+\textbf{abort}(3), \textbf{assert\_perror}(3), \textbf{exit}(3)
+
+\hyperdef{}{COLOPHON}{\section{\hyperref[COLOPHON]{COLOPHON}}\label{COLOPHON}}
+
+This page is part of release 3.54 of the Linux \emph{man-pages} project.
+A description of the project, and information about reporting bugs, can
+be found at http://www.kernel.org/doc/man-pages/.
+
+\begin{longtable}[c]{@{}ll@{}}
+\toprule\addlinespace
+2002-08-25 & GNU
+\\\addlinespace
+\bottomrule
+\end{longtable}
+
+\end{document}

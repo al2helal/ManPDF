@@ -1,0 +1,457 @@
+\documentclass[]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+    \usepackage{xltxtra,xunicode}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
+  \newcommand{\euro}{€}
+\fi
+% use microtype if available
+\IfFileExists{microtype.sty}{\usepackage{microtype}}{}
+\usepackage{longtable,booktabs}
+\ifxetex
+  \usepackage[setpagesize=false, % page size defined by xetex
+              unicode=false, % unicode breaks when used with xetex
+              xetex]{hyperref}
+\else
+  \usepackage[unicode=true]{hyperref}
+\fi
+\hypersetup{breaklinks=true,
+            bookmarks=true,
+            pdfauthor={},
+            pdftitle={autodie(3pm)},
+            colorlinks=true,
+            citecolor=blue,
+            urlcolor=blue,
+            linkcolor=magenta,
+            pdfborder={0 0 0}}
+\urlstyle{same}  % don't use monospace font for urls
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\setcounter{secnumdepth}{0}
+\usepackage{pagecolor}
+
+% Set background colour (of the page)
+\definecolor{weirdbgcolor}{HTML}{FCF4F0}
+\pagecolor{weirdbgcolor}
+
+% Make bold text appear in a particular colour
+\definecolor{boldcolor}{HTML}{6E0002}
+\let\realtextbf=\textbf
+\renewcommand{\textbf}[1]{\textcolor{boldcolor}{\realtextbf{#1}}}
+
+% Use underlines instead of emphasis (ugh)
+\renewcommand{\emph}[1]{\underline{#1}}
+
+% % Use fixed-width font by default
+% \renewcommand*\familydefault{\ttdefault}
+
+\title{autodie(3pm)}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{longtable}[c]{@{}lll@{}}
+\toprule\addlinespace
+autodie(3pm) & User Contributed Perl Documentation & autodie(3pm)
+\\\addlinespace
+\bottomrule
+\end{longtable}
+
+\hyperdef{}{NAME}{\section{\hyperref[NAME]{NAME}}\label{NAME}}
+
+autodie - Replace functions with ones that succeed or die with lexical
+scope
+
+\hyperdef{}{SYNOPSIS}{\section{\hyperref[SYNOPSIS]{SYNOPSIS}}\label{SYNOPSIS}}
+
+\begin{verbatim}
+    use autodie;            # Recommended: implies 'use autodie qw(:default)'
+    use autodie qw(:all);   # Recommended more: defaults and system/exec.
+    use autodie qw(open close);   # open/close succeed or die
+    open(my $fh, "<", $filename); # No need to check!
+    {
+        no autodie qw(open);          # open failures won't die
+        open(my $fh, "<", $filename); # Could fail silently!
+        no autodie;                   # disable all autodies
+    }
+\end{verbatim}
+
+\hyperdef{}{DESCRIPTION}{\section{\hyperref[DESCRIPTION]{DESCRIPTION}}\label{DESCRIPTION}}
+
+\begin{verbatim}
+        bIlujDI' yIchegh()Qo'; yIHegh()!
+        It is better to die() than to return() in failure.
+                -- Klingon programming proverb.
+\end{verbatim}
+
+The ``autodie'' pragma provides a convenient way to replace functions
+that normally return false on failure with equivalents that throw an
+exception on failure.
+
+The ``autodie'' pragma has \emph{lexical scope}, meaning that functions
+and subroutines altered with ``autodie'' will only change their
+behaviour until the end of the enclosing block, file, or ``eval''.
+
+If ``system'' is specified as an argument to ``autodie'', then it uses
+IPC::System::Simple to do the heavy lifting. See the description of that
+module for more information.
+
+\hyperdef{}{EXCEPTIONS}{\section{\hyperref[EXCEPTIONS]{EXCEPTIONS}}\label{EXCEPTIONS}}
+
+Exceptions produced by the ``autodie'' pragma are members of the
+autodie::exception class. The preferred way to work with these
+exceptions under Perl 5.10 is as follows:
+
+\begin{verbatim}
+    use feature qw(switch);
+    eval {
+        use autodie;
+        open(my $fh, '<', $some_file);
+        my @records = <$fh>;
+        # Do things with @records...
+        close($fh);
+    };
+    given ($@) {
+        when (undef)   { say "No error";                    }
+        when ('open')  { say "Error from open";             }
+        when (':io')   { say "Non-open, IO error.";         }
+        when (':all')  { say "All other autodie errors."    }
+        default        { say "Not an autodie error at all." }
+    }
+\end{verbatim}
+
+Under Perl 5.8, the ``given/when'' structure is not available, so the
+following structure may be used:
+
+\begin{verbatim}
+    eval {
+        use autodie;
+        open(my $fh, '<', $some_file);
+        my @records = <$fh>;
+        # Do things with @records...
+        close($fh);
+    };
+    if ($@ and $@->isa('autodie::exception')) {
+        if ($@->matches('open')) { print "Error from open\n";   }
+        if ($@->matches(':io' )) { print "Non-open, IO error."; }
+    } elsif ($@) {
+        # A non-autodie exception.
+    }
+\end{verbatim}
+
+See autodie::exception for further information on interrogating
+exceptions.
+
+\hyperdef{}{CATEGORIES}{\section{\hyperref[CATEGORIES]{CATEGORIES}}\label{CATEGORIES}}
+
+Autodie uses a simple set of categories to group together similar
+built-ins. Requesting a category type (starting with a colon) will
+enable autodie for all built-ins beneath that category. For example,
+requesting ``:file'' will enable autodie for ``close'', ``fcntl'',
+``fileno'', ``open'' and ``sysopen''.
+
+The categories are currently:
+
+\begin{verbatim}
+    :all
+        :default
+            :io
+                read
+                seek
+                sysread
+                sysseek
+                syswrite
+                :dbm
+                    dbmclose
+                    dbmopen
+                :file
+                    binmode
+                    close
+                    chmod
+                    chown
+                    fcntl
+                    fileno
+                    flock
+                    ioctl
+                    open
+                    sysopen
+                    truncate
+                :filesys
+                    chdir
+                    closedir
+                    opendir
+                    link
+                    mkdir
+                    readlink
+                    rename
+                    rmdir
+                    symlink
+                    unlink
+                :ipc
+                    pipe
+                    :msg
+                        msgctl
+                        msgget
+                        msgrcv
+                        msgsnd
+                    :semaphore
+                        semctl
+                        semget
+                        semop
+                    :shm
+                        shmctl
+                        shmget
+                        shmread
+                :socket
+                    accept
+                    bind
+                    connect
+                    getsockopt
+                    listen
+                    recv
+                    send
+                    setsockopt
+                    shutdown
+                    socketpair
+            :threads
+                fork
+        :system
+            system
+            exec
+\end{verbatim}
+
+Note that while the above category system is presently a strict
+hierarchy, this should not be assumed.
+
+A plain ``use autodie'' implies ``use autodie qw(:default)''. Note that
+``system'' and ``exec'' are not enabled by default. ``system'' requires
+the optional IPC::System::Simple module to be installed, and enabling
+``system'' or ``exec'' will invalidate their exotic forms. See ``BUGS''
+below for more details.
+
+The syntax:
+
+\begin{verbatim}
+    use autodie qw(:1.994);
+\end{verbatim}
+
+allows the ``:default'' list from a particular version to be used. This
+provides the convenience of using the default methods, but the surety
+that no behavioral changes will occur if the ``autodie'' module is
+upgraded.
+
+``autodie'' can be enabled for all of Perl's built-ins, including
+``system'' and ``exec'' with:
+
+\begin{verbatim}
+    use autodie qw(:all);
+\end{verbatim}
+
+\hyperdef{}{FUNCTIONux5fSPECIFICux5fNOTES}{\section{\hyperref[FUNCTIONux5fSPECIFICux5fNOTES]{FUNCTION
+SPECIFIC NOTES}}\label{FUNCTIONux5fSPECIFICux5fNOTES}}
+
+\hyperdef{}{print}{\subsection{\hyperref[print]{print}}\label{print}}
+
+The autodie pragma \textbf{\textless{}does not check calls
+to}\textbf{``print''}\textbf{}\textgreater{}.
+
+\hyperdef{}{flock}{\subsection{\hyperref[flock]{flock}}\label{flock}}
+
+It is not considered an error for ``flock'' to return false if it fails
+due to an ``EWOULDBLOCK'' (or equivalent) condition. This means one can
+still use the common convention of testing the return value of ``flock''
+when called with the ``LOCK\_NB'' option:
+
+\begin{verbatim}
+    use autodie;
+    if ( flock($fh, LOCK_EX | LOCK_NB) ) {
+        # We have a lock
+    }
+\end{verbatim}
+
+Autodying ``flock'' will generate an exception if ``flock'' returns
+false with any other error.
+
+\hyperdef{}{systemux2fexec}{\subsection{\hyperref[systemux2fexec]{system/exec}}\label{systemux2fexec}}
+
+The ``system'' built-in is considered to have failed in the following
+circumstances:
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[•]
+The command does not start.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[•]
+The command is killed by a signal.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[•]
+The command returns a non-zero exit value (but see below).
+\end{description}
+
+On success, the autodying form of ``system'' returns the \emph{exit
+value} rather than the contents of \$?.
+
+Additional allowable exit values can be supplied as an optional first
+argument to autodying ``system'':
+
+\begin{verbatim}
+    system( [ 0, 1, 2 ], $cmd, @args);  # 0,1,2 are good exit values
+\end{verbatim}
+
+``autodie'' uses the IPC::System::Simple module to change ``system''.
+See its documentation for further information.
+
+Applying ``autodie'' to ``system'' or ``exec'' causes the exotic forms
+``system \{ \$cmd \} @args'' or ``exec \{ \$cmd \} @args'' to be
+considered a syntax error until the end of the lexical scope. If you
+really need to use the exotic form, you can call ``CORE::system'' or
+``CORE::exec'' instead, or use ``no autodie qw(system exec)'' before
+calling the exotic form.
+
+\hyperdef{}{GOTCHAS}{\section{\hyperref[GOTCHAS]{GOTCHAS}}\label{GOTCHAS}}
+
+Functions called in list context are assumed to have failed if they
+return an empty list, or a list consisting only of a single undef
+element.
+
+\hyperdef{}{DIAGNOSTICS}{\section{\hyperref[DIAGNOSTICS]{DIAGNOSTICS}}\label{DIAGNOSTICS}}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[:void cannot be used with lexical scope]
+The ``:void'' option is supported in Fatal, but not ``autodie''. To
+workaround this, ``autodie'' may be explicitly disabled until the end of
+the current block with ``no autodie''. To disable autodie for only a
+single function (eg, open) use ``no autodie qw(open)''.
+
+~
+
+``autodie'' performs no checking of called context to determine whether
+to throw an exception; the explicitness of error handling with
+``autodie'' is a deliberate feature.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[No user hints defined for \%s]
+You've insisted on hints for user-subroutines, either by pre-pending a
+``!'' to the subroutine name itself, or earlier in the list of arguments
+to ``autodie''. However the subroutine in question does not have any
+hints available.
+\end{description}
+
+See also ``DIAGNOSTICS'' in Fatal.
+
+\hyperdef{}{BUGS}{\section{\hyperref[BUGS]{BUGS}}\label{BUGS}}
+
+``Used only once'' warnings can be generated when ``autodie'' or
+``Fatal'' is used with package filehandles (eg, ``FILE''). Scalar
+filehandles are strongly recommended instead.
+
+When using ``autodie'' or ``Fatal'' with user subroutines, the
+declaration of those subroutines must appear before the first use of
+``Fatal'' or ``autodie'', or have been exported from a module.
+Attempting to use ``Fatal'' or ``autodie'' on other user subroutines
+will result in a compile-time error.
+
+Due to a bug in Perl, ``autodie'' may ``lose'' any format which has the
+same name as an autodying built-in or function.
+
+``autodie'' may not work correctly if used inside a file with a name
+that looks like a string eval, such as \emph{eval (3)}.
+
+\hyperdef{}{autodieux5fandux5fstringux5feval}{\subsection{\hyperref[autodieux5fandux5fstringux5feval]{autodie
+and string eval}}\label{autodieux5fandux5fstringux5feval}}
+
+Due to the current implementation of ``autodie'', unexpected results may
+be seen when used near or with the string version of eval. \emph{None of
+these bugs exist when using block eval}.
+
+Under Perl 5.8 only, ``autodie'' \emph{does not} propagate into string
+``eval'' statements, although it can be explicitly enabled inside a
+string ``eval''.
+
+Under Perl 5.10 only, using a string eval when ``autodie'' is in effect
+can cause the autodie behaviour to leak into the surrounding scope. This
+can be worked around by using a ``no autodie'' at the end of the scope
+to explicitly remove autodie's effects, or by avoiding the use of string
+eval.
+
+\emph{None of these bugs exist when using block eval}. The use of
+``autodie'' with block eval is considered good practice.
+
+\hyperdef{}{REPORTINGux5fBUGS}{\subsection{\hyperref[REPORTINGux5fBUGS]{REPORTING
+BUGS}}\label{REPORTINGux5fBUGS}}
+
+Please report bugs via the CPAN Request Tracker at
+\textless{}http://rt.cpan.org/NoAuth/Bugs.html?Dist=autodie\textgreater{}.
+
+\hyperdef{}{FEEDBACK}{\section{\hyperref[FEEDBACK]{FEEDBACK}}\label{FEEDBACK}}
+
+If you find this module useful, please consider rating it on the CPAN
+Ratings service at
+\textless{}http://cpanratings.perl.org/rate?distribution=autodie\textgreater{}
+.
+
+The module author loves to hear how ``autodie'' has made your life
+better (or worse). Feedback can be sent to
+\textless{}pjf@perltraining.com.au\textgreater{}.
+
+\hyperdef{}{AUTHOR}{\section{\hyperref[AUTHOR]{AUTHOR}}\label{AUTHOR}}
+
+Copyright 2008-2009, Paul Fenwick
+\textless{}pjf@perltraining.com.au\textgreater{}
+
+\hyperdef{}{LICENSE}{\section{\hyperref[LICENSE]{LICENSE}}\label{LICENSE}}
+
+This module is free software. You may distribute it under the same terms
+as Perl itself.
+
+\hyperdef{}{SEEux5fALSO}{\section{\hyperref[SEEux5fALSO]{SEE
+ALSO}}\label{SEEux5fALSO}}
+
+Fatal, autodie::exception, autodie::hints, IPC::System::Simple
+
+\emph{Perl tips, autodie} at
+\textless{}http://perltraining.com.au/tips/2008-08-20.html\textgreater{}
+
+\hyperdef{}{ACKNOWLEDGEMENTS}{\section{\hyperref[ACKNOWLEDGEMENTS]{ACKNOWLEDGEMENTS}}\label{ACKNOWLEDGEMENTS}}
+
+Mark Reed and Roland Giersig -- Klingon translators.
+
+See the \emph{AUTHORS} file for full credits. The latest version of this
+file can be found at
+\textless{}https://github.com/pjf/autodie/tree/master/AUTHORS\textgreater{}
+.
+
+\begin{longtable}[c]{@{}ll@{}}
+\toprule\addlinespace
+2014-01-27 & perl v5.18.2
+\\\addlinespace
+\bottomrule
+\end{longtable}
+
+\end{document}

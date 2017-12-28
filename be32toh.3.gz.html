@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <style>
+    table.head, table.foot { width: 100%; }
+    td.head-rtitle, td.foot-os { text-align: right; }
+    td.head-vol { text-align: center; }
+    div.Pp { margin: 1ex 0ex; }
+  </style>
+  <title>ENDIAN(3)</title>
+</head>
+<body>
+<table class="head">
+  <tr>
+    <td class="head-ltitle">ENDIAN(3)</td>
+    <td class="head-vol">Linux Programmer's Manual</td>
+    <td class="head-rtitle">ENDIAN(3)</td>
+  </tr>
+</table>
+<div class="manual-text">
+<h1 class="Sh" title="Sh" id="NAME"><a class="selflink" href="#NAME">NAME</a></h1>
+htobe16, htole16, be16toh, le16toh, htobe32, htole32, be32toh, le32toh, htobe64,
+  htole64, be64toh, le64toh - convert values between host and big-/little-endian
+  byte order
+<h1 class="Sh" title="Sh" id="SYNOPSIS"><a class="selflink" href="#SYNOPSIS">SYNOPSIS</a></h1>
+<pre>
+<b>#define _BSD_SOURCE</b>             /* See feature_test_macros(7) */
+<b>#include &lt;endian.h&gt;</b>
+<div class="Pp"></div>
+<b>uint16_t htobe16(uint16_t </b><i>host_16bits</i><b>);</b>
+<b>uint16_t htole16(uint16_t </b><i>host_16bits</i><b>);</b>
+<b>uint16_t be16toh(uint16_t </b><i>big_endian_16bits</i><b>);</b>
+<b>uint16_t le16toh(uint16_t </b><i>little_endian_16bits</i><b>);</b>
+<div class="Pp"></div>
+<b>uint32_t htobe32(uint32_t </b><i>host_32bits</i><b>);</b>
+<b>uint32_t htole32(uint32_t </b><i>host_32bits</i><b>);</b>
+<b>uint32_t be32toh(uint32_t </b><i>big_endian_32bits</i><b>);</b>
+<b>uint32_t le32toh(uint32_t </b><i>little_endian_32bits</i><b>);</b>
+<div class="Pp"></div>
+<b>uint64_t htobe64(uint64_t </b><i>host_64bits</i><b>);</b>
+<b>uint64_t htole64(uint64_t </b><i>host_64bits</i><b>);</b>
+<b>uint64_t be64toh(uint64_t </b><i>big_endian_64bits</i><b>);</b>
+<b>uint64_t le64toh(uint64_t </b><i>little_endian_64bits</i><b>);</b>
+</pre>
+<h1 class="Sh" title="Sh" id="DESCRIPTION"><a class="selflink" href="#DESCRIPTION">DESCRIPTION</a></h1>
+These functions convert the byte encoding of integer values from the byte order
+  that the current CPU (the &quot;host&quot;) uses, to and from little-endian
+  and big-endian byte order.
+<div style="height: 1.00em;">&#x00A0;</div>
+The number, <i>nn</i>, in the name of each function indicates the size of
+  integer handled by the function, either 16, 32, or 64 bits.
+<div style="height: 1.00em;">&#x00A0;</div>
+The functions with names of the form &quot;htobe <i>nn</i>&quot; convert from
+  host byte order to big-endian order.
+<div style="height: 1.00em;">&#x00A0;</div>
+The functions with names of the form &quot;htole <i>nn</i>&quot; convert from
+  host byte order to little-endian order.
+<div style="height: 1.00em;">&#x00A0;</div>
+The functions with names of the form &quot;be <i>nn</i>toh&quot; convert from
+  big-endian order to host byte order.
+<div style="height: 1.00em;">&#x00A0;</div>
+The functions with names of the form &quot;le <i>nn</i>toh&quot; convert from
+  little-endian order to host byte order.
+<h1 class="Sh" title="Sh" id="VERSIONS"><a class="selflink" href="#VERSIONS">VERSIONS</a></h1>
+These functions were added to glibc in version 2.9.
+<h1 class="Sh" title="Sh" id="CONFORMING_TO"><a class="selflink" href="#CONFORMING_TO">CONFORMING
+  TO</a></h1>
+These functions are nonstandard. Similar functions are present on the BSDs,
+  where the required header file is <i>&lt;sys/endian.h&gt;</i> instead of
+  <i>&lt;endian.h&gt;</i>. Unfortunately, NetBSD, FreeBSD, and glibc haven't
+  followed the original OpenBSD naming convention for these functions, whereby
+  the <i>nn</i> component always appears at the end of the function name (thus,
+  for example, in NetBSD, FreeBSD, and glibc, the equivalent of OpenBSDs
+  &quot;betoh32&quot; is &quot;be32toh&quot;).
+<h1 class="Sh" title="Sh" id="NOTES"><a class="selflink" href="#NOTES">NOTES</a></h1>
+These functions are similar to the older <b>byteorder</b>(3) family of
+  functions. For example, <b>be32toh</b>() is identical to
+  <b>ntohl</b>()<b>.</b>
+<div style="height: 1.00em;">&#x00A0;</div>
+The advantage of the <b>byteorder</b>(3) functions is that they are standard
+  functions available on all UNIX systems. On the other hand, the fact that they
+  were designed for use in the context of TCP/IP means that they lack the 64-bit
+  and little-endian variants described in this page.
+<h1 class="Sh" title="Sh" id="EXAMPLE"><a class="selflink" href="#EXAMPLE">EXAMPLE</a></h1>
+The program below display the results of converting an integer from host byte
+  order to both little-endian and big-endian byte order. Since host byte order
+  is either little-endian or big-endian, only one of these conversions will have
+  an effect. When we run this program on a little-endian system such as x86-32,
+  we see the following:
+<br/>
+<pre>
+<div class="Pp"></div>
+$  <b>./a.out</b>
+x.u32 = 0x44332211
+htole32(x.u32) = 0x44332211
+htobe32(x.u32) = 0x11223344
+</pre>
+<br/>
+<h2 class="Ss" title="Ss" id="Program_source"><a class="selflink" href="#Program_source">Program
+  source</a></h2>
+<pre>
+#include &lt;endian.h&gt;
+#include &lt;stdint.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+<div class="Pp"></div>
+int
+main(int argc, char *argv[])
+{
+    union {
+	uint32_t u32;
+	uint8_t arr[4];
+    } x;
+<div class="Pp"></div>
+    x.arr[0] = 0x11;	/* Lowest-address byte */
+    x.arr[1] = 0x22;
+    x.arr[2] = 0x33;
+    x.arr[3] = 0x44;	/* Highest-address byte */
+<div class="Pp"></div>
+    printf(&quot;x.u32 = 0x%x\n&quot;, x.u32);
+    printf(&quot;htole32(x.u32) = 0x%x\n&quot;, htole32(x.u32));
+    printf(&quot;htobe32(x.u32) = 0x%x\n&quot;, htobe32(x.u32));
+<div class="Pp"></div>
+    exit(EXIT_SUCCESS);
+}
+</pre>
+<h1 class="Sh" title="Sh" id="SEE_ALSO"><a class="selflink" href="#SEE_ALSO">SEE
+  ALSO</a></h1>
+<b>byteorder</b>(3)
+<h1 class="Sh" title="Sh" id="COLOPHON"><a class="selflink" href="#COLOPHON">COLOPHON</a></h1>
+This page is part of release 3.54 of the Linux <i>man-pages</i> project. A
+  description of the project, and information about reporting bugs, can be found
+  at http://www.kernel.org/doc/man-pages/.</div>
+<table class="foot">
+  <tr>
+    <td class="foot-date">2010-09-10</td>
+    <td class="foot-os">GNU</td>
+  </tr>
+</table>
+</body>
+</html>

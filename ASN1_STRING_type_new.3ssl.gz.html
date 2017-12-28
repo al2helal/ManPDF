@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <style>
+    table.head, table.foot { width: 100%; }
+    td.head-rtitle, td.foot-os { text-align: right; }
+    td.head-vol { text-align: center; }
+    div.Pp { margin: 1ex 0ex; }
+  </style>
+  <title>ASN1_STRING_new(3SSL)</title>
+</head>
+<body>
+<table class="head">
+  <tr>
+    <td class="head-ltitle">ASN1_STRING_new(3SSL)</td>
+    <td class="head-vol">OpenSSL</td>
+    <td class="head-rtitle">ASN1_STRING_new(3SSL)</td>
+  </tr>
+</table>
+<div class="manual-text">
+<h1 class="Sh" title="Sh" id="NAME"><a class="selflink" href="#NAME">NAME</a></h1>
+ASN1_STRING_new, ASN1_STRING_type_new, ASN1_STRING_free - ASN1_STRING allocation
+  functions
+<h1 class="Sh" title="Sh" id="SYNOPSIS"><a class="selflink" href="#SYNOPSIS">SYNOPSIS</a></h1>
+<pre>
+ #include &lt;openssl/asn1.h&gt;
+ ASN1_STRING * ASN1_STRING_new(void);
+ ASN1_STRING * ASN1_STRING_type_new(int type);
+ void ASN1_STRING_free(ASN1_STRING *a);
+</pre>
+<h1 class="Sh" title="Sh" id="DESCRIPTION"><a class="selflink" href="#DESCRIPTION">DESCRIPTION</a></h1>
+<i>ASN1_STRING_new()</i> returns an allocated <b>ASN1_STRING</b> structure. Its
+  type is undefined.
+<div class="Pp"></div>
+<i>ASN1_STRING_type_new()</i> returns an allocated <b>ASN1_STRING</b> structure
+  of type <b>type</b>.
+<div class="Pp"></div>
+<i>ASN1_STRING_free()</i> frees up <b>a</b>.
+<h1 class="Sh" title="Sh" id="NOTES"><a class="selflink" href="#NOTES">NOTES</a></h1>
+Other string types call the <b>ASN1_STRING</b> functions. For example
+  <i>ASN1_OCTET_STRING_new()</i> calls ASN1_STRING_type(V_ASN1_OCTET_STRING).
+<h1 class="Sh" title="Sh" id="RETURN_VALUES"><a class="selflink" href="#RETURN_VALUES">RETURN
+  VALUES</a></h1>
+<i>ASN1_STRING_new()</i> and <i>ASN1_STRING_type_new()</i> return a valid
+  ASN1_STRING structure or <b>NULL</b> if an error occurred.
+<div class="Pp"></div>
+<i>ASN1_STRING_free()</i> does not return a value.
+<h1 class="Sh" title="Sh" id="SEE_ALSO"><a class="selflink" href="#SEE_ALSO">SEE
+  ALSO</a></h1>
+<i>ERR_get_error</i>(3)
+<h1 class="Sh" title="Sh" id="HISTORY"><a class="selflink" href="#HISTORY">HISTORY</a></h1>
+TBA</div>
+<table class="foot">
+  <tr>
+    <td class="foot-date">2014-01-06</td>
+    <td class="foot-os">1.0.1f</td>
+  </tr>
+</table>
+</body>
+</html>

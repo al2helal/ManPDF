@@ -1,0 +1,247 @@
+\documentclass[]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+    \usepackage{xltxtra,xunicode}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
+  \newcommand{\euro}{€}
+\fi
+% use microtype if available
+\IfFileExists{microtype.sty}{\usepackage{microtype}}{}
+\usepackage{longtable,booktabs}
+\ifxetex
+  \usepackage[setpagesize=false, % page size defined by xetex
+              unicode=false, % unicode breaks when used with xetex
+              xetex]{hyperref}
+\else
+  \usepackage[unicode=true]{hyperref}
+\fi
+\hypersetup{breaklinks=true,
+            bookmarks=true,
+            pdfauthor={},
+            pdftitle={Authen::SASL::Perl(3pm)},
+            colorlinks=true,
+            citecolor=blue,
+            urlcolor=blue,
+            linkcolor=magenta,
+            pdfborder={0 0 0}}
+\urlstyle{same}  % don't use monospace font for urls
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\setcounter{secnumdepth}{0}
+\usepackage{pagecolor}
+
+% Set background colour (of the page)
+\definecolor{weirdbgcolor}{HTML}{FCF4F0}
+\pagecolor{weirdbgcolor}
+
+% Make bold text appear in a particular colour
+\definecolor{boldcolor}{HTML}{6E0002}
+\let\realtextbf=\textbf
+\renewcommand{\textbf}[1]{\textcolor{boldcolor}{\realtextbf{#1}}}
+
+% Use underlines instead of emphasis (ugh)
+\renewcommand{\emph}[1]{\underline{#1}}
+
+% % Use fixed-width font by default
+% \renewcommand*\familydefault{\ttdefault}
+
+\title{Authen::SASL::Perl(3pm)}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{longtable}[c]{@{}lll@{}}
+\toprule\addlinespace
+Authen::SASL::Perl(3pm) & User Contributed Perl Documentation &
+Authen::SASL::Perl(3pm)
+\\\addlinespace
+\bottomrule
+\end{longtable}
+
+\hyperdef{}{NAME}{\section{\hyperref[NAME]{NAME}}\label{NAME}}
+
+Authen::SASL::Perl -- Perl implementation of the SASL Authentication
+framework
+
+\hyperdef{}{SYNOPSIS}{\section{\hyperref[SYNOPSIS]{SYNOPSIS}}\label{SYNOPSIS}}
+
+\begin{verbatim}
+ use Authen::SASL qw(Perl);
+ $sasl = Authen::SASL->new(
+   mechanism => 'CRAM-MD5 PLAIN ANONYMOUS',
+   callback => {
+     user => $user,
+     pass => \&fetch_password
+   }
+ );
+\end{verbatim}
+
+\hyperdef{}{DESCRIPTION}{\section{\hyperref[DESCRIPTION]{DESCRIPTION}}\label{DESCRIPTION}}
+
+\textbf{Authen::SASL::Perl} is the pure Perl implementation of SASL
+mechanisms in the \textbf{Authen::SASL} framework.
+
+At the time of this writing it provides the client part implementation
+for the following SASL mechanisms:
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[ANONYMOUS]
+The Anonymous SASL Mechanism as defined in RFC 2245 resp. in IETF Draft
+draft-ietf-sasl-anon-03.txt from February 2004 provides a method to
+anonymously access internet services.
+
+~
+
+Since it does no authentication it does not need to send any
+confidential information such as passwords in plain text over the
+network.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[CRAM-MD5]
+The CRAM-MD5 SASL Mechanism as defined in RFC2195 resp. in IETF Draft
+draft-ietf-sasl-crammd5-XX.txt offers a simple challenge-response
+authentication mechanism.
+
+~
+
+Since it is a challenge-response authentication mechanism no passwords
+are transferred in clear-text over the wire.
+
+~
+
+Due to the simplicity of the protocol CRAM-MD5 is susceptible to replay
+and dictionary attacks, so DIGEST-MD5 should be used in preferrence.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[DIGEST-MD5]
+The DIGEST-MD5 SASL Mechanism as defined in RFC 2831 resp. in IETF Draft
+draft-ietf-sasl-rfc2831bis-XX.txt offers the HTTP Digest Access
+Authentication as SASL mechanism.
+
+~
+
+Like CRAM-MD5 it is a challenge-response authentication method that does
+not send plain text passwords over the network.
+
+~
+
+Compared to CRAM-MD5, DIGEST-MD5 prevents chosen plaintext attacks, and
+permits the use of third party authentication servers, so that it is
+recommended to use DIGEST-MD5 instead of CRAM-MD5 when possible.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[EXTERNAL]
+The EXTERNAL SASL mechanism as defined in RFC 2222 allows the use of
+external authentication systems as SASL mechanisms.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[GSSAPI]
+The GSSAPI SASL mechanism as defined in RFC 2222 resp. IETF Draft
+draft-ietf-sasl-gssapi-XX.txt allows using the Generic Security Service
+Application Program Interface {[}GSSAPI{]} KERBEROS V5 as as SASL
+mechanism.
+
+~
+
+Although GSSAPI is a general mechanism for authentication it is almost
+exlusively used for Kerberos 5.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[LOGIN]
+The LOGIN SASL Mechanism as defined in IETF Draft
+draft-murchison-sasl-login-XX.txt allows the combination of username and
+clear-text password to be used in a SASL mechanism.
+
+~
+
+It does does not provide a security layer and sends the credentials in
+clear over the wire. Thus this mechanism should not be used without
+adequate security protection.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[PLAIN]
+The Plain SASL Mechanism as defined in RFC 2595 resp. IETF Draft
+draft-ietf-sasl-plain-XX.txt is another SASL mechanism that allows
+username and clear-text password combinations in SASL environments.
+
+~
+
+Like LOGIN it sends the credentials in clear over the network and should
+not be used without sufficient security protection.
+\end{description}
+
+As for server support, only \emph{PLAIN}, \emph{LOGIN} and
+\emph{DIGEST-MD5} are supported at the time of this writing.
+
+``server\_new'' OPTIONS is a hashref that is only relevant for
+\emph{DIGEST-MD5} for now and it supports the following options:
+
+\begin{description}
+\item[- no\_integrity]
+\end{description}
+
+\begin{description}
+\item[- no\_confidentiality]
+\end{description}
+
+which configures how the security layers are negotiated with the client
+(or rather imposed to the client).
+
+\hyperdef{}{SEEux5fALSO}{\section{\hyperref[SEEux5fALSO]{SEE
+ALSO}}\label{SEEux5fALSO}}
+
+Authen::SASL, Authen::SASL::Perl::ANONYMOUS,
+Authen::SASL::Perl::CRAM\_MD5, Authen::SASL::Perl::DIGEST\_MD5,
+Authen::SASL::Perl::EXTERNAL, Authen::SASL::Perl::GSSAPI,
+Authen::SASL::Perl::LOGIN, Authen::SASL::Perl::PLAIN
+
+\hyperdef{}{AUTHOR}{\section{\hyperref[AUTHOR]{AUTHOR}}\label{AUTHOR}}
+
+Peter Marschall \textless{}peter@adpm.de\textgreater{}
+
+Please report any bugs, or post any suggestions, to the perl-ldap
+mailing list \textless{}perl-ldap@perl.org\textgreater{}
+
+\hyperdef{}{COPYRIGHT}{\section{\hyperref[COPYRIGHT]{COPYRIGHT}}\label{COPYRIGHT}}
+
+Copyright (c) 2004-2006 Peter Marschall. All rights reserved. This
+document is distributed, and may be redistributed, under the same terms
+as Perl itself.
+
+\begin{longtable}[c]{@{}ll@{}}
+\toprule\addlinespace
+2010-03-11 & perl v5.10.1
+\\\addlinespace
+\bottomrule
+\end{longtable}
+
+\end{document}

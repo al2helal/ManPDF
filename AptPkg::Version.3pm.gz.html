@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <style>
+    table.head, table.foot { width: 100%; }
+    td.head-rtitle, td.foot-os { text-align: right; }
+    td.head-vol { text-align: center; }
+    div.Pp { margin: 1ex 0ex; }
+  </style>
+  <title>AptPkg::Version(3pm)</title>
+</head>
+<body>
+<table class="head">
+  <tr>
+    <td class="head-ltitle">AptPkg::Version(3pm)</td>
+    <td class="head-vol">User Contributed Perl Documentation</td>
+    <td class="head-rtitle">AptPkg::Version(3pm)</td>
+  </tr>
+</table>
+<div class="manual-text">
+<h1 class="Sh" title="Sh" id="NAME"><a class="selflink" href="#NAME">NAME</a></h1>
+AptPkg::Version - APT package versioning class
+<h1 class="Sh" title="Sh" id="SYNOPSIS"><a class="selflink" href="#SYNOPSIS">SYNOPSIS</a></h1>
+use AptPkg::Version;
+<h1 class="Sh" title="Sh" id="DESCRIPTION"><a class="selflink" href="#DESCRIPTION">DESCRIPTION</a></h1>
+The AptPkg::Version module provides an interface to <b>APT</b>'s package version
+  handling.
+<h2 class="Ss" title="Ss" id="AptPkg::Version"><a class="selflink" href="#AptPkg::Version">AptPkg::Version</a></h2>
+The AptPkg::Version package implements the <b>APT</b> pkgVersioningSystem class.
+<div class="Pp"></div>
+An instance of the AptPkg::Version class may be fetched using the
+  &quot;versioning&quot; method from an AptPkg::System object.
+<div class="Pp"></div>
+The following methods are implemented:
+<dl class="Bl-tag">
+  <dt class="It-tag">label</dt>
+  <dd class="It-tag">Return the description of the versioning system, for
+      example:
+    <div style="height: 1.00em;">&#x00A0;</div>
+    <pre>
+    Standard .deb
+    </pre>
+    <div style="height: 1.00em;">&#x00A0;</div>
+    for Debian systems.</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">compare(<i>A</i>, <i>B</i>)</dt>
+  <dd class="It-tag">Compare package version <i>A</i> with <i>B</i>, returning a
+      negative value if <i>A</i> is an earlier version than <i>B</i>, zero if
+      the same or a positive value if <i>A</i> is later.</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">rel_compare(<i>A</i>, <i>B</i>)</dt>
+  <dd class="It-tag">Compare distribution release numbers.</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">check_dep(<i>PKG</i>, <i>OP</i>, <i>DEP</i>)</dt>
+  <dd class="It-tag">Check that the package version <i>PKG</i> satisfies the
+      relation <i>OP</i> to the dependency version <i>DEP</i>.
+    <div style="height: 1.00em;">&#x00A0;</div>
+    The relation <i>OP</i> is specified in the Debian syntax regardless of the
+      versioning system:
+    <div style="height: 1.00em;">&#x00A0;</div>
+    <pre>
+    &lt;&lt;  strictly earlier
+    &lt;=  earlier or equal
+    =   exactly equal
+    &gt;=  later or equal
+    &gt;&gt;  strictly later
+    </pre>
+  </dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">upstream(<i>VER</i>)</dt>
+  <dd class="It-tag">Return the upstream component of the given version
+    string.</dd>
+</dl>
+<h1 class="Sh" title="Sh" id="SEE_ALSO"><a class="selflink" href="#SEE_ALSO">SEE
+  ALSO</a></h1>
+<i>AptPkg::Config</i>(3pm), <i>AptPkg::System</i>(3pm), <i>AptPkg</i>(3pm).
+<h1 class="Sh" title="Sh" id="AUTHOR"><a class="selflink" href="#AUTHOR">AUTHOR</a></h1>
+Brendan O'Dea &lt;bod@debian.org&gt;</div>
+<table class="foot">
+  <tr>
+    <td class="foot-date">2013-03-01</td>
+    <td class="foot-os">perl v5.18.1</td>
+  </tr>
+</table>
+</body>
+</html>

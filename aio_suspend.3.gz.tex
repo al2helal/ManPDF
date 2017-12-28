@@ -1,0 +1,204 @@
+\documentclass[]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+    \usepackage{xltxtra,xunicode}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
+  \newcommand{\euro}{€}
+\fi
+% use microtype if available
+\IfFileExists{microtype.sty}{\usepackage{microtype}}{}
+\usepackage{longtable,booktabs}
+\ifxetex
+  \usepackage[setpagesize=false, % page size defined by xetex
+              unicode=false, % unicode breaks when used with xetex
+              xetex]{hyperref}
+\else
+  \usepackage[unicode=true]{hyperref}
+\fi
+\hypersetup{breaklinks=true,
+            bookmarks=true,
+            pdfauthor={},
+            pdftitle={AIO\_SUSPEND(3)},
+            colorlinks=true,
+            citecolor=blue,
+            urlcolor=blue,
+            linkcolor=magenta,
+            pdfborder={0 0 0}}
+\urlstyle{same}  % don't use monospace font for urls
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\setcounter{secnumdepth}{0}
+\usepackage{pagecolor}
+
+% Set background colour (of the page)
+\definecolor{weirdbgcolor}{HTML}{FCF4F0}
+\pagecolor{weirdbgcolor}
+
+% Make bold text appear in a particular colour
+\definecolor{boldcolor}{HTML}{6E0002}
+\let\realtextbf=\textbf
+\renewcommand{\textbf}[1]{\textcolor{boldcolor}{\realtextbf{#1}}}
+
+% Use underlines instead of emphasis (ugh)
+\renewcommand{\emph}[1]{\underline{#1}}
+
+% % Use fixed-width font by default
+% \renewcommand*\familydefault{\ttdefault}
+
+\title{AIO\_SUSPEND(3)}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{longtable}[c]{@{}lll@{}}
+\toprule\addlinespace
+AIO\_SUSPEND(3) & Linux Programmer's Manual & AIO\_SUSPEND(3)
+\\\addlinespace
+\bottomrule
+\end{longtable}
+
+\hyperdef{}{NAME}{\section{\hyperref[NAME]{NAME}}\label{NAME}}
+
+aio\_suspend - wait for asynchronous I/O operation or timeout
+
+\hyperdef{}{SYNOPSIS}{\section{\hyperref[SYNOPSIS]{SYNOPSIS}}\label{SYNOPSIS}}
+
+\begin{verbatim}
+ 
+#include <aio.h>
+ 
+int aio_suspend(const struct aiocb * const aiocb_list[],
+ 
+                int nitems, const struct timespec *timeout);
+ 
+Link with  -lrt.
+\end{verbatim}
+
+\hyperdef{}{DESCRIPTION}{\section{\hyperref[DESCRIPTION]{DESCRIPTION}}\label{DESCRIPTION}}
+
+The \textbf{aio\_suspend}() function suspends the calling thread until
+one of the following occurs:
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[*]
+One or more of the asynchronous I/O requests in the list
+\emph{aiocb\_list} has completed.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[*]
+A signal is delivered.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[*]
+\emph{timeout} is not NULL and the specified time interval has passed.
+(For details of the \emph{timespec} structure, see
+\textbf{nanosleep}(2).)
+\end{description}
+
+The \emph{nitems} argument specifies the number of items in
+\emph{aiocb\_list}. Each item in the list pointed to by
+\emph{aiocb\_list} must be either NULL (and then is ignored), or a
+pointer to a control block on which I/O was initiated using
+\textbf{aio\_read}(3), \textbf{aio\_write}(3), or
+\textbf{lio\_listio}(3). (See \textbf{aio}(7) for a description of the
+\emph{aiocb} structure.)
+
+If \textbf{CLOCK\_MONOTONIC} is supported, this clock is used to measure
+the timeout interval (see \textbf{clock\_gettime}(3)).
+
+\hyperdef{}{RETURNux5fVALUE}{\section{\hyperref[RETURNux5fVALUE]{RETURN
+VALUE}}\label{RETURNux5fVALUE}}
+
+If this function returns after completion of one of the I/O requests
+specified in \emph{aiocb\_list}, 0 is returned. Otherwise, -1 is
+returned, and \emph{errno} is set to indicate the error.
+
+\hyperdef{}{ERRORS}{\section{\hyperref[ERRORS]{ERRORS}}\label{ERRORS}}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[\textbf{EAGAIN}]
+The call timed out before any of the indicated operations had completed.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[\textbf{EINTR}]
+The call was ended by signal (possibly the completion signal of one of
+the operations we were waiting for); see \textbf{signal}(7).
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[\textbf{ENOSYS}]
+\textbf{aio\_suspend}() is not implemented.
+\end{description}
+
+\hyperdef{}{VERSIONS}{\section{\hyperref[VERSIONS]{VERSIONS}}\label{VERSIONS}}
+
+The \textbf{aio\_suspend}() function is available since glibc 2.1.
+
+\hyperdef{}{CONFORMINGux5fTO}{\section{\hyperref[CONFORMINGux5fTO]{CONFORMING
+TO}}\label{CONFORMINGux5fTO}}
+
+POSIX.1-2001, POSIX.1-2008.
+
+\hyperdef{}{NOTES}{\section{\hyperref[NOTES]{NOTES}}\label{NOTES}}
+
+One can achieve polling by using a non-NULL \emph{timeout} that
+specifies a zero time interval.
+
+~
+
+If one or more of the asynchronous I/O operations specified in
+\emph{aiocb\_list} has already completed at the time of the call to
+\textbf{aio\_suspend}(), then the call returns immediately.
+
+~
+
+To determine which I/O operations have completed after a successful
+return from \textbf{aio\_suspend}(), use \textbf{aio\_error}(3) to scan
+the list of \emph{aiocb} structures pointed to by \emph{aiocb\_list}.
+
+\hyperdef{}{SEEux5fALSO}{\section{\hyperref[SEEux5fALSO]{SEE
+ALSO}}\label{SEEux5fALSO}}
+
+\textbf{aio\_cancel}(3), \textbf{aio\_error}(3), \textbf{aio\_fsync}(3),
+\textbf{aio\_read}(3), \textbf{aio\_return}(3), \textbf{aio\_write}(3),
+\textbf{lio\_listio}(3), \textbf{aio}(7), \textbf{time}(7)
+
+\hyperdef{}{COLOPHON}{\section{\hyperref[COLOPHON]{COLOPHON}}\label{COLOPHON}}
+
+This page is part of release 3.54 of the Linux \emph{man-pages} project.
+A description of the project, and information about reporting bugs, can
+be found at http://www.kernel.org/doc/man-pages/.
+
+\begin{longtable}[c]{@{}ll@{}}
+\toprule\addlinespace
+2012-05-08 &
+\\\addlinespace
+\bottomrule
+\end{longtable}
+
+\end{document}

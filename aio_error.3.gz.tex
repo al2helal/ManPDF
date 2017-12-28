@@ -1,0 +1,187 @@
+\documentclass[]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+    \usepackage{xltxtra,xunicode}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
+  \newcommand{\euro}{€}
+\fi
+% use microtype if available
+\IfFileExists{microtype.sty}{\usepackage{microtype}}{}
+\usepackage{longtable,booktabs}
+\ifxetex
+  \usepackage[setpagesize=false, % page size defined by xetex
+              unicode=false, % unicode breaks when used with xetex
+              xetex]{hyperref}
+\else
+  \usepackage[unicode=true]{hyperref}
+\fi
+\hypersetup{breaklinks=true,
+            bookmarks=true,
+            pdfauthor={},
+            pdftitle={AIO\_ERROR(3)},
+            colorlinks=true,
+            citecolor=blue,
+            urlcolor=blue,
+            linkcolor=magenta,
+            pdfborder={0 0 0}}
+\urlstyle{same}  % don't use monospace font for urls
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\setcounter{secnumdepth}{0}
+\usepackage{pagecolor}
+
+% Set background colour (of the page)
+\definecolor{weirdbgcolor}{HTML}{FCF4F0}
+\pagecolor{weirdbgcolor}
+
+% Make bold text appear in a particular colour
+\definecolor{boldcolor}{HTML}{6E0002}
+\let\realtextbf=\textbf
+\renewcommand{\textbf}[1]{\textcolor{boldcolor}{\realtextbf{#1}}}
+
+% Use underlines instead of emphasis (ugh)
+\renewcommand{\emph}[1]{\underline{#1}}
+
+% % Use fixed-width font by default
+% \renewcommand*\familydefault{\ttdefault}
+
+\title{AIO\_ERROR(3)}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{longtable}[c]{@{}lll@{}}
+\toprule\addlinespace
+AIO\_ERROR(3) & Linux Programmer's Manual & AIO\_ERROR(3)
+\\\addlinespace
+\bottomrule
+\end{longtable}
+
+\hyperdef{}{NAME}{\section{\hyperref[NAME]{NAME}}\label{NAME}}
+
+aio\_error - get error status of asynchronous I/O operation
+
+\hyperdef{}{SYNOPSIS}{\section{\hyperref[SYNOPSIS]{SYNOPSIS}}\label{SYNOPSIS}}
+
+\textbf{\#include \textless{}aio.h\textgreater{}}
+
+~
+
+\textbf{int aio\_error(const struct aiocb *}\emph{aiocbp}\textbf{);}
+
+~
+
+Link with \emph{-lrt}.
+
+\hyperdef{}{DESCRIPTION}{\section{\hyperref[DESCRIPTION]{DESCRIPTION}}\label{DESCRIPTION}}
+
+The \textbf{aio\_error}() function returns the error status for the
+asynchronous I/O request with control block pointed to by \emph{aiocbp}.
+(See \textbf{aio}(7) for a description of the \emph{aiocb} structure.)
+
+\hyperdef{}{RETURNux5fVALUE}{\section{\hyperref[RETURNux5fVALUE]{RETURN
+VALUE}}\label{RETURNux5fVALUE}}
+
+This function returns one of the following:
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[*]
+\textbf{EINPROGRESS}, if the request has not been completed yet.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[*]
+\textbf{ECANCELED}, if the request was canceled.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[*]
+0, if the request completed successfully.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[*]
+A positive error number, if the asynchronous I/O operation failed. This
+is the same value that would have been stored in the \emph{errno}
+variable in the case of a synchronous \textbf{read}(2),
+\textbf{write}(2), \textbf{fsync}(2), or \textbf{fdatasync}(2) call.
+\end{description}
+
+\hyperdef{}{ERRORS}{\section{\hyperref[ERRORS]{ERRORS}}\label{ERRORS}}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[\textbf{EINVAL}]
+\emph{aiocbp} does not point at a control block for an asynchronous I/O
+request of which the return status (see \textbf{aio\_return}(3)) has not
+been retrieved yet.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[\textbf{ENOSYS}]
+\textbf{aio\_error}() is not implemented.
+\end{description}
+
+\hyperdef{}{VERSIONS}{\section{\hyperref[VERSIONS]{VERSIONS}}\label{VERSIONS}}
+
+The \textbf{aio\_error}() function is available since glibc 2.1.
+
+\hyperdef{}{ATTRIBUTES}{\section{\hyperref[ATTRIBUTES]{ATTRIBUTES}}\label{ATTRIBUTES}}
+
+\hyperdef{}{Multithreadingux5fux28seeux5fpthreadsux287ux29ux29}{\subsection{\hyperref[Multithreadingux5fux28seeux5fpthreadsux287ux29ux29]{Multithreading
+(see
+pthreads(7))}}\label{Multithreadingux5fux28seeux5fpthreadsux287ux29ux29}}
+
+The \textbf{aio\_error}() function is thread-safe.
+
+\hyperdef{}{CONFORMINGux5fTO}{\section{\hyperref[CONFORMINGux5fTO]{CONFORMING
+TO}}\label{CONFORMINGux5fTO}}
+
+POSIX.1-2001, POSIX.1-2008.
+
+\hyperdef{}{EXAMPLE}{\section{\hyperref[EXAMPLE]{EXAMPLE}}\label{EXAMPLE}}
+
+See \textbf{aio}(7).
+
+\hyperdef{}{SEEux5fALSO}{\section{\hyperref[SEEux5fALSO]{SEE
+ALSO}}\label{SEEux5fALSO}}
+
+\textbf{aio\_cancel}(3), \textbf{aio\_fsync}(3), \textbf{aio\_read}(3),
+\textbf{aio\_return}(3), \textbf{aio\_suspend}(3),
+\textbf{aio\_write}(3), \textbf{lio\_listio}(3), \textbf{aio}(7)
+
+\hyperdef{}{COLOPHON}{\section{\hyperref[COLOPHON]{COLOPHON}}\label{COLOPHON}}
+
+This page is part of release 3.54 of the Linux \emph{man-pages} project.
+A description of the project, and information about reporting bugs, can
+be found at http://www.kernel.org/doc/man-pages/.
+
+\begin{longtable}[c]{@{}ll@{}}
+\toprule\addlinespace
+2013-07-04 &
+\\\addlinespace
+\bottomrule
+\end{longtable}
+
+\end{document}

@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <style>
+    table.head, table.foot { width: 100%; }
+    td.head-rtitle, td.foot-os { text-align: right; }
+    td.head-vol { text-align: center; }
+    div.Pp { margin: 1ex 0ex; }
+  </style>
+  <title>autodie(3pm)</title>
+</head>
+<body>
+<table class="head">
+  <tr>
+    <td class="head-ltitle">autodie(3pm)</td>
+    <td class="head-vol">User Contributed Perl Documentation</td>
+    <td class="head-rtitle">autodie(3pm)</td>
+  </tr>
+</table>
+<div class="manual-text">
+<h1 class="Sh" title="Sh" id="NAME"><a class="selflink" href="#NAME">NAME</a></h1>
+autodie - Replace functions with ones that succeed or die with lexical scope
+<h1 class="Sh" title="Sh" id="SYNOPSIS"><a class="selflink" href="#SYNOPSIS">SYNOPSIS</a></h1>
+<pre>
+    use autodie;            # Recommended: implies 'use autodie qw(:default)'
+    use autodie qw(:all);   # Recommended more: defaults and system/exec.
+    use autodie qw(open close);   # open/close succeed or die
+    open(my $fh, &quot;&lt;&quot;, $filename); # No need to check!
+    {
+        no autodie qw(open);          # open failures won't die
+        open(my $fh, &quot;&lt;&quot;, $filename); # Could fail silently!
+        no autodie;                   # disable all autodies
+    }
+</pre>
+<h1 class="Sh" title="Sh" id="DESCRIPTION"><a class="selflink" href="#DESCRIPTION">DESCRIPTION</a></h1>
+<pre>
+        bIlujDI' yIchegh()Qo'; yIHegh()!
+        It is better to die() than to return() in failure.
+                -- Klingon programming proverb.
+</pre>
+<div class="Pp"></div>
+The &quot;autodie&quot; pragma provides a convenient way to replace functions
+  that normally return false on failure with equivalents that throw an exception
+  on failure.
+<div class="Pp"></div>
+The &quot;autodie&quot; pragma has <i>lexical scope</i>, meaning that functions
+  and subroutines altered with &quot;autodie&quot; will only change their
+  behaviour until the end of the enclosing block, file, or &quot;eval&quot;.
+<div class="Pp"></div>
+If &quot;system&quot; is specified as an argument to &quot;autodie&quot;, then
+  it uses IPC::System::Simple to do the heavy lifting. See the description of
+  that module for more information.
+<h1 class="Sh" title="Sh" id="EXCEPTIONS"><a class="selflink" href="#EXCEPTIONS">EXCEPTIONS</a></h1>
+Exceptions produced by the &quot;autodie&quot; pragma are members of the
+  autodie::exception class. The preferred way to work with these exceptions
+  under Perl 5.10 is as follows:
+<div class="Pp"></div>
+<pre>
+    use feature qw(switch);
+    eval {
+        use autodie;
+        open(my $fh, '&lt;', $some_file);
+        my @records = &lt;$fh&gt;;
+        # Do things with @records...
+        close($fh);
+    };
+    given ($@) {
+        when (undef)   { say &quot;No error&quot;;                    }
+        when ('open')  { say &quot;Error from open&quot;;             }
+        when (':io')   { say &quot;Non-open, IO error.&quot;;         }
+        when (':all')  { say &quot;All other autodie errors.&quot;    }
+        default        { say &quot;Not an autodie error at all.&quot; }
+    }
+</pre>
+<div class="Pp"></div>
+Under Perl 5.8, the &quot;given/when&quot; structure is not available, so the
+  following structure may be used:
+<div class="Pp"></div>
+<pre>
+    eval {
+        use autodie;
+        open(my $fh, '&lt;', $some_file);
+        my @records = &lt;$fh&gt;;
+        # Do things with @records...
+        close($fh);
+    };
+    if ($@ and $@-&gt;isa('autodie::exception')) {
+        if ($@-&gt;matches('open')) { print &quot;Error from open\n&quot;;   }
+        if ($@-&gt;matches(':io' )) { print &quot;Non-open, IO error.&quot;; }
+    } elsif ($@) {
+        # A non-autodie exception.
+    }
+</pre>
+<div class="Pp"></div>
+See autodie::exception for further information on interrogating exceptions.
+<h1 class="Sh" title="Sh" id="CATEGORIES"><a class="selflink" href="#CATEGORIES">CATEGORIES</a></h1>
+Autodie uses a simple set of categories to group together similar built-ins.
+  Requesting a category type (starting with a colon) will enable autodie for all
+  built-ins beneath that category. For example, requesting &quot;:file&quot;
+  will enable autodie for &quot;close&quot;, &quot;fcntl&quot;,
+  &quot;fileno&quot;, &quot;open&quot; and &quot;sysopen&quot;.
+<div class="Pp"></div>
+The categories are currently:
+<div class="Pp"></div>
+<pre>
+    :all
+        :default
+            :io
+                read
+                seek
+                sysread
+                sysseek
+                syswrite
+                :dbm
+                    dbmclose
+                    dbmopen
+                :file
+                    binmode
+                    close
+                    chmod
+                    chown
+                    fcntl
+                    fileno
+                    flock
+                    ioctl
+                    open
+                    sysopen
+                    truncate
+                :filesys
+                    chdir
+                    closedir
+                    opendir
+                    link
+                    mkdir
+                    readlink
+                    rename
+                    rmdir
+                    symlink
+                    unlink
+                :ipc
+                    pipe
+                    :msg
+                        msgctl
+                        msgget
+                        msgrcv
+                        msgsnd
+                    :semaphore
+                        semctl
+                        semget
+                        semop
+                    :shm
+                        shmctl
+                        shmget
+                        shmread
+                :socket
+                    accept
+                    bind
+                    connect
+                    getsockopt
+                    listen
+                    recv
+                    send
+                    setsockopt
+                    shutdown
+                    socketpair
+            :threads
+                fork
+        :system
+            system
+            exec
+</pre>
+<div class="Pp"></div>
+Note that while the above category system is presently a strict hierarchy, this
+  should not be assumed.
+<div class="Pp"></div>
+A plain &quot;use autodie&quot; implies &quot;use autodie qw(:default)&quot;.
+  Note that &quot;system&quot; and &quot;exec&quot; are not enabled by default.
+  &quot;system&quot; requires the optional IPC::System::Simple module to be
+  installed, and enabling &quot;system&quot; or &quot;exec&quot; will invalidate
+  their exotic forms. See &quot;BUGS&quot; below for more details.
+<div class="Pp"></div>
+The syntax:
+<div class="Pp"></div>
+<pre>
+    use autodie qw(:1.994);
+</pre>
+<div class="Pp"></div>
+allows the &quot;:default&quot; list from a particular version to be used. This
+  provides the convenience of using the default methods, but the surety that no
+  behavioral changes will occur if the &quot;autodie&quot; module is upgraded.
+<div class="Pp"></div>
+&quot;autodie&quot; can be enabled for all of Perl's built-ins, including
+  &quot;system&quot; and &quot;exec&quot; with:
+<div class="Pp"></div>
+<pre>
+    use autodie qw(:all);
+</pre>
+<h1 class="Sh" title="Sh" id="FUNCTION_SPECIFIC_NOTES"><a class="selflink" href="#FUNCTION_SPECIFIC_NOTES">FUNCTION
+  SPECIFIC NOTES</a></h1>
+<h2 class="Ss" title="Ss" id="print"><a class="selflink" href="#print">print</a></h2>
+The autodie pragma <b>&lt;does not check calls to
+  </b><b>&quot;print&quot;</b><b></b>&gt;.
+<h2 class="Ss" title="Ss" id="flock"><a class="selflink" href="#flock">flock</a></h2>
+It is not considered an error for &quot;flock&quot; to return false if it fails
+  due to an &quot;EWOULDBLOCK&quot; (or equivalent) condition. This means one
+  can still use the common convention of testing the return value of
+  &quot;flock&quot; when called with the &quot;LOCK_NB&quot; option:
+<div class="Pp"></div>
+<pre>
+    use autodie;
+    if ( flock($fh, LOCK_EX | LOCK_NB) ) {
+        # We have a lock
+    }
+</pre>
+<div class="Pp"></div>
+Autodying &quot;flock&quot; will generate an exception if &quot;flock&quot;
+  returns false with any other error.
+<h2 class="Ss" title="Ss" id="system/exec"><a class="selflink" href="#system/exec">system/exec</a></h2>
+The &quot;system&quot; built-in is considered to have failed in the following
+  circumstances:
+<dl class="Bl-tag">
+  <dt class="It-tag">&#x2022;</dt>
+  <dd class="It-tag">The command does not start.</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">&#x2022;</dt>
+  <dd class="It-tag">The command is killed by a signal.</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">&#x2022;</dt>
+  <dd class="It-tag">The command returns a non-zero exit value (but see
+    below).</dd>
+</dl>
+<div class="Pp"></div>
+On success, the autodying form of &quot;system&quot; returns the <i>exit
+  value</i> rather than the contents of $?.
+<div class="Pp"></div>
+Additional allowable exit values can be supplied as an optional first argument
+  to autodying &quot;system&quot;:
+<div class="Pp"></div>
+<pre>
+    system( [ 0, 1, 2 ], $cmd, @args);  # 0,1,2 are good exit values
+</pre>
+<div class="Pp"></div>
+&quot;autodie&quot; uses the IPC::System::Simple module to change
+  &quot;system&quot;. See its documentation for further information.
+<div class="Pp"></div>
+Applying &quot;autodie&quot; to &quot;system&quot; or &quot;exec&quot; causes
+  the exotic forms &quot;system { $cmd } @args &quot; or &quot;exec { $cmd }
+  @args&quot; to be considered a syntax error until the end of the lexical
+  scope. If you really need to use the exotic form, you can call
+  &quot;CORE::system&quot; or &quot;CORE::exec&quot; instead, or use &quot;no
+  autodie qw(system exec)&quot; before calling the exotic form.
+<h1 class="Sh" title="Sh" id="GOTCHAS"><a class="selflink" href="#GOTCHAS">GOTCHAS</a></h1>
+Functions called in list context are assumed to have failed if they return an
+  empty list, or a list consisting only of a single undef element.
+<h1 class="Sh" title="Sh" id="DIAGNOSTICS"><a class="selflink" href="#DIAGNOSTICS">DIAGNOSTICS</a></h1>
+<dl class="Bl-tag">
+  <dt class="It-tag">:void cannot be used with lexical scope</dt>
+  <dd class="It-tag">The &quot;:void&quot; option is supported in Fatal, but not
+      &quot;autodie&quot;. To workaround this, &quot;autodie&quot; may be
+      explicitly disabled until the end of the current block with &quot;no
+      autodie&quot;. To disable autodie for only a single function (eg, open)
+      use &quot;no autodie qw(open)&quot;.
+    <div style="height: 1.00em;">&#x00A0;</div>
+    &quot;autodie&quot; performs no checking of called context to determine
+      whether to throw an exception; the explicitness of error handling with
+      &quot;autodie&quot; is a deliberate feature.</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">No user hints defined for %s</dt>
+  <dd class="It-tag">You've insisted on hints for user-subroutines, either by
+      pre-pending a &quot;!&quot; to the subroutine name itself, or earlier in
+      the list of arguments to &quot;autodie&quot;. However the subroutine in
+      question does not have any hints available.</dd>
+</dl>
+<div class="Pp"></div>
+See also &quot;DIAGNOSTICS&quot; in Fatal.
+<h1 class="Sh" title="Sh" id="BUGS"><a class="selflink" href="#BUGS">BUGS</a></h1>
+&quot;Used only once&quot; warnings can be generated when &quot;autodie&quot; or
+  &quot;Fatal&quot; is used with package filehandles (eg, &quot;FILE&quot;).
+  Scalar filehandles are strongly recommended instead.
+<div class="Pp"></div>
+When using &quot;autodie&quot; or &quot;Fatal&quot; with user subroutines, the
+  declaration of those subroutines must appear before the first use of
+  &quot;Fatal&quot; or &quot;autodie&quot;, or have been exported from a module.
+  Attempting to use &quot;Fatal&quot; or &quot;autodie&quot; on other user
+  subroutines will result in a compile-time error.
+<div class="Pp"></div>
+Due to a bug in Perl, &quot;autodie&quot; may &quot;lose&quot; any format which
+  has the same name as an autodying built-in or function.
+<div class="Pp"></div>
+&quot;autodie&quot; may not work correctly if used inside a file with a name
+  that looks like a string eval, such as <i>eval (3)</i>.
+<h2 class="Ss" title="Ss" id="autodie_and_string_eval"><a class="selflink" href="#autodie_and_string_eval">autodie
+  and string eval</a></h2>
+Due to the current implementation of &quot;autodie&quot;, unexpected results may
+  be seen when used near or with the string version of eval. <i>None of these
+  bugs exist when using block eval</i>.
+<div class="Pp"></div>
+Under Perl 5.8 only, &quot;autodie&quot; <i>does not</i> propagate into string
+  &quot;eval&quot; statements, although it can be explicitly enabled inside a
+  string &quot;eval&quot;.
+<div class="Pp"></div>
+Under Perl 5.10 only, using a string eval when &quot;autodie&quot; is in effect
+  can cause the autodie behaviour to leak into the surrounding scope. This can
+  be worked around by using a &quot;no autodie&quot; at the end of the scope to
+  explicitly remove autodie's effects, or by avoiding the use of string eval.
+<div class="Pp"></div>
+<i>None of these bugs exist when using block eval</i>. The use of
+  &quot;autodie&quot; with block eval is considered good practice.
+<h2 class="Ss" title="Ss" id="REPORTING_BUGS"><a class="selflink" href="#REPORTING_BUGS">REPORTING
+  BUGS</a></h2>
+Please report bugs via the CPAN Request Tracker at
+  &lt;http://rt.cpan.org/NoAuth/Bugs.html?Dist=autodie&gt;.
+<h1 class="Sh" title="Sh" id="FEEDBACK"><a class="selflink" href="#FEEDBACK">FEEDBACK</a></h1>
+If you find this module useful, please consider rating it on the CPAN Ratings
+  service at &lt;http://cpanratings.perl.org/rate?distribution=autodie&gt; .
+<div class="Pp"></div>
+The module author loves to hear how &quot;autodie&quot; has made your life
+  better (or worse). Feedback can be sent to &lt;pjf@perltraining.com.au&gt;.
+<h1 class="Sh" title="Sh" id="AUTHOR"><a class="selflink" href="#AUTHOR">AUTHOR</a></h1>
+Copyright 2008-2009, Paul Fenwick &lt;pjf@perltraining.com.au&gt;
+<h1 class="Sh" title="Sh" id="LICENSE"><a class="selflink" href="#LICENSE">LICENSE</a></h1>
+This module is free software. You may distribute it under the same terms as Perl
+  itself.
+<h1 class="Sh" title="Sh" id="SEE_ALSO"><a class="selflink" href="#SEE_ALSO">SEE
+  ALSO</a></h1>
+Fatal, autodie::exception, autodie::hints, IPC::System::Simple
+<div class="Pp"></div>
+<i>Perl tips, autodie</i> at
+  &lt;http://perltraining.com.au/tips/2008-08-20.html&gt;
+<h1 class="Sh" title="Sh" id="ACKNOWLEDGEMENTS"><a class="selflink" href="#ACKNOWLEDGEMENTS">ACKNOWLEDGEMENTS</a></h1>
+Mark Reed and Roland Giersig -- Klingon translators.
+<div class="Pp"></div>
+See the <i>AUTHORS</i> file for full credits. The latest version of this file
+  can be found at &lt;https://github.com/pjf/autodie/tree/master/AUTHORS&gt;
+  .</div>
+<table class="foot">
+  <tr>
+    <td class="foot-date">2014-01-27</td>
+    <td class="foot-os">perl v5.18.2</td>
+  </tr>
+</table>
+</body>
+</html>

@@ -1,0 +1,248 @@
+\documentclass[]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+    \usepackage{xltxtra,xunicode}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
+  \newcommand{\euro}{€}
+\fi
+% use microtype if available
+\IfFileExists{microtype.sty}{\usepackage{microtype}}{}
+\usepackage{longtable,booktabs}
+\ifxetex
+  \usepackage[setpagesize=false, % page size defined by xetex
+              unicode=false, % unicode breaks when used with xetex
+              xetex]{hyperref}
+\else
+  \usepackage[unicode=true]{hyperref}
+\fi
+\hypersetup{breaklinks=true,
+            bookmarks=true,
+            pdfauthor={},
+            pdftitle={LBER\_TYPES(3)},
+            colorlinks=true,
+            citecolor=blue,
+            urlcolor=blue,
+            linkcolor=magenta,
+            pdfborder={0 0 0}}
+\urlstyle{same}  % don't use monospace font for urls
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\setcounter{secnumdepth}{0}
+\usepackage{pagecolor}
+
+% Set background colour (of the page)
+\definecolor{weirdbgcolor}{HTML}{FCF4F0}
+\pagecolor{weirdbgcolor}
+
+% Make bold text appear in a particular colour
+\definecolor{boldcolor}{HTML}{6E0002}
+\let\realtextbf=\textbf
+\renewcommand{\textbf}[1]{\textcolor{boldcolor}{\realtextbf{#1}}}
+
+% Use underlines instead of emphasis (ugh)
+\renewcommand{\emph}[1]{\underline{#1}}
+
+% % Use fixed-width font by default
+% \renewcommand*\familydefault{\ttdefault}
+
+\title{LBER\_TYPES(3)}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{longtable}[c]{@{}lll@{}}
+\toprule\addlinespace
+LBER\_TYPES(3) & Library Functions Manual & LBER\_TYPES(3)
+\\\addlinespace
+\bottomrule
+\end{longtable}
+
+\hyperdef{}{NAME}{\section{\hyperref[NAME]{NAME}}\label{NAME}}
+
+ber\_int\_t, ber\_uint\_t, ber\_len\_t, ber\_slen\_t, ber\_tag\_t,
+struct berval, BerValue, BerVarray, BerElement, ber\_bvfree,
+ber\_bvecfree, ber\_bvecadd, ber\_bvarray\_free, ber\_bvarray\_add,
+ber\_bvdup, ber\_dupbv, ber\_bvstr, ber\_bvstrdup, ber\_str2bv,
+ber\_alloc\_t, ber\_init, ber\_init2, ber\_free - OpenLDAP LBER types
+and allocation functions
+
+\hyperdef{}{LIBRARY}{\section{\hyperref[LIBRARY]{LIBRARY}}\label{LIBRARY}}
+
+OpenLDAP LBER (liblber, -llber)
+
+\hyperdef{}{SYNOPSIS}{\section{\hyperref[SYNOPSIS]{SYNOPSIS}}\label{SYNOPSIS}}
+
+\textbf{\#include \textless{}lber.h\textgreater{}}
+
+\begin{verbatim}
+typedef impl_tag_t ber_tag_t;
+typedef impl_int_t ber_int_t;
+typedef impl_uint_t ber_uint_t;
+typedef impl_len_t ber_len_t;
+typedef impl_slen_t ber_slen_t;
+
+typedef struct berval {
+    ber_len_t bv_len;
+    char *bv_val;
+} BerValue, *BerVarray;
+
+typedef struct berelement BerElement;
+\end{verbatim}
+
+\textbf{void ber\_bvfree(struct berval *}\emph{bv}\textbf{);}
+
+\textbf{void ber\_bvecfree(struct berval **}\emph{bvec}\textbf{);}
+
+\textbf{void ber\_bvecadd(struct berval ***}\emph{bvec}\textbf{, struct
+berval *}\emph{bv}\textbf{);}
+
+\textbf{void ber\_bvarray\_free(struct berval
+*}\emph{bvarray}\textbf{);}
+
+\textbf{void ber\_bvarray\_add(BerVarray *}\emph{bvarray}\textbf{,
+BerValue *}\emph{bv}\textbf{);}
+
+\textbf{struct berval *ber\_bvdup(const struct berval
+*}\emph{bv}\textbf{);}
+
+\textbf{struct berval *ber\_dupbv(const struct berval
+*}\emph{dst}\textbf{, struct berval *}\emph{src}\textbf{);}
+
+\textbf{struct berval *ber\_bvstr(const char *}\emph{str}\textbf{);}
+
+\textbf{struct berval *ber\_bvstrdup(const char *}\emph{str}\textbf{);}
+
+\textbf{struct berval *ber\_str2bv(const char *}\emph{str}\textbf{,
+ber\_len\_t}\emph{len}\textbf{, int}\emph{dup}\textbf{, struct berval
+*}\emph{bv}\textbf{);}
+
+\textbf{BerElement *ber\_alloc\_t(int}\emph{options}\textbf{);}
+
+\textbf{BerElement *ber\_init(struct berval *}\emph{bv}\textbf{);}
+
+\textbf{void ber\_init2(BerElement *}\emph{ber}\textbf{, struct berval
+*}\emph{bv}\textbf{, int}\emph{options}\textbf{);}
+
+\textbf{void ber\_free(BerElement *}\emph{ber}\textbf{,
+int}\emph{freebuf}\textbf{);}
+
+\hyperdef{}{DESCRIPTION}{\section{\hyperref[DESCRIPTION]{DESCRIPTION}}\label{DESCRIPTION}}
+
+The following are the basic types and structures defined for use with
+the Lightweight BER library.
+
+\textbf{ber\_int\_t} is a signed integer of at least 32 bits. It is
+commonly equivalent to \textbf{int}. \textbf{ber\_uint\_t} is the
+unsigned variant of \textbf{ber\_int\_t}.
+
+\textbf{ber\_len\_t} is an unsigned integer of at least 32 bits used to
+represent a length. It is commonly equivalent to a \textbf{size\_t}.
+\textbf{ber\_slen\_t} is the signed variant to \textbf{ber\_len\_t}.
+
+\textbf{ber\_tag\_t} is an unsigned integer of at least 32 bits used to
+represent a BER tag. It is commonly equivalent to a
+\textbf{unsigned~long}.
+
+The actual definitions of the integral impl\_TYPE\_t types are platform
+specific.
+
+\textbf{BerValue}, commonly used as \textbf{struct~berval}, is used to
+hold an arbitrary sequence of octets. \textbf{bv\_val} points to
+\textbf{bv\_len} octets. \textbf{bv\_val} is not necessarily terminated
+by a NULL (zero) octet. \textbf{ber\_bvfree}() frees a BerValue, pointed
+to by \emph{bv}, returned from this API. If \emph{bv} is NULL, the
+routine does nothing.
+
+\textbf{ber\_bvecfree}() frees an array of BerValues (and the array),
+pointed to by \emph{bvec}, returned from this API. If \emph{bvec} is
+NULL, the routine does nothing. \textbf{ber\_bvecadd}() appends the
+\emph{bv} pointer to the \emph{bvec} array. Space for the array is
+allocated as needed. The end of the array is marked by a NULL pointer.
+
+\textbf{ber\_bvarray\_free}() frees an array of BerValues (and the
+array), pointed to by \emph{bvarray}, returned from this API. If
+\emph{bvarray} is NULL, the routine does nothing.
+\textbf{ber\_bvarray\_add}() appends the contents of the BerValue
+pointed to by \emph{bv} to the \emph{bvarray} array. Space for the new
+element is allocated as needed. The end of the array is marked by a
+BerValue with a NULL bv\_val field.
+
+\textbf{ber\_bvdup}() returns a copy of a BerValue. The routine returns
+NULL upon error (e.g. out of memory). The caller should use
+\textbf{ber\_bvfree}() to deallocate the resulting BerValue.
+\textbf{ber\_dupbv}() copies a BerValue from \emph{src} to \emph{dst}.
+If \emph{dst} is NULL a new BerValue will be allocated to hold the copy.
+The routine returns NULL upon error, otherwise it returns a pointer to
+the copy. If \emph{dst} is NULL the caller should use
+\textbf{ber\_bvfree}() to deallocate the resulting BerValue, otherwise
+\textbf{ber\_memfree}() should be used to deallocate the
+\emph{dst-\textgreater{}bv\_val}. (The \textbf{ber\_bvdup}() function is
+internally implemented as ber\_dupbv(NULL, bv). \textbf{ber\_bvdup}() is
+provided only for compatibility with an expired draft of the LDAP C API;
+\textbf{ber\_dupbv}() is the preferred interface.)
+
+\textbf{ber\_bvstr}() returns a BerValue containing the string pointed
+to by \emph{str}. \textbf{ber\_bvstrdup}() returns a BerValue containing
+a copy of the string pointed to by \emph{str}. \textbf{ber\_str2bv}()
+returns a BerValue containing the string pointed to by \emph{str}, whose
+length may be optionally specified in \emph{len}. If \emph{dup} is
+non-zero, the BerValue will contain a copy of \emph{str}. If \emph{len}
+is zero, the number of bytes to copy will be determined by
+\textbf{strlen}(3), otherwise \emph{len} bytes will be copied. If
+\emph{bv} is non-NULL, the result will be stored in the given BerValue,
+otherwise a new BerValue will be allocated to store the result. NOTE:
+Both \textbf{ber\_bvstr}() and \textbf{ber\_bvstrdup}() are implemented
+as macros using \textbf{ber\_str2bv}() in this version of the library.
+
+\textbf{BerElement} is an opaque structure used to maintain state
+information used in encoding and decoding. \textbf{ber\_alloc\_t}() is
+used to create an empty BerElement structure. If \textbf{LBER\_USE\_DER}
+is specified for the \emph{options} parameter then data lengths for data
+written to the BerElement will be encoded in the minimal number of
+octets required, otherwise they will always be written as four byte
+values. \textbf{ber\_init}() creates a BerElement structure that is
+initialized with a copy of the data in its \emph{bv} parameter.
+\textbf{ber\_init2}() initializes an existing BerElement \emph{ber}
+using the data in the \emph{bv} parameter. The data is referenced
+directly, not copied. The \emph{options} parameter is the same as for
+\textbf{ber\_alloc\_t}(). \textbf{ber\_free}() frees a BerElement
+pointed to by \emph{ber}. If \emph{ber} is NULL, the routine does
+nothing. If \emph{freebuf} is zero, the internal buffer is not freed.
+
+\hyperdef{}{SEEux5fALSO}{\section{\hyperref[SEEux5fALSO]{SEE
+ALSO}}\label{SEEux5fALSO}}
+
+\textbf{lber-encode}(3), \textbf{lber-decode}(3),
+\textbf{lber-memory}(3)
+
+\hyperdef{}{ACKNOWLEDGEMENTS}{\section{\hyperref[ACKNOWLEDGEMENTS]{ACKNOWLEDGEMENTS}}\label{ACKNOWLEDGEMENTS}}
+
+\textbf{OpenLDAP Software} is developed and maintained by The OpenLDAP
+Project \textless{}http://www.openldap.org/\textgreater{}.
+\textbf{OpenLDAP Software} is derived from University of Michigan LDAP
+3.3 Release.
+
+\begin{longtable}[c]{@{}ll@{}}
+\toprule\addlinespace
+2012/04/23 & OpenLDAP
+\\\addlinespace
+\bottomrule
+\end{longtable}
+
+\end{document}

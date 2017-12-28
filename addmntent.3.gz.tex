@@ -1,0 +1,227 @@
+\documentclass[]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+    \usepackage{xltxtra,xunicode}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
+  \newcommand{\euro}{€}
+\fi
+% use microtype if available
+\IfFileExists{microtype.sty}{\usepackage{microtype}}{}
+\usepackage{longtable,booktabs}
+\ifxetex
+  \usepackage[setpagesize=false, % page size defined by xetex
+              unicode=false, % unicode breaks when used with xetex
+              xetex]{hyperref}
+\else
+  \usepackage[unicode=true]{hyperref}
+\fi
+\hypersetup{breaklinks=true,
+            bookmarks=true,
+            pdfauthor={},
+            pdftitle={GETMNTENT(3)},
+            colorlinks=true,
+            citecolor=blue,
+            urlcolor=blue,
+            linkcolor=magenta,
+            pdfborder={0 0 0}}
+\urlstyle{same}  % don't use monospace font for urls
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\setcounter{secnumdepth}{0}
+\usepackage{pagecolor}
+
+% Set background colour (of the page)
+\definecolor{weirdbgcolor}{HTML}{FCF4F0}
+\pagecolor{weirdbgcolor}
+
+% Make bold text appear in a particular colour
+\definecolor{boldcolor}{HTML}{6E0002}
+\let\realtextbf=\textbf
+\renewcommand{\textbf}[1]{\textcolor{boldcolor}{\realtextbf{#1}}}
+
+% Use underlines instead of emphasis (ugh)
+\renewcommand{\emph}[1]{\underline{#1}}
+
+% % Use fixed-width font by default
+% \renewcommand*\familydefault{\ttdefault}
+
+\title{GETMNTENT(3)}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{longtable}[c]{@{}lll@{}}
+\toprule\addlinespace
+GETMNTENT(3) & Linux Programmer's Manual & GETMNTENT(3)
+\\\addlinespace
+\bottomrule
+\end{longtable}
+
+\hyperdef{}{NAME}{\section{\hyperref[NAME]{NAME}}\label{NAME}}
+
+getmntent, setmntent, addmntent, endmntent, hasmntopt, getmntent\_r -
+get filesystem descriptor file entry
+
+\hyperdef{}{SYNOPSIS}{\section{\hyperref[SYNOPSIS]{SYNOPSIS}}\label{SYNOPSIS}}
+
+\begin{verbatim}
+#include <stdio.h>
+#include <mntent.h>
+ 
+FILE *setmntent(const char *filename, const char *type);
+ 
+struct mntent *getmntent(FILE *fp);
+ 
+int addmntent(FILE *fp, const struct mntent *mnt);
+ 
+int endmntent(FILE *fp);
+ 
+char *hasmntopt(const struct mntent *mnt, const char *opt);
+ 
+/* GNU extension */
+#include <mntent.h>
+ 
+struct mntent *getmntent_r(FILE *fp, struct mntent *mntbuf,
+                           char *buf, int buflen);
+\end{verbatim}
+
+~
+
+Feature Test Macro Requirements for glibc (see
+\textbf{feature\_test\_macros}(7)): \\
+
+~
+
+\textbf{getmntent\_r}(): \_BSD\_SOURCE \textbar{}\textbar{}
+\_SVID\_SOURCE
+
+\hyperdef{}{DESCRIPTION}{\section{\hyperref[DESCRIPTION]{DESCRIPTION}}\label{DESCRIPTION}}
+
+These routines are used to access the filesystem description file
+\emph{/etc/fstab} and the mounted filesystem description file
+\emph{/etc/mtab}.
+
+The \textbf{setmntent}() function opens the filesystem description file
+\emph{filename} and returns a file pointer which can be used by
+\textbf{getmntent}(). The argument \emph{type} is the type of access
+required and can take the same values as the \emph{mode} argument of
+\textbf{fopen}(3).
+
+The \textbf{getmntent}() function reads the next line from the
+filesystem description file \emph{fp} and returns a pointer to a
+structure containing the broken out fields from a line in the file. The
+pointer points to a static area of memory which is overwritten by
+subsequent calls to \textbf{getmntent}().
+
+The \textbf{addmntent}() function adds the \emph{mntent} structure
+\emph{mnt} to the end of the open file \emph{fp}.
+
+The \textbf{endmntent}() function closes the filesystem description file
+\emph{fp}.
+
+The \textbf{hasmntopt}() function scans the \emph{mnt\_opts} field (see
+below) of the \emph{mntent} structure \emph{mnt} for a substring that
+matches \emph{opt}. See \emph{\textless{}mntent.h\textgreater{}} and
+\textbf{mount}(8) for valid mount options.
+
+The reentrant \textbf{getmntent\_r}() function is similar to
+\textbf{getmntent}(), but stores the \emph{struct mount} in the provided
+\emph{*mntbuf} and stores the strings pointed to by the entries in that
+struct in the provided array \emph{buf} of size \emph{buflen}.
+
+The \emph{mntent} structure is defined in
+\emph{\textless{}mntent.h\textgreater{}} as follows:
+
+~
+
+\begin{verbatim}
+struct mntent {
+    char *mnt_fsname;   /* name of mounted filesystem */
+    char *mnt_dir;      /* filesystem path prefix */
+    char *mnt_type;     /* mount type (see mntent.h) */
+    char *mnt_opts;     /* mount options (see mntent.h) */
+    int   mnt_freq;     /* dump frequency in days */
+    int   mnt_passno;   /* pass number on parallel fsck */
+};
+\end{verbatim}
+
+~
+
+Since fields in the mtab and fstab files are separated by whitespace,
+octal escapes are used to represent the four characters space
+(\textbackslash{}040), tab (\textbackslash{}011), newline
+(\textbackslash{}012) and backslash (\textbackslash{}134) in those files
+when they occur in one of the four strings in a \emph{mntent} structure.
+The routines \textbf{addmntent}() and \textbf{getmntent}() will convert
+from string representation to escaped representation and back.
+
+\hyperdef{}{RETURNux5fVALUE}{\section{\hyperref[RETURNux5fVALUE]{RETURN
+VALUE}}\label{RETURNux5fVALUE}}
+
+The \textbf{getmntent}() and \textbf{getmntent\_r}() functions return a
+pointer to the \emph{mntent} structure or NULL on failure.
+
+The \textbf{addmntent}() function returns 0 on success and 1 on failure.
+
+The \textbf{endmntent}() function always returns 1.
+
+The \textbf{hasmntopt}() function returns the address of the substring
+if a match is found and NULL otherwise.
+
+\hyperdef{}{FILES}{\section{\hyperref[FILES]{FILES}}\label{FILES}}
+
+\begin{verbatim}
+/etc/fstab          filesystem description file
+/etc/mtab           mounted filesystem description file
+\end{verbatim}
+
+\hyperdef{}{CONFORMINGux5fTO}{\section{\hyperref[CONFORMINGux5fTO]{CONFORMING
+TO}}\label{CONFORMINGux5fTO}}
+
+The nonreentrant functions are from SunOS 4.1.3. A routine
+\textbf{getmntent\_r}() was introduced in HP-UX 10, but it returns an
+int. The prototype shown above is glibc-only.
+
+\hyperdef{}{NOTES}{\section{\hyperref[NOTES]{NOTES}}\label{NOTES}}
+
+System V also has a \textbf{getmntent}() function but the calling
+sequence differs, and the returned structure is different. Under System
+V \emph{/etc/mnttab} is used. 4.4BSD and Digital UNIX have a routine
+\textbf{getmntinfo}(), a wrapper around the system call
+\textbf{getfsstat}().
+
+\hyperdef{}{SEEux5fALSO}{\section{\hyperref[SEEux5fALSO]{SEE
+ALSO}}\label{SEEux5fALSO}}
+
+\textbf{fopen}(3), \textbf{fstab}(5), \textbf{mount}(8)
+
+\hyperdef{}{COLOPHON}{\section{\hyperref[COLOPHON]{COLOPHON}}\label{COLOPHON}}
+
+This page is part of release 3.54 of the Linux \emph{man-pages} project.
+A description of the project, and information about reporting bugs, can
+be found at http://www.kernel.org/doc/man-pages/.
+
+\begin{longtable}[c]{@{}ll@{}}
+\toprule\addlinespace
+2009-09-15 &
+\\\addlinespace
+\bottomrule
+\end{longtable}
+
+\end{document}

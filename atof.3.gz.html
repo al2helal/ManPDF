@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <style>
+    table.head, table.foot { width: 100%; }
+    td.head-rtitle, td.foot-os { text-align: right; }
+    td.head-vol { text-align: center; }
+    div.Pp { margin: 1ex 0ex; }
+  </style>
+  <title>ATOF(3)</title>
+</head>
+<body>
+<table class="head">
+  <tr>
+    <td class="head-ltitle">ATOF(3)</td>
+    <td class="head-vol">Linux Programmer's Manual</td>
+    <td class="head-rtitle">ATOF(3)</td>
+  </tr>
+</table>
+<div class="manual-text">
+<h1 class="Sh" title="Sh" id="NAME"><a class="selflink" href="#NAME">NAME</a></h1>
+atof - convert a string to a double
+<h1 class="Sh" title="Sh" id="SYNOPSIS"><a class="selflink" href="#SYNOPSIS">SYNOPSIS</a></h1>
+<pre>
+<b>#include &lt;stdlib.h&gt;</b>
+<div style="height: 1.00em;">&#x00A0;</div>
+<b>double atof(const char *</b><i>nptr</i><b>);</b>
+</pre>
+<h1 class="Sh" title="Sh" id="DESCRIPTION"><a class="selflink" href="#DESCRIPTION">DESCRIPTION</a></h1>
+The <b>atof</b>() function converts the initial portion of the string pointed to
+  by <i>nptr</i> to <i>double</i>. The behavior is the same as
+<div style="height: 1.00em;">&#x00A0;</div>
+<br/>
+strtod(nptr, NULL);
+<br/>
+<div style="height: 1.00em;">&#x00A0;</div>
+except that <b>atof</b>() does not detect errors.
+<h1 class="Sh" title="Sh" id="RETURN_VALUE"><a class="selflink" href="#RETURN_VALUE">RETURN
+  VALUE</a></h1>
+The converted value.
+<h1 class="Sh" title="Sh" id="CONFORMING_TO"><a class="selflink" href="#CONFORMING_TO">CONFORMING
+  TO</a></h1>
+SVr4, POSIX.1-2001, 4.3BSD, C89, C99.
+<h1 class="Sh" title="Sh" id="SEE_ALSO"><a class="selflink" href="#SEE_ALSO">SEE
+  ALSO</a></h1>
+<b>atoi</b>(3), <b>atol</b>(3), <b>strtod</b>(3), <b>strtol</b>(3),
+  <b>strtoul</b>(3)
+<h1 class="Sh" title="Sh" id="COLOPHON"><a class="selflink" href="#COLOPHON">COLOPHON</a></h1>
+This page is part of release 3.54 of the Linux <i>man-pages</i> project. A
+  description of the project, and information about reporting bugs, can be found
+  at http://www.kernel.org/doc/man-pages/.</div>
+<table class="foot">
+  <tr>
+    <td class="foot-date">2012-08-03</td>
+    <td class="foot-os">GNU</td>
+  </tr>
+</table>
+</body>
+</html>

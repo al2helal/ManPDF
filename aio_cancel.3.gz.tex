@@ -1,0 +1,197 @@
+\documentclass[]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+    \usepackage{xltxtra,xunicode}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
+  \newcommand{\euro}{€}
+\fi
+% use microtype if available
+\IfFileExists{microtype.sty}{\usepackage{microtype}}{}
+\usepackage{longtable,booktabs}
+\ifxetex
+  \usepackage[setpagesize=false, % page size defined by xetex
+              unicode=false, % unicode breaks when used with xetex
+              xetex]{hyperref}
+\else
+  \usepackage[unicode=true]{hyperref}
+\fi
+\hypersetup{breaklinks=true,
+            bookmarks=true,
+            pdfauthor={},
+            pdftitle={AIO\_CANCEL(3)},
+            colorlinks=true,
+            citecolor=blue,
+            urlcolor=blue,
+            linkcolor=magenta,
+            pdfborder={0 0 0}}
+\urlstyle{same}  % don't use monospace font for urls
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\setcounter{secnumdepth}{0}
+\usepackage{pagecolor}
+
+% Set background colour (of the page)
+\definecolor{weirdbgcolor}{HTML}{FCF4F0}
+\pagecolor{weirdbgcolor}
+
+% Make bold text appear in a particular colour
+\definecolor{boldcolor}{HTML}{6E0002}
+\let\realtextbf=\textbf
+\renewcommand{\textbf}[1]{\textcolor{boldcolor}{\realtextbf{#1}}}
+
+% Use underlines instead of emphasis (ugh)
+\renewcommand{\emph}[1]{\underline{#1}}
+
+% % Use fixed-width font by default
+% \renewcommand*\familydefault{\ttdefault}
+
+\title{AIO\_CANCEL(3)}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{longtable}[c]{@{}lll@{}}
+\toprule\addlinespace
+AIO\_CANCEL(3) & Linux Programmer's Manual & AIO\_CANCEL(3)
+\\\addlinespace
+\bottomrule
+\end{longtable}
+
+\hyperdef{}{NAME}{\section{\hyperref[NAME]{NAME}}\label{NAME}}
+
+aio\_cancel - cancel an outstanding asynchronous I/O request
+
+\hyperdef{}{SYNOPSIS}{\section{\hyperref[SYNOPSIS]{SYNOPSIS}}\label{SYNOPSIS}}
+
+\textbf{\#include \textless{}aio.h\textgreater{}}
+
+~
+
+\textbf{int aio\_cancel(int}\emph{fd}\textbf{, struct aiocb
+*}\emph{aiocbp}\textbf{);}
+
+~
+
+Link with \emph{-lrt}.
+
+\hyperdef{}{DESCRIPTION}{\section{\hyperref[DESCRIPTION]{DESCRIPTION}}\label{DESCRIPTION}}
+
+The \textbf{aio\_cancel}() function attempts to cancel outstanding
+asynchronous I/O requests for the file descriptor \emph{fd}. If
+\emph{aiocbp} is NULL, all such requests are canceled. Otherwise, only
+the request described by the control block pointed to by \emph{aiocbp}
+is canceled. (See \textbf{aio}(7) for a description of the \emph{aiocb}
+structure.)
+
+Normal asynchronous notification occurs for canceled requests (see
+\textbf{aio}(7) and \textbf{sigevent}(7)). The request return status
+(\textbf{aio\_return}(3)) is set to -1, and the request error status
+(\textbf{aio\_error}(3)) is set to \textbf{ECANCELED}. The control block
+of requests that cannot be canceled is not changed.
+
+If the request could not be canceled, then it will terminate in the
+usual way after performing the I/O operation. (In this case,
+\textbf{aio\_error}(3) will return the status \textbf{EINPROGRESSS}.)
+
+If \emph{aiocbp} is not NULL, and \emph{fd} differs from the file
+descriptor with which the asynchronous operation was initiated,
+unspecified results occur.
+
+Which operations are cancelable is implementation-defined.
+
+\hyperdef{}{RETURNux5fVALUE}{\section{\hyperref[RETURNux5fVALUE]{RETURN
+VALUE}}\label{RETURNux5fVALUE}}
+
+The \textbf{aio\_cancel}() function returns one of the following values:
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[\textbf{AIO\_CANCELED}]
+All requests were successfully canceled.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[\textbf{AIO\_NOTCANCELED}]
+At least one of the requests specified was not canceled because it was
+in progress. In this case, one may check the status of individual
+requests using \textbf{aio\_error}(3).
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[\textbf{AIO\_ALLDONE}]
+All requests had already been completed before the call.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[-1]
+An error occurred. The cause of the error can be found by inspecting
+\emph{errno}.
+\end{description}
+
+\hyperdef{}{ERRORS}{\section{\hyperref[ERRORS]{ERRORS}}\label{ERRORS}}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[\textbf{EBADF}]
+\emph{fd} is not a valid file descriptor.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[\textbf{ENOSYS}]
+\textbf{aio\_cancel}() is not implemented.
+\end{description}
+
+\hyperdef{}{VERSIONS}{\section{\hyperref[VERSIONS]{VERSIONS}}\label{VERSIONS}}
+
+The \textbf{aio\_cancel}() function is available since glibc 2.1.
+
+\hyperdef{}{CONFORMINGux5fTO}{\section{\hyperref[CONFORMINGux5fTO]{CONFORMING
+TO}}\label{CONFORMINGux5fTO}}
+
+POSIX.1-2001, POSIX.1-2008.
+
+\hyperdef{}{EXAMPLE}{\section{\hyperref[EXAMPLE]{EXAMPLE}}\label{EXAMPLE}}
+
+See \textbf{aio}(7).
+
+\hyperdef{}{SEEux5fALSO}{\section{\hyperref[SEEux5fALSO]{SEE
+ALSO}}\label{SEEux5fALSO}}
+
+\textbf{aio\_error}(3), \textbf{aio\_fsync}(3), \textbf{aio\_read}(3),
+\textbf{aio\_return}(3), \textbf{aio\_suspend}(3),
+\textbf{aio\_write}(3), \textbf{lio\_listio}(3), \textbf{aio}(7)
+
+\hyperdef{}{COLOPHON}{\section{\hyperref[COLOPHON]{COLOPHON}}\label{COLOPHON}}
+
+This page is part of release 3.54 of the Linux \emph{man-pages} project.
+A description of the project, and information about reporting bugs, can
+be found at http://www.kernel.org/doc/man-pages/.
+
+\begin{longtable}[c]{@{}ll@{}}
+\toprule\addlinespace
+2012-05-08 &
+\\\addlinespace
+\bottomrule
+\end{longtable}
+
+\end{document}

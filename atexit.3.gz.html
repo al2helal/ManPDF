@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <style>
+    table.head, table.foot { width: 100%; }
+    td.head-rtitle, td.foot-os { text-align: right; }
+    td.head-vol { text-align: center; }
+    div.Pp { margin: 1ex 0ex; }
+  </style>
+  <title>ATEXIT(3)</title>
+</head>
+<body>
+<table class="head">
+  <tr>
+    <td class="head-ltitle">ATEXIT(3)</td>
+    <td class="head-vol">Linux Programmer's Manual</td>
+    <td class="head-rtitle">ATEXIT(3)</td>
+  </tr>
+</table>
+<div class="manual-text">
+<h1 class="Sh" title="Sh" id="NAME"><a class="selflink" href="#NAME">NAME</a></h1>
+atexit - register a function to be called at normal process termination
+<h1 class="Sh" title="Sh" id="SYNOPSIS"><a class="selflink" href="#SYNOPSIS">SYNOPSIS</a></h1>
+<pre>
+<b>#include &lt;stdlib.h&gt;</b>
+<div style="height: 1.00em;">&#x00A0;</div>
+<b>int atexit(void (*</b><i>function</i><b>)(void));</b>
+</pre>
+<h1 class="Sh" title="Sh" id="DESCRIPTION"><a class="selflink" href="#DESCRIPTION">DESCRIPTION</a></h1>
+The <b>atexit</b>() function registers the given <i>function</i> to be called at
+  normal process termination, either via <b>exit</b>(3) or via return from the
+  program's <i>main</i>(). Functions so registered are called in the reverse
+  order of their registration; no arguments are passed.
+<div style="height: 1.00em;">&#x00A0;</div>
+The same function may be registered multiple times: it is called once for each
+  registration.
+<div class="Pp"></div>
+POSIX.1-2001 requires that an implementation allow at least <b>ATEXIT_MAX</b>
+  (32) such functions to be registered. The actual limit supported by an
+  implementation can be obtained using <b>sysconf</b>(3).
+<div class="Pp"></div>
+When a child process is created via <b>fork</b>(2), it inherits copies of its
+  parent's registrations. Upon a successful call to one of the <b>exec</b>(3)
+  functions, all registrations are removed.
+<h1 class="Sh" title="Sh" id="RETURN_VALUE"><a class="selflink" href="#RETURN_VALUE">RETURN
+  VALUE</a></h1>
+The <b>atexit</b>() function returns the value 0 if successful; otherwise it
+  returns a nonzero value.
+<h1 class="Sh" title="Sh" id="CONFORMING_TO"><a class="selflink" href="#CONFORMING_TO">CONFORMING
+  TO</a></h1>
+SVr4, 4.3BSD, C89, C99, POSIX.1-2001.
+<h1 class="Sh" title="Sh" id="NOTES"><a class="selflink" href="#NOTES">NOTES</a></h1>
+Functions registered using <b>atexit</b>() (and <b>on_exit</b>(3)) are not
+  called if a process terminates abnormally because of the delivery of a signal.
+<div style="height: 1.00em;">&#x00A0;</div>
+If one of the functions registered functions calls <b>_exit</b>(2), then any
+  remaining functions are not invoked, and the other process termination steps
+  performed by <b>exit</b>(3) are not performed.
+<div style="height: 1.00em;">&#x00A0;</div>
+POSIX.1-2001 says that the result of calling <b>exit</b>(3) more than once
+  (i.e., calling <b>exit</b>(3) within a function registered using
+  <b>atexit</b>()) is undefined. On some systems (but not Linux), this can
+  result in an infinite recursion; portable programs should not invoke
+  <b>exit</b>(3) inside a function registered using <b>atexit</b>().
+<div style="height: 1.00em;">&#x00A0;</div>
+The <b>atexit</b>() and <b>on_exit</b>(3) functions register functions on the
+  same list: at normal process termination, the registered functions are invoked
+  in reverse order of their registration by these two functions.
+<div style="height: 1.00em;">&#x00A0;</div>
+POSIX.1-2001 says that the result is undefined if <b>longjmp</b>(3) is used to
+  terminate execution of one of the functions registered <b>atexit</b>().
+<h2 class="Ss" title="Ss" id="Linux_notes"><a class="selflink" href="#Linux_notes">Linux
+  notes</a></h2>
+Since glibc 2.2.3, <b>atexit</b>() (and <b>on_exit</b>(3)) can be used within a
+  shared library to establish functions that are called when the shared library
+  is unloaded.
+<h1 class="Sh" title="Sh" id="EXAMPLE"><a class="selflink" href="#EXAMPLE">EXAMPLE</a></h1>
+<pre>
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;unistd.h&gt;
+<div class="Pp"></div>
+void
+bye(void)
+{
+    printf(&quot;That was all, folks\n&quot;);
+}
+<div class="Pp"></div>
+int
+main(void)
+{
+    long a;
+    int i;
+<div class="Pp"></div>
+    a = sysconf(_SC_ATEXIT_MAX);
+    printf(&quot;ATEXIT_MAX = %ld\n&quot;, a);
+<div class="Pp"></div>
+    i = atexit(bye);
+    if (i != 0) {
+        fprintf(stderr, &quot;cannot set exit function\n&quot;);
+        exit(EXIT_FAILURE);
+    }
+<div class="Pp"></div>
+    exit(EXIT_SUCCESS);
+}
+</pre>
+<h1 class="Sh" title="Sh" id="SEE_ALSO"><a class="selflink" href="#SEE_ALSO">SEE
+  ALSO</a></h1>
+<b>_exit</b>(2), <b>exit</b>(3), <b>on_exit</b>(3)
+<h1 class="Sh" title="Sh" id="COLOPHON"><a class="selflink" href="#COLOPHON">COLOPHON</a></h1>
+This page is part of release 3.54 of the Linux <i>man-pages</i> project. A
+  description of the project, and information about reporting bugs, can be found
+  at http://www.kernel.org/doc/man-pages/.</div>
+<table class="foot">
+  <tr>
+    <td class="foot-date">2008-12-05</td>
+    <td class="foot-os">Linux</td>
+  </tr>
+</table>
+</body>
+</html>

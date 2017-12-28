@@ -1,0 +1,216 @@
+\documentclass[]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+    \usepackage{xltxtra,xunicode}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
+  \newcommand{\euro}{€}
+\fi
+% use microtype if available
+\IfFileExists{microtype.sty}{\usepackage{microtype}}{}
+\usepackage{longtable,booktabs}
+\ifxetex
+  \usepackage[setpagesize=false, % page size defined by xetex
+              unicode=false, % unicode breaks when used with xetex
+              xetex]{hyperref}
+\else
+  \usepackage[unicode=true]{hyperref}
+\fi
+\hypersetup{breaklinks=true,
+            bookmarks=true,
+            pdfauthor={},
+            pdftitle={MALLOC\_HOOK(3)},
+            colorlinks=true,
+            citecolor=blue,
+            urlcolor=blue,
+            linkcolor=magenta,
+            pdfborder={0 0 0}}
+\urlstyle{same}  % don't use monospace font for urls
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\setcounter{secnumdepth}{0}
+\usepackage{pagecolor}
+
+% Set background colour (of the page)
+\definecolor{weirdbgcolor}{HTML}{FCF4F0}
+\pagecolor{weirdbgcolor}
+
+% Make bold text appear in a particular colour
+\definecolor{boldcolor}{HTML}{6E0002}
+\let\realtextbf=\textbf
+\renewcommand{\textbf}[1]{\textcolor{boldcolor}{\realtextbf{#1}}}
+
+% Use underlines instead of emphasis (ugh)
+\renewcommand{\emph}[1]{\underline{#1}}
+
+% % Use fixed-width font by default
+% \renewcommand*\familydefault{\ttdefault}
+
+\title{MALLOC\_HOOK(3)}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{longtable}[c]{@{}lll@{}}
+\toprule\addlinespace
+MALLOC\_HOOK(3) & Linux Programmer's Manual & MALLOC\_HOOK(3)
+\\\addlinespace
+\bottomrule
+\end{longtable}
+
+\hyperdef{}{NAME}{\section{\hyperref[NAME]{NAME}}\label{NAME}}
+
+\_\_malloc\_hook, \_\_malloc\_initialize\_hook, \_\_memalign\_hook,
+\_\_free\_hook, \_\_realloc\_hook, \_\_after\_morecore\_hook - malloc
+debugging variables
+
+\hyperdef{}{SYNOPSIS}{\section{\hyperref[SYNOPSIS]{SYNOPSIS}}\label{SYNOPSIS}}
+
+\begin{verbatim}
+#include <malloc.h>
+ 
+void *(*__malloc_hook)(size_t size, const void *caller);
+ 
+void *(*__realloc_hook)(void *ptr, size_t size, const void *caller);
+ 
+void *(*__memalign_hook)(size_t alignment, size_t size,
+                         const void *caller);
+ 
+void (*__free_hook)(void *ptr, const void *caller);
+ 
+void (*__malloc_initialize_hook)(void);
+ 
+void (*__after_morecore_hook)(void);
+\end{verbatim}
+
+\hyperdef{}{DESCRIPTION}{\section{\hyperref[DESCRIPTION]{DESCRIPTION}}\label{DESCRIPTION}}
+
+The GNU C library lets you modify the behavior of \textbf{malloc}(3),
+\textbf{realloc}(3), and \textbf{free}(3) by specifying appropriate hook
+functions. You can use these hooks to help you debug programs that use
+dynamic memory allocation, for example.
+
+The variable \textbf{\_\_malloc\_initialize\_hook} points at a function
+that is called once when the malloc implementation is initialized. This
+is a weak variable, so it can be overridden in the application with a
+definition like the following:
+
+\begin{verbatim}
+
+    void (*__malloc_initialize_hook)(void) = my_init_hook;
+\end{verbatim}
+
+Now the function \emph{my\_init\_hook}() can do the initialization of
+all hooks.
+
+The four functions pointed to by \textbf{\_\_malloc\_hook},
+\textbf{\_\_realloc\_hook}, \textbf{\_\_memalign\_hook},
+\textbf{\_\_free\_hook} have a prototype like the functions
+\textbf{malloc}(3), \textbf{realloc}(3), \textbf{memalign}(3),
+\textbf{free}(3), respectively, except that they have a final argument
+\emph{caller} that gives the address of the caller of
+\textbf{malloc}(3), etc.
+
+The variable \textbf{\_\_after\_morecore\_hook} points at a function
+that is called each time after \textbf{sbrk}(2) was asked for more
+memory.
+
+\hyperdef{}{CONFORMINGux5fTO}{\section{\hyperref[CONFORMINGux5fTO]{CONFORMING
+TO}}\label{CONFORMINGux5fTO}}
+
+These functions are GNU extensions.
+
+\hyperdef{}{NOTES}{\section{\hyperref[NOTES]{NOTES}}\label{NOTES}}
+
+The use of these hook functions is not safe in multithreaded programs,
+and they are now deprecated. Programmers should instead preempt calls to
+the relevant functions by defining and exporting functions such as
+``malloc'' and ``free''.
+
+\hyperdef{}{EXAMPLE}{\section{\hyperref[EXAMPLE]{EXAMPLE}}\label{EXAMPLE}}
+
+Here is a short example of how to use these variables.
+
+~
+
+\begin{verbatim}
+#include <stdio.h>
+#include <malloc.h>
+
+/* Prototypes for our hooks.  */
+static void my_init_hook(void);
+static void *my_malloc_hook(size_t, const void *);
+
+/* Variables to save original hooks. */
+static void *(*old_malloc_hook)(size_t, const void *);
+
+/* Override initializing hook from the C library. */
+void (*__malloc_initialize_hook) (void) = my_init_hook;
+
+static void
+my_init_hook(void)
+{
+    old_malloc_hook = __malloc_hook;
+    __malloc_hook = my_malloc_hook;
+}
+
+static void *
+my_malloc_hook(size_t size, const void *caller)
+{
+    void *result;
+
+    /* Restore all old hooks */
+    __malloc_hook = old_malloc_hook;
+
+    /* Call recursively */
+    result = malloc(size);
+
+    /* Save underlying hooks */
+    old_malloc_hook = __malloc_hook;
+
+    /* printf() might call malloc(), so protect it too. */
+    printf("malloc(%u) called from %p returns %p\n",
+            (unsigned int) size, caller, result);
+
+    /* Restore our own hooks */
+    __malloc_hook = my_malloc_hook;
+
+    return result;
+}
+\end{verbatim}
+
+\hyperdef{}{SEEux5fALSO}{\section{\hyperref[SEEux5fALSO]{SEE
+ALSO}}\label{SEEux5fALSO}}
+
+\textbf{mallinfo}(3), \textbf{malloc}(3), \textbf{mcheck}(3),
+\textbf{mtrace}(3)
+
+\hyperdef{}{COLOPHON}{\section{\hyperref[COLOPHON]{COLOPHON}}\label{COLOPHON}}
+
+This page is part of release 3.54 of the Linux \emph{man-pages} project.
+A description of the project, and information about reporting bugs, can
+be found at http://www.kernel.org/doc/man-pages/.
+
+\begin{longtable}[c]{@{}ll@{}}
+\toprule\addlinespace
+2010-10-13 & GNU
+\\\addlinespace
+\bottomrule
+\end{longtable}
+
+\end{document}

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <style>
+    table.head, table.foot { width: 100%; }
+    td.head-rtitle, td.foot-os { text-align: right; }
+    td.head-vol { text-align: center; }
+    div.Pp { margin: 1ex 0ex; }
+  </style>
+  <title>ATAN2(3)</title>
+</head>
+<body>
+<table class="head">
+  <tr>
+    <td class="head-ltitle">ATAN2(3)</td>
+    <td class="head-vol">Linux Programmer's Manual</td>
+    <td class="head-rtitle">ATAN2(3)</td>
+  </tr>
+</table>
+<div class="manual-text">
+<h1 class="Sh" title="Sh" id="NAME"><a class="selflink" href="#NAME">NAME</a></h1>
+atan2, atan2f, atan2l - arc tangent function of two variables
+<h1 class="Sh" title="Sh" id="SYNOPSIS"><a class="selflink" href="#SYNOPSIS">SYNOPSIS</a></h1>
+<pre>
+<b>#include &lt;math.h&gt;</b>
+<div class="Pp"></div>
+<b>double atan2(double </b><i>y</i><b>, double </b><i>x</i><b>);</b>
+<b>float atan2f(float </b><i>y</i><b>, float </b><i>x</i><b>);</b>
+<b>long double atan2l(long double </b><i>y</i><b>, long double </b><i>x</i><b>);</b>
+<div class="Pp"></div>
+</pre>
+Link with <i>-lm</i>.
+<div style="height: 1.00em;">&#x00A0;</div>
+<br/>
+Feature Test Macro Requirements for glibc (see <b>feature_test_macros</b>(7)):
+<br/>
+<div style="height: 1.00em;">&#x00A0;</div>
+<b>atan2f</b>(), <b>atan2l</b>():
+<div style="margin-left: 5.00ex;">_BSD_SOURCE || _SVID_SOURCE ||
+  _XOPEN_SOURCE&#x00A0;&gt;=&#x00A0;600 || _ISOC99_SOURCE ||
+  _POSIX_C_SOURCE&#x00A0;&gt;=&#x00A0;200112L;
+<div>&#x00A0;</div>
+or <i>cc&#x00A0;-std=c99</i></div>
+<h1 class="Sh" title="Sh" id="DESCRIPTION"><a class="selflink" href="#DESCRIPTION">DESCRIPTION</a></h1>
+The <b>atan2</b>() function calculates the principal value of the arc tangent of
+  <i>y/x</i>, using the signs of the two arguments to determine the quadrant of
+  the result.
+<h1 class="Sh" title="Sh" id="RETURN_VALUE"><a class="selflink" href="#RETURN_VALUE">RETURN
+  VALUE</a></h1>
+On success, these functions return the principal value of the arc tangent of
+  <i>y/x</i> in radians; the return value is in the range [-pi,&#x00A0;pi].
+<div style="height: 1.00em;">&#x00A0;</div>
+If <i>y</i> is +0 (-0) and <i>x</i> is less than 0, +pi (-pi) is returned.
+<div style="height: 1.00em;">&#x00A0;</div>
+If <i>y</i> is +0 (-0) and <i>x</i> is greater than 0, +0 (-0) is returned.
+<div style="height: 1.00em;">&#x00A0;</div>
+If <i>y</i> is less than 0 and <i>x</i> is +0 or -0, -pi/2 is returned.
+<div style="height: 1.00em;">&#x00A0;</div>
+If <i>y</i> is greater than 0 and <i>x</i> is +0 or -0, pi/2 is returned.
+<div style="height: 1.00em;">&#x00A0;</div>
+If either <i>x</i> or <i>y</i> is NaN, a NaN is returned.
+<div style="height: 1.00em;">&#x00A0;</div>
+If <i>y</i> is +0 (-0) and <i>x</i> is -0, +pi (-pi) is returned.
+<div style="height: 1.00em;">&#x00A0;</div>
+If <i>y</i> is +0 (-0) and <i>x</i> is +0, +0 (-0) is returned.
+<div style="height: 1.00em;">&#x00A0;</div>
+If <i>y</i> is a finite value greater (less) than 0, and <i>x</i> is negative
+  infinity, +pi (-pi) is returned.
+<div style="height: 1.00em;">&#x00A0;</div>
+If <i>y</i> is a finite value greater (less) than 0, and <i>x</i> is positive
+  infinity, +0 (-0) is returned.
+<div style="height: 1.00em;">&#x00A0;</div>
+If <i>y</i> is positive infinity (negative infinity), and <i>x</i> is finite,
+  pi/2 (-pi/2) is returned.
+<div style="height: 1.00em;">&#x00A0;</div>
+If <i>y</i> is positive infinity (negative infinity) and <i>x</i> is negative
+  infinity, +3*pi/4 (-3*pi/4) is returned.
+<div style="height: 1.00em;">&#x00A0;</div>
+If <i>y</i> is positive infinity (negative infinity) and <i>x</i> is positive
+  infinity, +pi/4 (-pi/4) is returned.
+<h1 class="Sh" title="Sh" id="ERRORS"><a class="selflink" href="#ERRORS">ERRORS</a></h1>
+No errors occur.
+<h1 class="Sh" title="Sh" id="CONFORMING_TO"><a class="selflink" href="#CONFORMING_TO">CONFORMING
+  TO</a></h1>
+C99, POSIX.1-2001. The variant returning <i>double</i> also conforms to SVr4,
+  4.3BSD, C89.
+<h1 class="Sh" title="Sh" id="SEE_ALSO"><a class="selflink" href="#SEE_ALSO">SEE
+  ALSO</a></h1>
+<b>acos</b>(3), <b>asin</b>(3), <b>atan</b>(3), <b>carg</b>(3), <b>cos</b>(3),
+  <b>sin</b>(3), <b>tan</b>(3)
+<h1 class="Sh" title="Sh" id="COLOPHON"><a class="selflink" href="#COLOPHON">COLOPHON</a></h1>
+This page is part of release 3.54 of the Linux <i>man-pages</i> project. A
+  description of the project, and information about reporting bugs, can be found
+  at http://www.kernel.org/doc/man-pages/.</div>
+<table class="foot">
+  <tr>
+    <td class="foot-date">2010-09-20</td>
+    <td class="foot-os"></td>
+  </tr>
+</table>
+</body>
+</html>

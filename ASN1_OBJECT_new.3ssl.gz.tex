@@ -1,0 +1,132 @@
+\documentclass[]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+    \usepackage{xltxtra,xunicode}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
+  \newcommand{\euro}{€}
+\fi
+% use microtype if available
+\IfFileExists{microtype.sty}{\usepackage{microtype}}{}
+\usepackage{longtable,booktabs}
+\ifxetex
+  \usepackage[setpagesize=false, % page size defined by xetex
+              unicode=false, % unicode breaks when used with xetex
+              xetex]{hyperref}
+\else
+  \usepackage[unicode=true]{hyperref}
+\fi
+\hypersetup{breaklinks=true,
+            bookmarks=true,
+            pdfauthor={},
+            pdftitle={ASN1\_OBJECT\_new(3SSL)},
+            colorlinks=true,
+            citecolor=blue,
+            urlcolor=blue,
+            linkcolor=magenta,
+            pdfborder={0 0 0}}
+\urlstyle{same}  % don't use monospace font for urls
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\setcounter{secnumdepth}{0}
+\usepackage{pagecolor}
+
+% Set background colour (of the page)
+\definecolor{weirdbgcolor}{HTML}{FCF4F0}
+\pagecolor{weirdbgcolor}
+
+% Make bold text appear in a particular colour
+\definecolor{boldcolor}{HTML}{6E0002}
+\let\realtextbf=\textbf
+\renewcommand{\textbf}[1]{\textcolor{boldcolor}{\realtextbf{#1}}}
+
+% Use underlines instead of emphasis (ugh)
+\renewcommand{\emph}[1]{\underline{#1}}
+
+% % Use fixed-width font by default
+% \renewcommand*\familydefault{\ttdefault}
+
+\title{ASN1\_OBJECT\_new(3SSL)}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{longtable}[c]{@{}lll@{}}
+\toprule\addlinespace
+ASN1\_OBJECT\_new(3SSL) & OpenSSL & ASN1\_OBJECT\_new(3SSL)
+\\\addlinespace
+\bottomrule
+\end{longtable}
+
+\hyperdef{}{NAME}{\section{\hyperref[NAME]{NAME}}\label{NAME}}
+
+ASN1\_OBJECT\_new, ASN1\_OBJECT\_free, - object allocation functions
+
+\hyperdef{}{SYNOPSIS}{\section{\hyperref[SYNOPSIS]{SYNOPSIS}}\label{SYNOPSIS}}
+
+\begin{verbatim}
+ #include <openssl/asn1.h>
+ ASN1_OBJECT *ASN1_OBJECT_new(void);
+ void ASN1_OBJECT_free(ASN1_OBJECT *a);
+\end{verbatim}
+
+\hyperdef{}{DESCRIPTION}{\section{\hyperref[DESCRIPTION]{DESCRIPTION}}\label{DESCRIPTION}}
+
+The ASN1\_OBJECT allocation routines, allocate and free an ASN1\_OBJECT
+structure, which represents an ASN1 OBJECT IDENTIFIER.
+
+\emph{ASN1\_OBJECT\_new()} allocates and initializes a ASN1\_OBJECT
+structure.
+
+\emph{ASN1\_OBJECT\_free()} frees up the \textbf{ASN1\_OBJECT} structure
+\textbf{a}.
+
+\hyperdef{}{NOTES}{\section{\hyperref[NOTES]{NOTES}}\label{NOTES}}
+
+Although \emph{ASN1\_OBJECT\_new()} allocates a new ASN1\_OBJECT
+structure it is almost never used in applications. The ASN1 object
+utility functions such as \emph{OBJ\_nid2obj()} are used instead.
+
+\hyperdef{}{RETURNux5fVALUES}{\section{\hyperref[RETURNux5fVALUES]{RETURN
+VALUES}}\label{RETURNux5fVALUES}}
+
+If the allocation fails, \emph{ASN1\_OBJECT\_new()} returns
+\textbf{NULL} and sets an error code that can be obtained by
+\emph{ERR\_get\_error}(3). Otherwise it returns a pointer to the newly
+allocated structure.
+
+\emph{ASN1\_OBJECT\_free()} returns no value.
+
+\hyperdef{}{SEEux5fALSO}{\section{\hyperref[SEEux5fALSO]{SEE
+ALSO}}\label{SEEux5fALSO}}
+
+\emph{ERR\_get\_error}(3), \emph{d2i\_ASN1\_OBJECT}(3)
+
+\hyperdef{}{HISTORY}{\section{\hyperref[HISTORY]{HISTORY}}\label{HISTORY}}
+
+\emph{ASN1\_OBJECT\_new()} and \emph{ASN1\_OBJECT\_free()} are available
+in all versions of SSLeay and OpenSSL.
+
+\begin{longtable}[c]{@{}ll@{}}
+\toprule\addlinespace
+2014-01-06 & 1.0.1f
+\\\addlinespace
+\bottomrule
+\end{longtable}
+
+\end{document}

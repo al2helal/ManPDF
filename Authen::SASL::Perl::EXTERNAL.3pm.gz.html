@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <style>
+    table.head, table.foot { width: 100%; }
+    td.head-rtitle, td.foot-os { text-align: right; }
+    td.head-vol { text-align: center; }
+    div.Pp { margin: 1ex 0ex; }
+  </style>
+  <title>Authen::SASL::Perl::EXTERNAL(3pm)</title>
+</head>
+<body>
+<table class="head">
+  <tr>
+    <td class="head-ltitle">Authen::SASL::Perl::EXTERNAL(3pm)</td>
+    <td class="head-vol">User Contributed Perl Documentation</td>
+    <td class="head-rtitle">Authen::SASL::Perl::EXTERNAL(3pm)</td>
+  </tr>
+</table>
+<div class="manual-text">
+<h1 class="Sh" title="Sh" id="NAME"><a class="selflink" href="#NAME">NAME</a></h1>
+Authen::SASL::Perl::EXTERNAL - External Authentication class
+<h1 class="Sh" title="Sh" id="SYNOPSIS"><a class="selflink" href="#SYNOPSIS">SYNOPSIS</a></h1>
+<pre>
+  use Authen::SASL qw(Perl);
+  $sasl = Authen::SASL-&gt;new(
+    mechanism =&gt; 'EXTERNAL',
+    callback  =&gt; {
+      user =&gt; $user
+    },
+  );
+</pre>
+<h1 class="Sh" title="Sh" id="DESCRIPTION"><a class="selflink" href="#DESCRIPTION">DESCRIPTION</a></h1>
+This method implements the client part of the EXTERNAL SASL algorithm, as
+  described in RFC 2222.
+<h2 class="Ss" title="Ss" id="CALLBACK"><a class="selflink" href="#CALLBACK">CALLBACK</a></h2>
+The callbacks used are:
+<dl class="Bl-tag">
+  <dt class="It-tag">user</dt>
+  <dd class="It-tag">The username to be used for authentication</dd>
+</dl>
+<h1 class="Sh" title="Sh" id="SEE_ALSO"><a class="selflink" href="#SEE_ALSO">SEE
+  ALSO</a></h1>
+Authen::SASL, Authen::SASL::Perl
+<h1 class="Sh" title="Sh" id="AUTHORS"><a class="selflink" href="#AUTHORS">AUTHORS</a></h1>
+Software written by Graham Barr &lt;gbarr@pobox.com&gt;, documentation written
+  by Peter Marschall &lt;peter@adpm.de&gt;.
+<div class="Pp"></div>
+Please report any bugs, or post any suggestions, to the perl-ldap mailing list
+  &lt;perl-ldap@perl.org&gt;
+<h1 class="Sh" title="Sh" id="COPYRIGHT"><a class="selflink" href="#COPYRIGHT">COPYRIGHT</a></h1>
+Copyright (c) 1998-2004 Graham Barr. All rights reserved. This program is free
+  software; you can redistribute it and/or modify it under the same terms as
+  Perl itself.
+<div class="Pp"></div>
+Documentation Copyright (c) 2004 Peter Marschall. All rights reserved. This
+  documentation is distributed, and may be redistributed, under the same terms
+  as Perl itself.</div>
+<table class="foot">
+  <tr>
+    <td class="foot-date">2010-03-11</td>
+    <td class="foot-os">perl v5.10.1</td>
+  </tr>
+</table>
+</body>
+</html>

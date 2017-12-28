@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <style>
+    table.head, table.foot { width: 100%; }
+    td.head-rtitle, td.foot-os { text-align: right; }
+    td.head-vol { text-align: center; }
+    div.Pp { margin: 1ex 0ex; }
+  </style>
+  <title>AIO_CANCEL(3)</title>
+</head>
+<body>
+<table class="head">
+  <tr>
+    <td class="head-ltitle">AIO_CANCEL(3)</td>
+    <td class="head-vol">Linux Programmer's Manual</td>
+    <td class="head-rtitle">AIO_CANCEL(3)</td>
+  </tr>
+</table>
+<div class="manual-text">
+<h1 class="Sh" title="Sh" id="NAME"><a class="selflink" href="#NAME">NAME</a></h1>
+aio_cancel - cancel an outstanding asynchronous I/O request
+<h1 class="Sh" title="Sh" id="SYNOPSIS"><a class="selflink" href="#SYNOPSIS">SYNOPSIS</a></h1>
+<b>#include &lt;aio.h&gt;</b>
+<div style="height: 1.00em;">&#x00A0;</div>
+<b>int aio_cancel(int </b><i>fd</i><b>, struct aiocb *</b><i>aiocbp</i><b>);</b>
+<div style="height: 1.00em;">&#x00A0;</div>
+Link with <i>-lrt</i>.
+<h1 class="Sh" title="Sh" id="DESCRIPTION"><a class="selflink" href="#DESCRIPTION">DESCRIPTION</a></h1>
+The <b>aio_cancel</b>() function attempts to cancel outstanding asynchronous I/O
+  requests for the file descriptor <i>fd</i>. If <i>aiocbp</i> is NULL, all such
+  requests are canceled. Otherwise, only the request described by the control
+  block pointed to by <i>aiocbp</i> is canceled. (See <b>aio</b>(7) for a
+  description of the <i>aiocb</i> structure.)
+<div class="Pp"></div>
+Normal asynchronous notification occurs for canceled requests (see <b>aio</b>(7)
+  and <b>sigevent</b>(7)). The request return status (<b>aio_return</b>(3)) is
+  set to -1, and the request error status (<b>aio_error</b>(3)) is set to
+  <b>ECANCELED</b>. The control block of requests that cannot be canceled is not
+  changed.
+<div class="Pp"></div>
+If the request could not be canceled, then it will terminate in the usual way
+  after performing the I/O operation. (In this case, <b>aio_error</b>(3) will
+  return the status <b>EINPROGRESSS</b>.)
+<div class="Pp"></div>
+If <i>aiocbp</i> is not NULL, and <i>fd</i> differs from the file descriptor
+  with which the asynchronous operation was initiated, unspecified results
+  occur.
+<div class="Pp"></div>
+Which operations are cancelable is implementation-defined.
+<h1 class="Sh" title="Sh" id="RETURN_VALUE"><a class="selflink" href="#RETURN_VALUE">RETURN
+  VALUE</a></h1>
+The <b>aio_cancel</b>() function returns one of the following values:
+<dl class="Bl-tag">
+  <dt class="It-tag"><b>AIO_CANCELED</b></dt>
+  <dd class="It-tag">All requests were successfully canceled.</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag"><b>AIO_NOTCANCELED</b></dt>
+  <dd class="It-tag">At least one of the requests specified was not canceled
+      because it was in progress. In this case, one may check the status of
+      individual requests using <b>aio_error</b>(3).</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag"><b>AIO_ALLDONE</b></dt>
+  <dd class="It-tag">All requests had already been completed before the
+    call.</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">-1</dt>
+  <dd class="It-tag">An error occurred. The cause of the error can be found by
+      inspecting <i>errno</i>.</dd>
+</dl>
+<h1 class="Sh" title="Sh" id="ERRORS"><a class="selflink" href="#ERRORS">ERRORS</a></h1>
+<dl class="Bl-tag">
+  <dt class="It-tag"><b>EBADF</b></dt>
+  <dd class="It-tag"><i>fd</i> is not a valid file descriptor.</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag"><b>ENOSYS</b></dt>
+  <dd class="It-tag"><b>aio_cancel</b>() is not implemented.</dd>
+</dl>
+<h1 class="Sh" title="Sh" id="VERSIONS"><a class="selflink" href="#VERSIONS">VERSIONS</a></h1>
+The <b>aio_cancel</b>() function is available since glibc 2.1.
+<h1 class="Sh" title="Sh" id="CONFORMING_TO"><a class="selflink" href="#CONFORMING_TO">CONFORMING
+  TO</a></h1>
+POSIX.1-2001, POSIX.1-2008.
+<h1 class="Sh" title="Sh" id="EXAMPLE"><a class="selflink" href="#EXAMPLE">EXAMPLE</a></h1>
+See <b>aio</b>(7).
+<h1 class="Sh" title="Sh" id="SEE_ALSO"><a class="selflink" href="#SEE_ALSO">SEE
+  ALSO</a></h1>
+<b>aio_error</b>(3), <b>aio_fsync</b>(3), <b>aio_read</b>(3),
+  <b>aio_return</b>(3), <b>aio_suspend</b>(3), <b>aio_write</b>(3),
+  <b>lio_listio</b>(3), <b>aio</b>(7)
+<h1 class="Sh" title="Sh" id="COLOPHON"><a class="selflink" href="#COLOPHON">COLOPHON</a></h1>
+This page is part of release 3.54 of the Linux <i>man-pages</i> project. A
+  description of the project, and information about reporting bugs, can be found
+  at http://www.kernel.org/doc/man-pages/.</div>
+<table class="foot">
+  <tr>
+    <td class="foot-date">2012-05-08</td>
+    <td class="foot-os"></td>
+  </tr>
+</table>
+</body>
+</html>

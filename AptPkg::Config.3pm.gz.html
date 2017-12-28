@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <style>
+    table.head, table.foot { width: 100%; }
+    td.head-rtitle, td.foot-os { text-align: right; }
+    td.head-vol { text-align: center; }
+    div.Pp { margin: 1ex 0ex; }
+  </style>
+  <title>AptPkg::Config(3pm)</title>
+</head>
+<body>
+<table class="head">
+  <tr>
+    <td class="head-ltitle">AptPkg::Config(3pm)</td>
+    <td class="head-vol">User Contributed Perl Documentation</td>
+    <td class="head-rtitle">AptPkg::Config(3pm)</td>
+  </tr>
+</table>
+<div class="manual-text">
+<h1 class="Sh" title="Sh" id="NAME"><a class="selflink" href="#NAME">NAME</a></h1>
+AptPkg::Config - APT configuration interface
+<h1 class="Sh" title="Sh" id="SYNOPSIS"><a class="selflink" href="#SYNOPSIS">SYNOPSIS</a></h1>
+use AptPkg::Config;
+<h1 class="Sh" title="Sh" id="DESCRIPTION"><a class="selflink" href="#DESCRIPTION">DESCRIPTION</a></h1>
+The AptPkg::Config module provides an interface to <b>APT</b>'s configuration
+  mechanism.
+<div class="Pp"></div>
+Provides a configuration file and command line parser for a tree-oriented
+  configuration environment.
+<h2 class="Ss" title="Ss" id="AptPkg::Config"><a class="selflink" href="#AptPkg::Config">AptPkg::Config</a></h2>
+The AptPkg::Config package implements the <b>APT</b> Configuration class.
+<div class="Pp"></div>
+A global instance of the libapt-pkg _config instance is provided as
+  $AptPkg::Config::_config, and may be imported.
+<div class="Pp"></div>
+The following methods are implemented:
+<dl class="Bl-tag">
+  <dt class="It-tag">get(<i>KEY</i>, [<i>DEFAULT</i>])</dt>
+  <dd class="It-tag">Fetch the value of <i>KEY</i> from the configuration
+      object, returning undef if not found (or <i>DEFAULT</i> if given).
+    <div style="height: 1.00em;">&#x00A0;</div>
+    If the key ends in ::, an array of values is returned in an array context,
+      or a string containing the values separated by spaces in a scalar context.
+    <div style="height: 1.00em;">&#x00A0;</div>
+    A trailing /f, /d, /b or /i causes file, directory, boolean or integer
+      interpretation (the underlying XS call is FindAny).</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">get_file(<i>KEY</i>, [<i>DEFAULT</i>]), get_dir(<i>KEY</i>,
+    [ <i>DEFAULT</i>])</dt>
+  <dd class="It-tag">Variants of get which prepend the directory value from the
+      parent key. The get_dir method additionally appends a `/'.
+    <div style="height: 1.00em;">&#x00A0;</div>
+    For example, given the configuration file:
+    <div style="height: 1.00em;">&#x00A0;</div>
+    <pre>
+    foo &quot;/some/dir/&quot; { bar &quot;value&quot;; }
+    </pre>
+    <div style="height: 1.00em;">&#x00A0;</div>
+    then:
+    <div style="height: 1.00em;">&#x00A0;</div>
+    <pre>
+    $conf-&gt;get(&quot;foo::bar&quot;)      # &quot;value&quot;
+    $conf-&gt;get_file(&quot;foo::bar&quot;) # &quot;/some/dir/value&quot;
+    $conf-&gt;get_dir(&quot;foo::bar&quot;)  # &quot;/some/dir/value/&quot;
+    </pre>
+  </dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">get_bool(<i>KEY</i>, [<i>DEFAULT</i>])</dt>
+  <dd class="It-tag">Another get varient, which returns true (1) if the value
+      contains any of:
+    <div style="height: 1.00em;">&#x00A0;</div>
+    <pre>
+    1 yes true with on enable
+    </pre>
+    <div style="height: 1.00em;">&#x00A0;</div>
+    otherwise false ('').</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">set(<i>KEY</i>, <i>VALUE</i>)</dt>
+  <dd class="It-tag">Set configuration entry <i>KEY</i> to <i>VALUE</i>. Returns
+      <i>VALUE</i>. Note that empty parent entries may be created for
+      <i>KEY</i>s containing ::.</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">exists(<i>KEY</i>)</dt>
+  <dd class="It-tag">Test if <i>KEY</i> exists in the configuration.</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">dump</dt>
+  <dd class="It-tag">Principally for debugging, output the contents of the
+      configuration object to stderr.</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">read_file(<i>FILE</i>, [<i>AS_SECTIONAL</i>,
+    [<i>DEPTH</i>]])</dt>
+  <dd class="It-tag">Load the contents of <i>FILE</i> into the object. The
+      format of the file is described in <i>apt.conf</i>(5).
+    <div style="height: 1.00em;">&#x00A0;</div>
+    If the <i>AS_SECTIONAL</i> argument is true, then the file is parsed as a
+      BIND-style config. That is:
+    <div style="height: 1.00em;">&#x00A0;</div>
+    <pre>
+    foo &quot;bar&quot; { baz &quot;quux&quot;; }
+    </pre>
+    <div style="height: 1.00em;">&#x00A0;</div>
+    is interpreted as if it were:
+    <div style="height: 1.00em;">&#x00A0;</div>
+    <pre>
+    foo::bar { baz &quot;quux&quot;; }
+    </pre>
+    <div style="height: 1.00em;">&#x00A0;</div>
+    The <i>DEPTH</i> argument may be used to restrict the number of nested
+      include directives processed.</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">read_dir(<i>DIR</i>, [<i>AS_SECTIONAL</i>,
+    [<i>DEPTH</i>]])</dt>
+  <dd class="It-tag">Load configuration from all files in <i>DIR</i>.</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">init</dt>
+  <dd class="It-tag">Initialise the configuration object with some default
+      values for the libapt-pkg library and reads the default configuration file
+      /etc/apt/apt.conf (or as given by the environment variable APT_CONFIG) if
+      it exists.</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">system</dt>
+  <dd class="It-tag">Return the AptPkg::System object appropriate for this
+      system.</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">parse_cmdline(<i>DEFS</i>, [<i>ARG</i>, ...])</dt>
+  <dd class="It-tag">Parse the arguments given by <i>ARG</i>s based on the
+      contents of <i>DEFS</i> and returns the list of remaining arguments.
+    <div style="height: 1.00em;">&#x00A0;</div>
+    Note, the function does not return if there are errors processing the args.
+      Use eval to trap such errors.
+    <div style="height: 1.00em;">&#x00A0;</div>
+     <i>DEFS</i> is a reference to an array containing a set argument definition
+      arrays. The elements of each definition define: the short argument
+      character, the long argument string, the configuration key and the
+      optional argument type (defaults to Boolean).
+    <div style="height: 1.00em;">&#x00A0;</div>
+    Valid argument types are defined by the strings:
+    <div style="height: 1.00em;">&#x00A0;</div>
+    <pre>
+    HasArg      takes an argument value (-f foo)
+    IntLevel    defines an integer value (-q -q, -qq, -q2, -q=2)
+    Boolean     true/false (-d, -d=true, -d=yes, --no-d, -d=false, etc)
+    InvBoolean  same as Boolean but false with no specified sense (-d)
+    ConfigFile  load the specified configuration file
+    ArbItem     arbitrary configuration string of the form key=value
+    </pre>
+    <div style="height: 1.00em;">&#x00A0;</div>
+    The configuration key in the last two cases is ignored, and for the rest
+      gives the key into which the value is placed.
+    <div style="height: 1.00em;">&#x00A0;</div>
+    Single case equivalents also work (has_arg == HasArg).
+    <div style="height: 1.00em;">&#x00A0;</div>
+    Example:
+    <div style="height: 1.00em;">&#x00A0;</div>
+    <pre>
+    @files = $conf-&gt;parse_cmndline([
+            [ 'h', 'help', 'help' ],
+            [ 'v', 'version', 'version' ],
+            [ 'c', 'config-file', '', ConfigFile ],
+            [ 'o', 'option', '', ArbItem ],
+        ], @ARGV);
+    </pre>
+  </dd>
+</dl>
+<div class="Pp"></div>
+The module uses AptPkg::hash to provide a hash-like access to the object, so
+  that $conf-&gt;{key} is equivalent to using the get/set methods.
+<div class="Pp"></div>
+Additionally inherits the constructor (new) and keys methods from that module.
+<div class="Pp"></div>
+Methods of the internal XS object (AptPkg::_config) such as Find may also be
+  used. See AptPkg.
+<h2 class="Ss" title="Ss" id="AptPkg::Config::Iter"><a class="selflink" href="#AptPkg::Config::Iter">AptPkg::Config::Iter</a></h2>
+Iterator object for AptPkg::Config which is returned by the keys method.
+<dl class="Bl-tag">
+  <dt class="It-tag">new(<i>XS_OBJ</i>, [<i>ROOT</i>])</dt>
+  <dd class="It-tag">Constructor, which is invoked by the keys method.
+      <i>ROOT</i>, if given determines the subset of the tree to walk (may be
+      given as an argument to keys).</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">next</dt>
+  <dd class="It-tag">Returns the current key and advances to the next.</dd>
+</dl>
+<h1 class="Sh" title="Sh" id="SEE_ALSO"><a class="selflink" href="#SEE_ALSO">SEE
+  ALSO</a></h1>
+<i>AptPkg::System</i>(3pm), <i>AptPkg</i>(3pm), <i>AptPkg::hash</i>(3pm).
+<h1 class="Sh" title="Sh" id="AUTHOR"><a class="selflink" href="#AUTHOR">AUTHOR</a></h1>
+Brendan O'Dea &lt;bod@debian.org&gt;</div>
+<table class="foot">
+  <tr>
+    <td class="foot-date">2013-03-01</td>
+    <td class="foot-os">perl v5.18.1</td>
+  </tr>
+</table>
+</body>
+</html>

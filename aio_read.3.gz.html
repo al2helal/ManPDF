@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <style>
+    table.head, table.foot { width: 100%; }
+    td.head-rtitle, td.foot-os { text-align: right; }
+    td.head-vol { text-align: center; }
+    div.Pp { margin: 1ex 0ex; }
+  </style>
+  <title>AIO_READ(3)</title>
+</head>
+<body>
+<table class="head">
+  <tr>
+    <td class="head-ltitle">AIO_READ(3)</td>
+    <td class="head-vol">Linux Programmer's Manual</td>
+    <td class="head-rtitle">AIO_READ(3)</td>
+  </tr>
+</table>
+<div class="manual-text">
+<h1 class="Sh" title="Sh" id="NAME"><a class="selflink" href="#NAME">NAME</a></h1>
+aio_read - asynchronous read
+<h1 class="Sh" title="Sh" id="SYNOPSIS"><a class="selflink" href="#SYNOPSIS">SYNOPSIS</a></h1>
+<b>#include &lt;aio.h&gt;</b>
+<div style="height: 1.00em;">&#x00A0;</div>
+<b>int aio_read(struct aiocb *</b><i>aiocbp</i><b>);</b>
+<div style="height: 1.00em;">&#x00A0;</div>
+Link with <i>-lrt</i>.
+<h1 class="Sh" title="Sh" id="DESCRIPTION"><a class="selflink" href="#DESCRIPTION">DESCRIPTION</a></h1>
+The <b>aio_read</b>() function queues the I/O request described by the buffer
+  pointed to by <i>aiocbp</i>. This function is the asynchronous analog of
+  <b>read</b>(2). The arguments of the call
+<div style="height: 1.00em;">&#x00A0;</div>
+<br/>
+ read(fd, buf, count)
+<div style="height: 1.00em;">&#x00A0;</div>
+correspond (in order) to the fields <i>aio_fildes</i>, <i>aio_buf</i>, and
+  <i>aio_nbytes</i> of the structure pointed to by <i>aiocbp</i>. (See
+  <b>aio</b>(7) for a description of the <i>aiocb</i> structure.)
+<div class="Pp"></div>
+The data is read starting at the absolute file offset
+  <i>aiocbp-&gt;aio_offset</i>, regardless of the current file offset. After the
+  call, the value of the current file offset is unspecified.
+<div class="Pp"></div>
+The &quot;asynchronous&quot; means that this call returns as soon as the request
+  has been enqueued; the read may or may not have completed when the call
+  returns. One tests for completion using <b>aio_error</b>(3). The return status
+  of a completed I/O operation can be obtained by <b>aio_return</b>(3).
+  Asynchronous notification of I/O completion can be obtained by setting
+  <i>aiocbp-&gt;aio_sigevent</i> appropriately; see <b>sigevent</b>(7) for
+  details.
+<div class="Pp"></div>
+If <b>_POSIX_PRIORITIZED_IO</b> is defined, and this file supports it, then the
+  asynchronous operation is submitted at a priority equal to that of the calling
+  process minus <i>aiocbp-&gt;aio_reqprio</i>.
+<div class="Pp"></div>
+The field <i>aiocbp-&gt;aio_lio_opcode</i> is ignored.
+<div class="Pp"></div>
+No data is read from a regular file beyond its maximum offset.
+<h1 class="Sh" title="Sh" id="RETURN_VALUE"><a class="selflink" href="#RETURN_VALUE">RETURN
+  VALUE</a></h1>
+On success, 0 is returned. On error the request is not enqueued, -1 is returned,
+  and <i>errno</i> is set appropriately. If an error is detected only later, it
+  will be reported via <b>aio_return</b>(3) (returns status -1) and
+  <b>aio_error</b>(3) (error status&#x2014;whatever one would have gotten in
+  <i>errno</i>, such as <b>EBADF</b>).
+<h1 class="Sh" title="Sh" id="ERRORS"><a class="selflink" href="#ERRORS">ERRORS</a></h1>
+<dl class="Bl-tag">
+  <dt class="It-tag"><b>EAGAIN</b></dt>
+  <dd class="It-tag">Out of resources.</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag"><b>EBADF</b></dt>
+  <dd class="It-tag"><i>aio_fildes</i> is not a valid file descriptor open for
+      reading.</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag"><b>EINVAL</b></dt>
+  <dd class="It-tag">One or more of <i>aio_offset</i>, <i>aio_reqprio</i>, or
+      <i>aio_nbytes</i> are invalid.</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag"><b>ENOSYS</b></dt>
+  <dd class="It-tag"><b>aio_read</b>() is not implemented.</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag"><b>EOVERFLOW</b></dt>
+  <dd class="It-tag">The file is a regular file, we start reading before
+      end-of-file and want at least one byte, but the starting position is past
+      the maximum offset for this file.</dd>
+</dl>
+<h1 class="Sh" title="Sh" id="VERSIONS"><a class="selflink" href="#VERSIONS">VERSIONS</a></h1>
+The <b>aio_read</b>() function is available since glibc 2.1.
+<h1 class="Sh" title="Sh" id="CONFORMING_TO"><a class="selflink" href="#CONFORMING_TO">CONFORMING
+  TO</a></h1>
+POSIX.1-2001, POSIX.1-2008.
+<h1 class="Sh" title="Sh" id="NOTES"><a class="selflink" href="#NOTES">NOTES</a></h1>
+It is a good idea to zero out the control block before use. The control block
+  must not be changed while the read operation is in progress. The buffer area
+  being read into must not be accessed during the operation or undefined results
+  may occur. The memory areas involved must remain valid.
+<div style="height: 1.00em;">&#x00A0;</div>
+Simultaneous I/O operations specifying the same <i>aiocb</i> structure produce
+  undefined results.
+<h1 class="Sh" title="Sh" id="EXAMPLE"><a class="selflink" href="#EXAMPLE">EXAMPLE</a></h1>
+See <b>aio</b>(7).
+<h1 class="Sh" title="Sh" id="SEE_ALSO"><a class="selflink" href="#SEE_ALSO">SEE
+  ALSO</a></h1>
+<b>aio_cancel</b>(3), <b>aio_error</b>(3), <b>aio_fsync</b>(3),
+  <b>aio_return</b>(3), <b>aio_suspend</b>(3), <b>aio_write</b>(3),
+  <b>lio_listio</b>(3), <b>aio</b>(7)
+<h1 class="Sh" title="Sh" id="COLOPHON"><a class="selflink" href="#COLOPHON">COLOPHON</a></h1>
+This page is part of release 3.54 of the Linux <i>man-pages</i> project. A
+  description of the project, and information about reporting bugs, can be found
+  at http://www.kernel.org/doc/man-pages/.</div>
+<table class="foot">
+  <tr>
+    <td class="foot-date">2012-05-08</td>
+    <td class="foot-os"></td>
+  </tr>
+</table>
+</body>
+</html>

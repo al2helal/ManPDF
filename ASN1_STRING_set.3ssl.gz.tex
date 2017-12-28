@@ -1,0 +1,167 @@
+\documentclass[]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+    \usepackage{xltxtra,xunicode}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
+  \newcommand{\euro}{€}
+\fi
+% use microtype if available
+\IfFileExists{microtype.sty}{\usepackage{microtype}}{}
+\usepackage{longtable,booktabs}
+\ifxetex
+  \usepackage[setpagesize=false, % page size defined by xetex
+              unicode=false, % unicode breaks when used with xetex
+              xetex]{hyperref}
+\else
+  \usepackage[unicode=true]{hyperref}
+\fi
+\hypersetup{breaklinks=true,
+            bookmarks=true,
+            pdfauthor={},
+            pdftitle={ASN1\_STRING\_length(3SSL)},
+            colorlinks=true,
+            citecolor=blue,
+            urlcolor=blue,
+            linkcolor=magenta,
+            pdfborder={0 0 0}}
+\urlstyle{same}  % don't use monospace font for urls
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\setcounter{secnumdepth}{0}
+\usepackage{pagecolor}
+
+% Set background colour (of the page)
+\definecolor{weirdbgcolor}{HTML}{FCF4F0}
+\pagecolor{weirdbgcolor}
+
+% Make bold text appear in a particular colour
+\definecolor{boldcolor}{HTML}{6E0002}
+\let\realtextbf=\textbf
+\renewcommand{\textbf}[1]{\textcolor{boldcolor}{\realtextbf{#1}}}
+
+% Use underlines instead of emphasis (ugh)
+\renewcommand{\emph}[1]{\underline{#1}}
+
+% % Use fixed-width font by default
+% \renewcommand*\familydefault{\ttdefault}
+
+\title{ASN1\_STRING\_length(3SSL)}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{longtable}[c]{@{}lll@{}}
+\toprule\addlinespace
+ASN1\_STRING\_length(3SSL) & OpenSSL & ASN1\_STRING\_length(3SSL)
+\\\addlinespace
+\bottomrule
+\end{longtable}
+
+\hyperdef{}{NAME}{\section{\hyperref[NAME]{NAME}}\label{NAME}}
+
+ASN1\_STRING\_dup, ASN1\_STRING\_cmp, ASN1\_STRING\_set,
+ASN1\_STRING\_length, ASN1\_STRING\_length\_set, ASN1\_STRING\_type,
+ASN1\_STRING\_data - ASN1\_STRING utility functions
+
+\hyperdef{}{SYNOPSIS}{\section{\hyperref[SYNOPSIS]{SYNOPSIS}}\label{SYNOPSIS}}
+
+\begin{verbatim}
+ #include <openssl/asn1.h>
+ int ASN1_STRING_length(ASN1_STRING *x);
+ unsigned char * ASN1_STRING_data(ASN1_STRING *x);
+ ASN1_STRING * ASN1_STRING_dup(ASN1_STRING *a);
+ int ASN1_STRING_cmp(ASN1_STRING *a, ASN1_STRING *b);
+ int ASN1_STRING_set(ASN1_STRING *str, const void *data, int len);
+ int ASN1_STRING_type(ASN1_STRING *x);
+ int ASN1_STRING_to_UTF8(unsigned char **out, ASN1_STRING *in);
+\end{verbatim}
+
+\hyperdef{}{DESCRIPTION}{\section{\hyperref[DESCRIPTION]{DESCRIPTION}}\label{DESCRIPTION}}
+
+These functions allow an \textbf{ASN1\_STRING} structure to be
+manipulated.
+
+\emph{ASN1\_STRING\_length()} returns the length of the content of
+\textbf{x}.
+
+\emph{ASN1\_STRING\_data()} returns an internal pointer to the data of
+\textbf{x}. Since this is an internal pointer it should \textbf{not} be
+freed or modified in any way.
+
+\emph{ASN1\_STRING\_dup()} returns a copy of the structure \textbf{a}.
+
+\emph{ASN1\_STRING\_cmp()} compares \textbf{a} and \textbf{b} returning
+0 if the two are identical. The string types and content are compared.
+
+\emph{ASN1\_STRING\_set()} sets the data of string \textbf{str} to the
+buffer \textbf{data} or length \textbf{len}. The supplied data is
+copied. If \textbf{len} is -1 then the length is determined by
+strlen(data).
+
+\emph{ASN1\_STRING\_type()} returns the type of \textbf{x}, using
+standard constants such as \textbf{V\_ASN1\_OCTET\_STRING}.
+
+\emph{ASN1\_STRING\_to\_UTF8()} converts the string \textbf{in} to UTF8
+format, the converted data is allocated in a buffer in \textbf{*out}.
+The length of \textbf{out} is returned or a negative error code. The
+buffer \textbf{*out} should be free using \emph{OPENSSL\_free()}.
+
+\hyperdef{}{NOTES}{\section{\hyperref[NOTES]{NOTES}}\label{NOTES}}
+
+Almost all ASN1 types in OpenSSL are represented as an
+\textbf{ASN1\_STRING} structure. Other types such as
+\textbf{ASN1\_OCTET\_STRING} are simply typedefed to
+\textbf{ASN1\_STRING} and the functions call the \textbf{ASN1\_STRING}
+equivalents. \textbf{ASN1\_STRING} is also used for some \textbf{CHOICE}
+types which consist entirely of primitive string types such as
+\textbf{DirectoryString} and \textbf{Time}.
+
+These functions should \textbf{not} be used to examine or modify
+\textbf{ASN1\_INTEGER} or \textbf{ASN1\_ENUMERATED} types: the relevant
+\textbf{INTEGER} or \textbf{ENUMERATED} utility functions should be used
+instead.
+
+In general it cannot be assumed that the data returned by
+\emph{ASN1\_STRING\_data()} is null terminated or does not contain
+embedded nulls. The actual format of the data will depend on the actual
+string type itself: for example for and IA5String the data will be
+ASCII, for a BMPString two bytes per character in big endian format,
+UTF8String will be in UTF8 format.
+
+Similar care should be take to ensure the data is in the correct format
+when calling \emph{ASN1\_STRING\_set()}.
+
+\hyperdef{}{RETURNux5fVALUES}{\section{\hyperref[RETURNux5fVALUES]{RETURN
+VALUES}}\label{RETURNux5fVALUES}}
+
+\hyperdef{}{SEEux5fALSO}{\section{\hyperref[SEEux5fALSO]{SEE
+ALSO}}\label{SEEux5fALSO}}
+
+\emph{ERR\_get\_error}(3)
+
+\hyperdef{}{HISTORY}{\section{\hyperref[HISTORY]{HISTORY}}\label{HISTORY}}
+
+\begin{longtable}[c]{@{}ll@{}}
+\toprule\addlinespace
+2014-01-06 & 1.0.1f
+\\\addlinespace
+\bottomrule
+\end{longtable}
+
+\end{document}

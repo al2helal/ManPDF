@@ -1,0 +1,311 @@
+\documentclass[]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+    \usepackage{xltxtra,xunicode}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
+  \newcommand{\euro}{€}
+\fi
+% use microtype if available
+\IfFileExists{microtype.sty}{\usepackage{microtype}}{}
+\usepackage{longtable,booktabs}
+\ifxetex
+  \usepackage[setpagesize=false, % page size defined by xetex
+              unicode=false, % unicode breaks when used with xetex
+              xetex]{hyperref}
+\else
+  \usepackage[unicode=true]{hyperref}
+\fi
+\hypersetup{breaklinks=true,
+            bookmarks=true,
+            pdfauthor={},
+            pdftitle={asn1\_write\_value(3)},
+            colorlinks=true,
+            citecolor=blue,
+            urlcolor=blue,
+            linkcolor=magenta,
+            pdfborder={0 0 0}}
+\urlstyle{same}  % don't use monospace font for urls
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\setcounter{secnumdepth}{0}
+\usepackage{pagecolor}
+
+% Set background colour (of the page)
+\definecolor{weirdbgcolor}{HTML}{FCF4F0}
+\pagecolor{weirdbgcolor}
+
+% Make bold text appear in a particular colour
+\definecolor{boldcolor}{HTML}{6E0002}
+\let\realtextbf=\textbf
+\renewcommand{\textbf}[1]{\textcolor{boldcolor}{\realtextbf{#1}}}
+
+% Use underlines instead of emphasis (ugh)
+\renewcommand{\emph}[1]{\underline{#1}}
+
+% % Use fixed-width font by default
+% \renewcommand*\familydefault{\ttdefault}
+
+\title{asn1\_write\_value(3)}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{longtable}[c]{@{}lll@{}}
+\toprule\addlinespace
+asn1\_write\_value(3) & libtasn1 & asn1\_write\_value(3)
+\\\addlinespace
+\bottomrule
+\end{longtable}
+
+\hyperdef{}{NAME}{\section{\hyperref[NAME]{NAME}}\label{NAME}}
+
+asn1\_write\_value - API function
+
+\hyperdef{}{SYNOPSIS}{\section{\hyperref[SYNOPSIS]{SYNOPSIS}}\label{SYNOPSIS}}
+
+\textbf{\#include \textless{}libtasn1.h\textgreater{}}
+
+~
+
+\textbf{int asn1\_write\_value(asn1\_node}\emph{node\_root}\textbf{,
+const char *}\emph{name}\textbf{, const void *}\emph{ivalue}\textbf{,
+int}\emph{len}\textbf{);}
+
+\hyperdef{}{ARGUMENTS}{\section{\hyperref[ARGUMENTS]{ARGUMENTS}}\label{ARGUMENTS}}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[asn1\_node node\_root]
+pointer to a structure
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[const char * name]
+the name of the element inside the structure that you want to set.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[const void * ivalue]
+vector used to specify the value to set. If len is \textgreater{}0,
+VALUE must be a two's complement form integer. if len=0 *VALUE must be a
+null terminated string with an integer value.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[int len]
+number of bytes of *value to use to set the value:
+value{[}0{]}..value{[}len-1{]} or 0 if value is a null terminated string
+\end{description}
+
+\hyperdef{}{DESCRIPTION}{\section{\hyperref[DESCRIPTION]{DESCRIPTION}}\label{DESCRIPTION}}
+
+Set the value of one element inside a structure.
+
+~
+
+If an element is OPTIONAL and you want to delete it, you must use the
+value=NULL and len=0. Using ``pkix.asn'':
+
+~
+
+result=asn1\_write\_value(cert, ``tbsCertificate.issuerUniqueID'', NULL,
+0);
+
+~
+
+Description for each type:
+
+\hyperdef{}{INTEGER}{\section{\hyperref[INTEGER]{INTEGER}}\label{INTEGER}}
+
+VALUE must contain a two's complement form integer.
+
+~
+
+value{[}0{]}=0xFF , len=1 -\textgreater{} integer=-1. value{[}0{]}=0xFF
+value{[}1{]}=0xFF , len=2 -\textgreater{} integer=-1. value{[}0{]}=0x01
+, len=1 -\textgreater{} integer= 1. value{[}0{]}=0x00 value{[}1{]}=0x01
+, len=2 -\textgreater{} integer= 1. value=``123'' , len=0
+-\textgreater{} integer= 123.
+
+\hyperdef{}{ENUMERATED}{\section{\hyperref[ENUMERATED]{ENUMERATED}}\label{ENUMERATED}}
+
+As INTEGER (but only with not negative numbers).
+
+\hyperdef{}{BOOLEAN}{\section{\hyperref[BOOLEAN]{BOOLEAN}}\label{BOOLEAN}}
+
+VALUE must be the null terminated string ``TRUE'' or ``FALSE'' and LEN
+!= 0.
+
+~
+
+value=``TRUE'' , len=1 -\textgreater{} boolean=TRUE. value=``FALSE'' ,
+len=1 -\textgreater{} boolean=FALSE.
+
+~
+
+OBJECT IDENTIFIER: VALUE must be a null terminated string with each
+number separated by a dot (e.g. ``1.2.3.543.1''). LEN != 0.
+
+~
+
+value=``1 2 840 10040 4 3'' , len=1 -\textgreater{} OID=dsa-with-sha.
+
+\hyperdef{}{UTCTIME}{\section{\hyperref[UTCTIME]{UTCTIME}}\label{UTCTIME}}
+
+VALUE must be a null terminated string in one of these formats:
+``YYMMDDhhmmssZ'', ``YYMMDDhhmmssZ'', ``YYMMDDhhmmss+hh'mm''',
+``YYMMDDhhmmss-hh'mm''', ``YYMMDDhhmm+hh'mm''', or
+``YYMMDDhhmm-hh'mm'''. LEN != 0.
+
+~
+
+value=``9801011200Z'' , len=1 -\textgreater{} time=Jannuary 1st, 1998 at
+12h 00m Greenwich Mean Time
+
+\hyperdef{}{GENERALIZEDTIME}{\section{\hyperref[GENERALIZEDTIME]{GENERALIZEDTIME}}\label{GENERALIZEDTIME}}
+
+VALUE must be in one of this format: ``YYYYMMDDhhmmss.sZ'',
+``YYYYMMDDhhmmss.sZ'', ``YYYYMMDDhhmmss.s+hh'mm''',
+``YYYYMMDDhhmmss.s-hh'mm''', ``YYYYMMDDhhmm+hh'mm''', or
+``YYYYMMDDhhmm-hh'mm''' where ss.s indicates the seconds with any
+precision like ``10.1'' or ``01.02''. LEN != 0
+
+~
+
+value=``2001010112001.12-0700'' , len=1 -\textgreater{} time=Jannuary
+1st, 2001 at 12h 00m 01.12s Pacific Daylight Time
+
+~
+
+OCTET STRING: VALUE contains the octet string and LEN is the number of
+octets.
+
+~
+
+value=``\$sh\$x01\$sh\$x02\$sh\$x03'' , len=3 -\textgreater{} three
+bytes octet string
+
+\hyperdef{}{GENERALSTRING}{\section{\hyperref[GENERALSTRING]{GENERALSTRING}}\label{GENERALSTRING}}
+
+VALUE contains the generalstring and LEN is the number of octets.
+
+~
+
+value=``\$sh\$x01\$sh\$x02\$sh\$x03'' , len=3 -\textgreater{} three
+bytes generalstring
+
+~
+
+BIT STRING: VALUE contains the bit string organized by bytes and LEN is
+the number of bits.
+
+~
+
+value=``\$sh\$xCF'' , len=6 -\textgreater{} bit string=``110011'' (six
+bits)
+
+\hyperdef{}{CHOICE}{\section{\hyperref[CHOICE]{CHOICE}}\label{CHOICE}}
+
+if NAME indicates a choice type, VALUE must specify one of the
+alternatives with a null terminated string. LEN != 0. Using ``pkix.asn''
+
+~
+
+result=asn1\_write\_value(cert, ``certificate1.tbsCertificate.subject'',
+``rdnSequence'', 1);
+
+\hyperdef{}{ANY}{\section{\hyperref[ANY]{ANY}}\label{ANY}}
+
+VALUE indicates the der encoding of a structure. LEN != 0.
+
+~
+
+SEQUENCE OF: VALUE must be the null terminated string ``NEW'' and LEN !=
+0. With this instruction another element is appended in the sequence.
+The name of this element will be ``?1'' if it's the first one, ``?2''
+for the second and so on.
+
+~
+
+Using ``pkix.asn''
+
+~
+
+result=asn1\_write\_value(cert,
+``certificate1.tbsCertificate.subject.rdnSequence'', ``NEW'', 1);
+
+~
+
+SET OF: the same as SEQUENCE OF. Using ``pkix.asn'':
+
+~
+
+result=asn1\_write\_value(cert,
+``tbsCertificate.subject.rdnSequence.?LAST'', ``NEW'', 1);
+
+\hyperdef{}{RETURNS}{\section{\hyperref[RETURNS]{RETURNS}}\label{RETURNS}}
+
+\textbf{ASN1\_SUCCESS} if the value was set,
+\textbf{ASN1\_ELEMENT\_NOT\_FOUND} if \emph{name} is not a valid
+element, and \textbf{ASN1\_VALUE\_NOT\_VALID} if \emph{ivalue} has a
+wrong format.
+
+\hyperdef{}{COPYRIGHT}{\section{\hyperref[COPYRIGHT]{COPYRIGHT}}\label{COPYRIGHT}}
+
+Copyright © 2006-2013 Free Software Foundation, Inc..
+
+~
+
+Copying and distribution of this file, with or without modification, are
+permitted in any medium without royalty provided the copyright notice
+and this notice are preserved.
+
+\hyperdef{}{SEEux5fALSO}{\section{\hyperref[SEEux5fALSO]{SEE
+ALSO}}\label{SEEux5fALSO}}
+
+The full documentation for \textbf{libtasn1} is maintained as a Texinfo
+manual. If the \textbf{info} and \textbf{libtasn1} programs are properly
+installed at your site, the command
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[]
+\textbf{info libtasn1}
+\end{description}
+
+should give you access to the complete manual. As an alternative you may
+obtain the manual from:
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[]
+\textbf{http://www.gnu.org/software/libtasn1/manual/}
+\end{description}
+
+\begin{longtable}[c]{@{}ll@{}}
+\toprule\addlinespace
+3.4 & libtasn1
+\\\addlinespace
+\bottomrule
+\end{longtable}
+
+\end{document}

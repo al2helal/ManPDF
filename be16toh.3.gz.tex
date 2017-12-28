@@ -1,0 +1,229 @@
+\documentclass[]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+    \usepackage{xltxtra,xunicode}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
+  \newcommand{\euro}{€}
+\fi
+% use microtype if available
+\IfFileExists{microtype.sty}{\usepackage{microtype}}{}
+\usepackage{longtable,booktabs}
+\ifxetex
+  \usepackage[setpagesize=false, % page size defined by xetex
+              unicode=false, % unicode breaks when used with xetex
+              xetex]{hyperref}
+\else
+  \usepackage[unicode=true]{hyperref}
+\fi
+\hypersetup{breaklinks=true,
+            bookmarks=true,
+            pdfauthor={},
+            pdftitle={ENDIAN(3)},
+            colorlinks=true,
+            citecolor=blue,
+            urlcolor=blue,
+            linkcolor=magenta,
+            pdfborder={0 0 0}}
+\urlstyle{same}  % don't use monospace font for urls
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\setcounter{secnumdepth}{0}
+\usepackage{pagecolor}
+
+% Set background colour (of the page)
+\definecolor{weirdbgcolor}{HTML}{FCF4F0}
+\pagecolor{weirdbgcolor}
+
+% Make bold text appear in a particular colour
+\definecolor{boldcolor}{HTML}{6E0002}
+\let\realtextbf=\textbf
+\renewcommand{\textbf}[1]{\textcolor{boldcolor}{\realtextbf{#1}}}
+
+% Use underlines instead of emphasis (ugh)
+\renewcommand{\emph}[1]{\underline{#1}}
+
+% % Use fixed-width font by default
+% \renewcommand*\familydefault{\ttdefault}
+
+\title{ENDIAN(3)}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{longtable}[c]{@{}lll@{}}
+\toprule\addlinespace
+ENDIAN(3) & Linux Programmer's Manual & ENDIAN(3)
+\\\addlinespace
+\bottomrule
+\end{longtable}
+
+\hyperdef{}{NAME}{\section{\hyperref[NAME]{NAME}}\label{NAME}}
+
+htobe16, htole16, be16toh, le16toh, htobe32, htole32, be32toh, le32toh,
+htobe64, htole64, be64toh, le64toh - convert values between host and
+big-/little-endian byte order
+
+\hyperdef{}{SYNOPSIS}{\section{\hyperref[SYNOPSIS]{SYNOPSIS}}\label{SYNOPSIS}}
+
+\begin{verbatim}
+#define _BSD_SOURCE             /* See feature_test_macros(7) */
+#include <endian.h>
+
+uint16_t htobe16(uint16_t host_16bits);
+uint16_t htole16(uint16_t host_16bits);
+uint16_t be16toh(uint16_t big_endian_16bits);
+uint16_t le16toh(uint16_t little_endian_16bits);
+
+uint32_t htobe32(uint32_t host_32bits);
+uint32_t htole32(uint32_t host_32bits);
+uint32_t be32toh(uint32_t big_endian_32bits);
+uint32_t le32toh(uint32_t little_endian_32bits);
+
+uint64_t htobe64(uint64_t host_64bits);
+uint64_t htole64(uint64_t host_64bits);
+uint64_t be64toh(uint64_t big_endian_64bits);
+uint64_t le64toh(uint64_t little_endian_64bits);
+\end{verbatim}
+
+\hyperdef{}{DESCRIPTION}{\section{\hyperref[DESCRIPTION]{DESCRIPTION}}\label{DESCRIPTION}}
+
+These functions convert the byte encoding of integer values from the
+byte order that the current CPU (the ``host'') uses, to and from
+little-endian and big-endian byte order.
+
+~
+
+The number, \emph{nn}, in the name of each function indicates the size
+of integer handled by the function, either 16, 32, or 64 bits.
+
+~
+
+The functions with names of the form "htobe \emph{nn}" convert from host
+byte order to big-endian order.
+
+~
+
+The functions with names of the form "htole \emph{nn}" convert from host
+byte order to little-endian order.
+
+~
+
+The functions with names of the form "be \emph{nn}toh" convert from
+big-endian order to host byte order.
+
+~
+
+The functions with names of the form "le \emph{nn}toh" convert from
+little-endian order to host byte order.
+
+\hyperdef{}{VERSIONS}{\section{\hyperref[VERSIONS]{VERSIONS}}\label{VERSIONS}}
+
+These functions were added to glibc in version 2.9.
+
+\hyperdef{}{CONFORMINGux5fTO}{\section{\hyperref[CONFORMINGux5fTO]{CONFORMING
+TO}}\label{CONFORMINGux5fTO}}
+
+These functions are nonstandard. Similar functions are present on the
+BSDs, where the required header file is
+\emph{\textless{}sys/endian.h\textgreater{}} instead of
+\emph{\textless{}endian.h\textgreater{}}. Unfortunately, NetBSD,
+FreeBSD, and glibc haven't followed the original OpenBSD naming
+convention for these functions, whereby the \emph{nn} component always
+appears at the end of the function name (thus, for example, in NetBSD,
+FreeBSD, and glibc, the equivalent of OpenBSDs ``betoh32'' is
+``be32toh'').
+
+\hyperdef{}{NOTES}{\section{\hyperref[NOTES]{NOTES}}\label{NOTES}}
+
+These functions are similar to the older \textbf{byteorder}(3) family of
+functions. For example, \textbf{be32toh}() is identical to
+\textbf{ntohl}()\textbf{.}
+
+~
+
+The advantage of the \textbf{byteorder}(3) functions is that they are
+standard functions available on all UNIX systems. On the other hand, the
+fact that they were designed for use in the context of TCP/IP means that
+they lack the 64-bit and little-endian variants described in this page.
+
+\hyperdef{}{EXAMPLE}{\section{\hyperref[EXAMPLE]{EXAMPLE}}\label{EXAMPLE}}
+
+The program below display the results of converting an integer from host
+byte order to both little-endian and big-endian byte order. Since host
+byte order is either little-endian or big-endian, only one of these
+conversions will have an effect. When we run this program on a
+little-endian system such as x86-32, we see the following: \\
+
+\begin{verbatim}
+
+$  ./a.out
+x.u32 = 0x44332211
+htole32(x.u32) = 0x44332211
+htobe32(x.u32) = 0x11223344
+\end{verbatim}
+
+\hyperdef{}{Programux5fsource}{\subsection{\hyperref[Programux5fsource]{Program
+source}}\label{Programux5fsource}}
+
+\begin{verbatim}
+#include <endian.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+int
+main(int argc, char *argv[])
+{
+    union {
+    uint32_t u32;
+    uint8_t arr[4];
+    } x;
+
+    x.arr[0] = 0x11;    /* Lowest-address byte */
+    x.arr[1] = 0x22;
+    x.arr[2] = 0x33;
+    x.arr[3] = 0x44;    /* Highest-address byte */
+
+    printf("x.u32 = 0x%x\n", x.u32);
+    printf("htole32(x.u32) = 0x%x\n", htole32(x.u32));
+    printf("htobe32(x.u32) = 0x%x\n", htobe32(x.u32));
+
+    exit(EXIT_SUCCESS);
+}
+\end{verbatim}
+
+\hyperdef{}{SEEux5fALSO}{\section{\hyperref[SEEux5fALSO]{SEE
+ALSO}}\label{SEEux5fALSO}}
+
+\textbf{byteorder}(3)
+
+\hyperdef{}{COLOPHON}{\section{\hyperref[COLOPHON]{COLOPHON}}\label{COLOPHON}}
+
+This page is part of release 3.54 of the Linux \emph{man-pages} project.
+A description of the project, and information about reporting bugs, can
+be found at http://www.kernel.org/doc/man-pages/.
+
+\begin{longtable}[c]{@{}ll@{}}
+\toprule\addlinespace
+2010-09-10 & GNU
+\\\addlinespace
+\bottomrule
+\end{longtable}
+
+\end{document}

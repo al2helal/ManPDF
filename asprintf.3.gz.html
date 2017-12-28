@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <style>
+    table.head, table.foot { width: 100%; }
+    td.head-rtitle, td.foot-os { text-align: right; }
+    td.head-vol { text-align: center; }
+    div.Pp { margin: 1ex 0ex; }
+  </style>
+  <title>ASPRINTF(3)</title>
+</head>
+<body>
+<table class="head">
+  <tr>
+    <td class="head-ltitle">ASPRINTF(3)</td>
+    <td class="head-vol">Linux Programmer's Manual</td>
+    <td class="head-rtitle">ASPRINTF(3)</td>
+  </tr>
+</table>
+<div class="manual-text">
+<h1 class="Sh" title="Sh" id="NAME"><a class="selflink" href="#NAME">NAME</a></h1>
+asprintf, vasprintf - print to allocated string
+<h1 class="Sh" title="Sh" id="SYNOPSIS"><a class="selflink" href="#SYNOPSIS">SYNOPSIS</a></h1>
+<b>#define _GNU_SOURCE</b> /* See feature_test_macros(7) */
+<div>&#x00A0;</div>
+<b>#include &lt;stdio.h&gt;</b>
+<div style="height: 1.00em;">&#x00A0;</div>
+<b>int asprintf(char **</b><i>strp</i><b>, const char *</b><i>fmt</i><b>,
+  ...);</b>
+<div style="height: 1.00em;">&#x00A0;</div>
+<b>int vasprintf(char **</b><i>strp</i><b>, const char *</b><i>fmt</i><b>,
+  va_list </b><i>ap</i><b>);</b>
+<h1 class="Sh" title="Sh" id="DESCRIPTION"><a class="selflink" href="#DESCRIPTION">DESCRIPTION</a></h1>
+The functions <b>asprintf</b>() and <b>vasprintf</b>() are analogs of
+  <b>sprintf</b>(3) and <b>vsprintf</b>(3), except that they allocate a string
+  large enough to hold the output including the terminating null byte ('\0'),
+  and return a pointer to it via the first argument. This pointer should be
+  passed to <b>free</b>(3) to release the allocated storage when it is no longer
+  needed.
+<h1 class="Sh" title="Sh" id="RETURN_VALUE"><a class="selflink" href="#RETURN_VALUE">RETURN
+  VALUE</a></h1>
+When successful, these functions return the number of bytes printed, just like
+  <b>sprintf</b>(3). If memory allocation wasn't possible, or some other error
+  occurs, these functions will return -1, and the contents of <i>strp</i> is
+  undefined.
+<h1 class="Sh" title="Sh" id="CONFORMING_TO"><a class="selflink" href="#CONFORMING_TO">CONFORMING
+  TO</a></h1>
+These functions are GNU extensions, not in C or POSIX. They are also available
+  under *BSD. The FreeBSD implementation sets <i>strp</i> to NULL on error.
+<h1 class="Sh" title="Sh" id="SEE_ALSO"><a class="selflink" href="#SEE_ALSO">SEE
+  ALSO</a></h1>
+<b>free</b>(3), <b>malloc</b>(3), <b>printf</b>(3)
+<h1 class="Sh" title="Sh" id="COLOPHON"><a class="selflink" href="#COLOPHON">COLOPHON</a></h1>
+This page is part of release 3.54 of the Linux <i>man-pages</i> project. A
+  description of the project, and information about reporting bugs, can be found
+  at http://www.kernel.org/doc/man-pages/.</div>
+<table class="foot">
+  <tr>
+    <td class="foot-date">2013-06-21</td>
+    <td class="foot-os">GNU</td>
+  </tr>
+</table>
+</body>
+</html>

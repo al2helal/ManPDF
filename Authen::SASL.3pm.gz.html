@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <style>
+    table.head, table.foot { width: 100%; }
+    td.head-rtitle, td.foot-os { text-align: right; }
+    td.head-vol { text-align: center; }
+    div.Pp { margin: 1ex 0ex; }
+  </style>
+  <title>Authen::SASL(3pm)</title>
+</head>
+<body>
+<table class="head">
+  <tr>
+    <td class="head-ltitle">Authen::SASL(3pm)</td>
+    <td class="head-vol">User Contributed Perl Documentation</td>
+    <td class="head-rtitle">Authen::SASL(3pm)</td>
+  </tr>
+</table>
+<div class="manual-text">
+<h1 class="Sh" title="Sh" id="NAME"><a class="selflink" href="#NAME">NAME</a></h1>
+Authen::SASL - SASL Authentication framework
+<h1 class="Sh" title="Sh" id="SYNOPSIS"><a class="selflink" href="#SYNOPSIS">SYNOPSIS</a></h1>
+<pre>
+ use Authen::SASL;
+ $sasl = Authen::SASL-&gt;new(
+   mechanism =&gt; 'CRAM-MD5 PLAIN ANONYMOUS',
+   callback =&gt; {
+     pass =&gt; \&amp;fetch_password,
+     user =&gt; $user,
+   }
+ );
+</pre>
+<h1 class="Sh" title="Sh" id="DESCRIPTION"><a class="selflink" href="#DESCRIPTION">DESCRIPTION</a></h1>
+SASL is a generic mechanism for authentication used by several network
+  protocols. <b>Authen::SASL</b> provides an implementation framework that all
+  protocols should be able to share.
+<div class="Pp"></div>
+The framework allows different implementations of the connection class to be
+  plugged in. At the time of writing there were two such plugins.
+<dl class="Bl-tag">
+  <dt class="It-tag">Authen::SASL::Perl</dt>
+  <dd class="It-tag">This module implements several mechanisms and is
+      implemented entirely in Perl.</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">Authen::SASL::XS</dt>
+  <dd class="It-tag">This module uses the Cyrus SASL C-library (both version 1
+      and 2 are supported).</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">Authen::SASL::Cyrus</dt>
+  <dd class="It-tag">This module is the predecessor to Authen::SASL::XS. It is
+      reccomended to use Authen::SASL::XS</dd>
+</dl>
+<div class="Pp"></div>
+By default the order in which these plugins are selected is Authen::SASL::XS,
+  Authen::SASL::Cyrus and then Authen::SASL::Perl.
+<div class="Pp"></div>
+If you want to change it or want to specifically use one implementation only
+  simply do
+<div class="Pp"></div>
+<pre>
+ use Authen::SASL qw(Perl);
+</pre>
+<div class="Pp"></div>
+or if you have another plugin module that supports the Authen::SASL API
+<div class="Pp"></div>
+<pre>
+ use Authen::SASL qw(My::SASL::Plugin);
+</pre>
+<h2 class="Ss" title="Ss" id="CONTRUCTOR"><a class="selflink" href="#CONTRUCTOR">CONTRUCTOR</a></h2>
+<dl class="Bl-tag">
+  <dt class="It-tag">new ( OPTIONS )</dt>
+  <dd class="It-tag">The contructor may be called with or without arguments.
+      Passing arguments is just a short cut to calling the &quot;mechanism&quot;
+      and &quot;callback&quot; methods.</dd>
+</dl>
+<div style="margin-left: 4.00ex;">
+<dl class="Bl-tag">
+  <dt class="It-tag">callback =&gt; { NAME =&gt; VALUE, NAME =&gt; VALUE, ...
+    }</dt>
+  <dd class="It-tag">Set the callbacks. See the callback method for
+    details.</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">mechanism =&gt; NAMES</dt>
+  <dd class="It-tag"></dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">mech =&gt; NAMES</dt>
+  <dd class="It-tag">Set the list of mechanisms to choose from. See the
+      mechanism method for details.</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">debug =&gt; VALUE</dt>
+  <dd class="It-tag">Set the debug level bit-value to &quot;VALUE&quot;
+    <div style="height: 1.00em;">&#x00A0;</div>
+    Debug output will be sent to &quot;STDERR&quot;. The bits of this value are:
+    <div style="height: 1.00em;">&#x00A0;</div>
+    <pre>
+ 1   Show debug messages in the Perl modules for the mechanisms.
+     (Currently only used in GSSAPI)
+ 4   With security layers in place show information on packages read.
+ 8   With security layers in place show information on packages written.
+    </pre>
+    <div style="height: 1.00em;">&#x00A0;</div>
+    The default value is 0.</dd>
+</dl>
+</div>
+<div style="margin-left: 4.00ex;"></div>
+<h2 class="Ss" title="Ss" id="METHODS"><a class="selflink" href="#METHODS">METHODS</a></h2>
+<dl class="Bl-tag">
+  <dt class="It-tag">mechanism ( )</dt>
+  <dd class="It-tag">Returns the current list of mechanisms</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">mechanism ( NAMES )</dt>
+  <dd class="It-tag">Set the list of mechanisms to choose from.
+      &quot;NAMES&quot; should be a space separated string of the names.</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">callback ( NAME )</dt>
+  <dd class="It-tag">Returns the current callback associated with
+      &quot;NAME&quot;.</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">callback ( NAME =&gt; VALUE, NAME =&gt; VALUE, ... )</dt>
+  <dd class="It-tag">Sets the given callbacks to the given values</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">client_new ( SERVICE, HOST, SECURITY )</dt>
+  <dd class="It-tag">Creates and returns a new connection object for a
+      client-side connection.</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">server_new ( SERVICE, HOST, OPTIONS )</dt>
+  <dd class="It-tag">Creates and returns a new connection object for a
+      server-side connection.</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">error ( )</dt>
+  <dd class="It-tag">Returns any error from the last connection</dd>
+</dl>
+<h1 class="Sh" title="Sh" id="The_Connection_Class"><a class="selflink" href="#The_Connection_Class">The
+  Connection Class</a></h1>
+<dl class="Bl-tag">
+  <dt class="It-tag">server_start ( CHALLENGE )</dt>
+  <dd class="It-tag">server_start begins the authentication using the chosen
+      mechanism. If the mechanism is not supported by the installed SASL it
+      fails. Because for some mechanisms the client has to start the
+      negotiation, you can give the client challenge as a parameter.</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">server_step ( CHALLENGE )</dt>
+  <dd class="It-tag">server_step performs the next step in the negotiation
+      process. The first parameter you give is the clients
+    challenge/response.</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">client_start ( )</dt>
+  <dd class="It-tag">The initial step to be performed. Returns the initial value
+      to pass to the server or an empty list on error.</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">client_step ( CHALLENGE )</dt>
+  <dd class="It-tag">This method is called when a response from the server
+      requires it. CHALLENGE is the value from the server. Returns the next
+      value to pass to the server or an empty list on error.</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">need_step ( )</dt>
+  <dd class="It-tag">Returns true if the selected mechanism requires another
+      step before completion (error or success).</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">answer ( NAME )</dt>
+  <dd class="It-tag">The method will return the value returned from the last
+      call to the callback NAME</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">property ( NAME )</dt>
+  <dd class="It-tag">Returns the property value associated with
+      &quot;NAME&quot;.</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">property ( NAME =&gt; VALUE, NAME =&gt; VALUE, ... )</dt>
+  <dd class="It-tag">Sets the named properties to their associated values.</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">service ( )</dt>
+  <dd class="It-tag">Returns the service argument that was passed to
+      *_new-methods.</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">host ( )</dt>
+  <dd class="It-tag">Returns the host argument that was passed to
+    *_new-methods.</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">mechanism ( )</dt>
+  <dd class="It-tag">Returns the name of the chosen mechanism.</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">is_success ( )</dt>
+  <dd class="It-tag">Once <i>need_step()</i> returns false, then you can check
+      if the authentication succeeded by calling this method which returns a
+      boolean value.</dd>
+</dl>
+<h2 class="Ss" title="Ss" id="Callbacks"><a class="selflink" href="#Callbacks">Callbacks</a></h2>
+There are three different ways in which a callback may be passed
+<dl class="Bl-tag">
+  <dt class="It-tag">CODEREF</dt>
+  <dd class="It-tag">If the value passed is a code reference then, when needed,
+      it will be called and the connection object will be passed as the first
+      argument. In addition some callbacks may be passed additional
+    arguments.</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">ARRAYREF</dt>
+  <dd class="It-tag">If the value passed is an array reference, the first
+      element in the array must be a code reference. When the callback is called
+      the code reference will be called with the connection object passed as the
+      first argument and all other values from the array passed after.</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">SCALAR</dt>
+  <dd class="It-tag">All other values passed will be used directly. ie it is the
+      same as passing an code reference that, when called, returns the
+    value.</dd>
+</dl>
+<h1 class="Sh" title="Sh" id="SEE_ALSO"><a class="selflink" href="#SEE_ALSO">SEE
+  ALSO</a></h1>
+Authen::SASL::Perl, Authen::SASL::XS, Authen::SASL::Cyrus
+<h1 class="Sh" title="Sh" id="AUTHOR"><a class="selflink" href="#AUTHOR">AUTHOR</a></h1>
+Graham Barr &lt;gbarr@pobox.com&gt;
+<div class="Pp"></div>
+Please report any bugs, or post any suggestions, to the perl-ldap mailing list
+  &lt;perl-ldap@perl.org&gt;
+<h1 class="Sh" title="Sh" id="COPYRIGHT"><a class="selflink" href="#COPYRIGHT">COPYRIGHT</a></h1>
+Copyright (c) 1998-2005 Graham Barr. All rights reserved. This program is free
+  software; you can redistribute it and/or modify it under the same terms as
+  Perl itself.</div>
+<table class="foot">
+  <tr>
+    <td class="foot-date">2010-03-11</td>
+    <td class="foot-os">perl v5.10.1</td>
+  </tr>
+</table>
+</body>
+</html>

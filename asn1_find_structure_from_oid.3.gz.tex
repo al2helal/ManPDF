@@ -1,0 +1,154 @@
+\documentclass[]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+    \usepackage{xltxtra,xunicode}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
+  \newcommand{\euro}{€}
+\fi
+% use microtype if available
+\IfFileExists{microtype.sty}{\usepackage{microtype}}{}
+\usepackage{longtable,booktabs}
+\ifxetex
+  \usepackage[setpagesize=false, % page size defined by xetex
+              unicode=false, % unicode breaks when used with xetex
+              xetex]{hyperref}
+\else
+  \usepackage[unicode=true]{hyperref}
+\fi
+\hypersetup{breaklinks=true,
+            bookmarks=true,
+            pdfauthor={},
+            pdftitle={asn1\_find\_structure\_from\_oid(3)},
+            colorlinks=true,
+            citecolor=blue,
+            urlcolor=blue,
+            linkcolor=magenta,
+            pdfborder={0 0 0}}
+\urlstyle{same}  % don't use monospace font for urls
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\setcounter{secnumdepth}{0}
+\usepackage{pagecolor}
+
+% Set background colour (of the page)
+\definecolor{weirdbgcolor}{HTML}{FCF4F0}
+\pagecolor{weirdbgcolor}
+
+% Make bold text appear in a particular colour
+\definecolor{boldcolor}{HTML}{6E0002}
+\let\realtextbf=\textbf
+\renewcommand{\textbf}[1]{\textcolor{boldcolor}{\realtextbf{#1}}}
+
+% Use underlines instead of emphasis (ugh)
+\renewcommand{\emph}[1]{\underline{#1}}
+
+% % Use fixed-width font by default
+% \renewcommand*\familydefault{\ttdefault}
+
+\title{asn1\_find\_structure\_from\_oid(3)}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{longtable}[c]{@{}lll@{}}
+\toprule\addlinespace
+asn1\_find\_structure\_from\_oid(3) & libtasn1 &
+asn1\_find\_structure\_from\_oid(3)
+\\\addlinespace
+\bottomrule
+\end{longtable}
+
+\hyperdef{}{NAME}{\section{\hyperref[NAME]{NAME}}\label{NAME}}
+
+asn1\_find\_structure\_from\_oid - API function
+
+\hyperdef{}{SYNOPSIS}{\section{\hyperref[SYNOPSIS]{SYNOPSIS}}\label{SYNOPSIS}}
+
+\textbf{\#include \textless{}libtasn1.h\textgreater{}}
+
+~
+
+\textbf{const char *
+asn1\_find\_structure\_from\_oid(asn1\_node}\emph{definitions}\textbf{,
+const char *}\emph{oidValue}\textbf{);}
+
+\hyperdef{}{ARGUMENTS}{\section{\hyperref[ARGUMENTS]{ARGUMENTS}}\label{ARGUMENTS}}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[asn1\_node definitions]
+ASN1 definitions
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[const char * oidValue]
+value of the OID to search (e.g. ``1.2.3.4'').
+\end{description}
+
+\hyperdef{}{DESCRIPTION}{\section{\hyperref[DESCRIPTION]{DESCRIPTION}}\label{DESCRIPTION}}
+
+Search the structure that is defined just after an OID definition.
+
+\hyperdef{}{RETURNS}{\section{\hyperref[RETURNS]{RETURNS}}\label{RETURNS}}
+
+\textbf{NULL} when \emph{oidValue} not found, otherwise the pointer to a
+constant string that contains the element name defined just after the
+OID.
+
+\hyperdef{}{COPYRIGHT}{\section{\hyperref[COPYRIGHT]{COPYRIGHT}}\label{COPYRIGHT}}
+
+Copyright © 2006-2013 Free Software Foundation, Inc..
+
+~
+
+Copying and distribution of this file, with or without modification, are
+permitted in any medium without royalty provided the copyright notice
+and this notice are preserved.
+
+\hyperdef{}{SEEux5fALSO}{\section{\hyperref[SEEux5fALSO]{SEE
+ALSO}}\label{SEEux5fALSO}}
+
+The full documentation for \textbf{libtasn1} is maintained as a Texinfo
+manual. If the \textbf{info} and \textbf{libtasn1} programs are properly
+installed at your site, the command
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[]
+\textbf{info libtasn1}
+\end{description}
+
+should give you access to the complete manual. As an alternative you may
+obtain the manual from:
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[]
+\textbf{http://www.gnu.org/software/libtasn1/manual/}
+\end{description}
+
+\begin{longtable}[c]{@{}ll@{}}
+\toprule\addlinespace
+3.4 & libtasn1
+\\\addlinespace
+\bottomrule
+\end{longtable}
+
+\end{document}

@@ -1,0 +1,232 @@
+\documentclass[]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+    \usepackage{xltxtra,xunicode}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
+  \newcommand{\euro}{€}
+\fi
+% use microtype if available
+\IfFileExists{microtype.sty}{\usepackage{microtype}}{}
+\usepackage{longtable,booktabs}
+\ifxetex
+  \usepackage[setpagesize=false, % page size defined by xetex
+              unicode=false, % unicode breaks when used with xetex
+              xetex]{hyperref}
+\else
+  \usepackage[unicode=true]{hyperref}
+\fi
+\hypersetup{breaklinks=true,
+            bookmarks=true,
+            pdfauthor={},
+            pdftitle={AptPkg::Source(3pm)},
+            colorlinks=true,
+            citecolor=blue,
+            urlcolor=blue,
+            linkcolor=magenta,
+            pdfborder={0 0 0}}
+\urlstyle{same}  % don't use monospace font for urls
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\setcounter{secnumdepth}{0}
+\usepackage{pagecolor}
+
+% Set background colour (of the page)
+\definecolor{weirdbgcolor}{HTML}{FCF4F0}
+\pagecolor{weirdbgcolor}
+
+% Make bold text appear in a particular colour
+\definecolor{boldcolor}{HTML}{6E0002}
+\let\realtextbf=\textbf
+\renewcommand{\textbf}[1]{\textcolor{boldcolor}{\realtextbf{#1}}}
+
+% Use underlines instead of emphasis (ugh)
+\renewcommand{\emph}[1]{\underline{#1}}
+
+% % Use fixed-width font by default
+% \renewcommand*\familydefault{\ttdefault}
+
+\title{AptPkg::Source(3pm)}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{longtable}[c]{@{}lll@{}}
+\toprule\addlinespace
+AptPkg::Source(3pm) & User Contributed Perl Documentation &
+AptPkg::Source(3pm)
+\\\addlinespace
+\bottomrule
+\end{longtable}
+
+\hyperdef{}{NAME}{\section{\hyperref[NAME]{NAME}}\label{NAME}}
+
+AptPkg::Source - APT source package interface
+
+\hyperdef{}{SYNOPSIS}{\section{\hyperref[SYNOPSIS]{SYNOPSIS}}\label{SYNOPSIS}}
+
+use AptPkg::Source;
+
+\hyperdef{}{DESCRIPTION}{\section{\hyperref[DESCRIPTION]{DESCRIPTION}}\label{DESCRIPTION}}
+
+The AptPkg::Source module provides an interface to \textbf{APT}'s source
+package lists.
+
+\hyperdef{}{AptPkg::Source}{\subsection{\hyperref[AptPkg::Source]{AptPkg::Source}}\label{AptPkg::Source}}
+
+The AptPkg::Source package implements the \textbf{APT} pkgSrcRecords
+class as a hash reference (inherits from AptPkg::hash). The hash is
+keyed on source or binary package name and the value is an array
+reference of the details of matching source packages.
+
+Note that there is no iterator class, so it is not possible to get a
+list of all keys (with keys or each).
+
+\emph{Constructor}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[new({[}\emph{SOURCELIST}{]})]
+Instantiation of the object uses configuration from the
+\$AptPkg::Config::\_config object (automatically initialised if not done
+explicitly).
+
+~
+
+If no \emph{SOURCELIST} is specified, then the value of
+Dir::Etc::sourcelist from the configuration object is used (generally
+/etc/apt/sources.list).
+\end{description}
+
+\emph{Methods}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[find(\emph{PACK}, {[}\emph{SRCONLY}{]})]
+In a list context, return a list of source package details for the given
+\emph{PACK}, which may either be a source package name, or the name of
+one of the binaries provided (unless \emph{SRCONLY} is provided and
+true).
+
+~
+
+In a scalar context, the source package name of the first entry is
+returned.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[get, exists]
+These methods are used to implement the hashref abstraction:
+\$obj-\textgreater{}get(\$pack) and \$obj-\textgreater{}\{\$pack\} are
+equivalent.
+
+~
+
+The get method has the same semantics as find, but returns an array
+reference in a scalar context.
+\end{description}
+
+The list returned by the find (and get) methods consists of hashes which
+describe each available source package (in order of discovery from the
+deb-src files described in sources.list).
+
+Each hash contains the following entries:
+
+\begin{description}
+\item[Package]
+\end{description}
+
+\begin{description}
+\item[Version]
+\end{description}
+
+\begin{description}
+\item[Maintainer]
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[Section]
+Strings giving the source package name, version, maintainer and section.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[Binaries]
+A list of binary package names from the package.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[BuildDepends]
+A hash describing the build dependencies of the package. Possible keys
+are:
+\end{description}
+
+~
+
+``Build-Depends'', ``Build-Depends-Indep'', ``Build-Conflicts'',
+``Build-Conflicts-Indep''.
+
+~
+
+The values are a list of dependencies/conflicts with each item being a
+list containing the package name followed optionally by an operator and
+version number.
+
+~
+
+Operator values evaluate to a comparison string* (\textgreater{},
+\textgreater{}=, etc) or one of the AptPkg::Dep:: constants in a numeric
+context (see ``pkgCache::Dep::DepCompareOp'' in \emph{AptPkg}(3pm)).
+
+~
+
+*Note that this is a normalised, rather than Debian-style
+(\textgreater{}\textgreater{} vs \textgreater{}) string.
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[Files]
+A list of files making up the source package, each described by a hash
+containing the keys:
+\end{description}
+
+~
+
+``MD5Hash'', ``Size'', ``ArchiveURI'', ``Type''.
+
+\hyperdef{}{SEEux5fALSO}{\section{\hyperref[SEEux5fALSO]{SEE
+ALSO}}\label{SEEux5fALSO}}
+
+\emph{AptPkg::Config}(3pm), \emph{AptPkg::Cache}(3pm),
+\emph{AptPkg}(3pm), \emph{AptPkg::hash}(3pm).
+
+\hyperdef{}{AUTHOR}{\section{\hyperref[AUTHOR]{AUTHOR}}\label{AUTHOR}}
+
+Brendan O'Dea \textless{}bod@debian.org\textgreater{}
+
+\begin{longtable}[c]{@{}ll@{}}
+\toprule\addlinespace
+2013-05-10 & perl v5.18.1
+\\\addlinespace
+\bottomrule
+\end{longtable}
+
+\end{document}

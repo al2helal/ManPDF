@@ -1,0 +1,379 @@
+\documentclass[]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+    \usepackage{xltxtra,xunicode}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
+  \newcommand{\euro}{€}
+\fi
+% use microtype if available
+\IfFileExists{microtype.sty}{\usepackage{microtype}}{}
+\usepackage{longtable,booktabs}
+\ifxetex
+  \usepackage[setpagesize=false, % page size defined by xetex
+              unicode=false, % unicode breaks when used with xetex
+              xetex]{hyperref}
+\else
+  \usepackage[unicode=true]{hyperref}
+\fi
+\hypersetup{breaklinks=true,
+            bookmarks=true,
+            pdfauthor={},
+            pdftitle={Authen::SASL(3pm)},
+            colorlinks=true,
+            citecolor=blue,
+            urlcolor=blue,
+            linkcolor=magenta,
+            pdfborder={0 0 0}}
+\urlstyle{same}  % don't use monospace font for urls
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\setcounter{secnumdepth}{0}
+\usepackage{pagecolor}
+
+% Set background colour (of the page)
+\definecolor{weirdbgcolor}{HTML}{FCF4F0}
+\pagecolor{weirdbgcolor}
+
+% Make bold text appear in a particular colour
+\definecolor{boldcolor}{HTML}{6E0002}
+\let\realtextbf=\textbf
+\renewcommand{\textbf}[1]{\textcolor{boldcolor}{\realtextbf{#1}}}
+
+% Use underlines instead of emphasis (ugh)
+\renewcommand{\emph}[1]{\underline{#1}}
+
+% % Use fixed-width font by default
+% \renewcommand*\familydefault{\ttdefault}
+
+\title{Authen::SASL(3pm)}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{longtable}[c]{@{}lll@{}}
+\toprule\addlinespace
+Authen::SASL(3pm) & User Contributed Perl Documentation &
+Authen::SASL(3pm)
+\\\addlinespace
+\bottomrule
+\end{longtable}
+
+\hyperdef{}{NAME}{\section{\hyperref[NAME]{NAME}}\label{NAME}}
+
+Authen::SASL - SASL Authentication framework
+
+\hyperdef{}{SYNOPSIS}{\section{\hyperref[SYNOPSIS]{SYNOPSIS}}\label{SYNOPSIS}}
+
+\begin{verbatim}
+ use Authen::SASL;
+ $sasl = Authen::SASL->new(
+   mechanism => 'CRAM-MD5 PLAIN ANONYMOUS',
+   callback => {
+     pass => \&fetch_password,
+     user => $user,
+   }
+ );
+\end{verbatim}
+
+\hyperdef{}{DESCRIPTION}{\section{\hyperref[DESCRIPTION]{DESCRIPTION}}\label{DESCRIPTION}}
+
+SASL is a generic mechanism for authentication used by several network
+protocols. \textbf{Authen::SASL} provides an implementation framework
+that all protocols should be able to share.
+
+The framework allows different implementations of the connection class
+to be plugged in. At the time of writing there were two such plugins.
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[Authen::SASL::Perl]
+This module implements several mechanisms and is implemented entirely in
+Perl.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[Authen::SASL::XS]
+This module uses the Cyrus SASL C-library (both version 1 and 2 are
+supported).
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[Authen::SASL::Cyrus]
+This module is the predecessor to Authen::SASL::XS. It is reccomended to
+use Authen::SASL::XS
+\end{description}
+
+By default the order in which these plugins are selected is
+Authen::SASL::XS, Authen::SASL::Cyrus and then Authen::SASL::Perl.
+
+If you want to change it or want to specifically use one implementation
+only simply do
+
+\begin{verbatim}
+ use Authen::SASL qw(Perl);
+\end{verbatim}
+
+or if you have another plugin module that supports the Authen::SASL API
+
+\begin{verbatim}
+ use Authen::SASL qw(My::SASL::Plugin);
+\end{verbatim}
+
+\hyperdef{}{CONTRUCTOR}{\subsection{\hyperref[CONTRUCTOR]{CONTRUCTOR}}\label{CONTRUCTOR}}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[new ( OPTIONS )]
+The contructor may be called with or without arguments. Passing
+arguments is just a short cut to calling the ``mechanism'' and
+``callback'' methods.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[callback =\textgreater{} \{ NAME =\textgreater{} VALUE, NAME
+=\textgreater{} VALUE, \ldots{} \}]
+Set the callbacks. See the callback method for details.
+\end{description}
+
+\begin{description}
+\item[mechanism =\textgreater{} NAMES]
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[mech =\textgreater{} NAMES]
+Set the list of mechanisms to choose from. See the mechanism method for
+details.
+\end{description}
+
+\begin{description}
+\item[debug =\textgreater{} VALUE]
+Set the debug level bit-value to ``VALUE''
+
+~
+
+Debug output will be sent to ``STDERR''. The bits of this value are:
+
+~
+
+\begin{verbatim}
+ 1   Show debug messages in the Perl modules for the mechanisms.
+     (Currently only used in GSSAPI)
+ 4   With security layers in place show information on packages read.
+ 8   With security layers in place show information on packages written.
+    
+\end{verbatim}
+
+~
+
+The default value is 0.
+\end{description}
+
+\hyperdef{}{METHODS}{\subsection{\hyperref[METHODS]{METHODS}}\label{METHODS}}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[mechanism ( )]
+Returns the current list of mechanisms
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[mechanism ( NAMES )]
+Set the list of mechanisms to choose from. ``NAMES'' should be a space
+separated string of the names.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[callback ( NAME )]
+Returns the current callback associated with ``NAME''.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[callback ( NAME =\textgreater{} VALUE, NAME =\textgreater{} VALUE,
+\ldots{} )]
+Sets the given callbacks to the given values
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[client\_new ( SERVICE, HOST, SECURITY )]
+Creates and returns a new connection object for a client-side
+connection.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[server\_new ( SERVICE, HOST, OPTIONS )]
+Creates and returns a new connection object for a server-side
+connection.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[error ( )]
+Returns any error from the last connection
+\end{description}
+
+\hyperdef{}{Theux5fConnectionux5fClass}{\section{\hyperref[Theux5fConnectionux5fClass]{The
+Connection Class}}\label{Theux5fConnectionux5fClass}}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[server\_start ( CHALLENGE )]
+server\_start begins the authentication using the chosen mechanism. If
+the mechanism is not supported by the installed SASL it fails. Because
+for some mechanisms the client has to start the negotiation, you can
+give the client challenge as a parameter.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[server\_step ( CHALLENGE )]
+server\_step performs the next step in the negotiation process. The
+first parameter you give is the clients challenge/response.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[client\_start ( )]
+The initial step to be performed. Returns the initial value to pass to
+the server or an empty list on error.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[client\_step ( CHALLENGE )]
+This method is called when a response from the server requires it.
+CHALLENGE is the value from the server. Returns the next value to pass
+to the server or an empty list on error.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[need\_step ( )]
+Returns true if the selected mechanism requires another step before
+completion (error or success).
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[answer ( NAME )]
+The method will return the value returned from the last call to the
+callback NAME
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[property ( NAME )]
+Returns the property value associated with ``NAME''.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[property ( NAME =\textgreater{} VALUE, NAME =\textgreater{} VALUE,
+\ldots{} )]
+Sets the named properties to their associated values.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[service ( )]
+Returns the service argument that was passed to *\_new-methods.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[host ( )]
+Returns the host argument that was passed to *\_new-methods.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[mechanism ( )]
+Returns the name of the chosen mechanism.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[is\_success ( )]
+Once \emph{need\_step()} returns false, then you can check if the
+authentication succeeded by calling this method which returns a boolean
+value.
+\end{description}
+
+\hyperdef{}{Callbacks}{\subsection{\hyperref[Callbacks]{Callbacks}}\label{Callbacks}}
+
+There are three different ways in which a callback may be passed
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[CODEREF]
+If the value passed is a code reference then, when needed, it will be
+called and the connection object will be passed as the first argument.
+In addition some callbacks may be passed additional arguments.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[ARRAYREF]
+If the value passed is an array reference, the first element in the
+array must be a code reference. When the callback is called the code
+reference will be called with the connection object passed as the first
+argument and all other values from the array passed after.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[SCALAR]
+All other values passed will be used directly. ie it is the same as
+passing an code reference that, when called, returns the value.
+\end{description}
+
+\hyperdef{}{SEEux5fALSO}{\section{\hyperref[SEEux5fALSO]{SEE
+ALSO}}\label{SEEux5fALSO}}
+
+Authen::SASL::Perl, Authen::SASL::XS, Authen::SASL::Cyrus
+
+\hyperdef{}{AUTHOR}{\section{\hyperref[AUTHOR]{AUTHOR}}\label{AUTHOR}}
+
+Graham Barr \textless{}gbarr@pobox.com\textgreater{}
+
+Please report any bugs, or post any suggestions, to the perl-ldap
+mailing list \textless{}perl-ldap@perl.org\textgreater{}
+
+\hyperdef{}{COPYRIGHT}{\section{\hyperref[COPYRIGHT]{COPYRIGHT}}\label{COPYRIGHT}}
+
+Copyright (c) 1998-2005 Graham Barr. All rights reserved. This program
+is free software; you can redistribute it and/or modify it under the
+same terms as Perl itself.
+
+\begin{longtable}[c]{@{}ll@{}}
+\toprule\addlinespace
+2010-03-11 & perl v5.10.1
+\\\addlinespace
+\bottomrule
+\end{longtable}
+
+\end{document}

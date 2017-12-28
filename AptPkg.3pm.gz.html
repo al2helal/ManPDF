@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <style>
+    table.head, table.foot { width: 100%; }
+    td.head-rtitle, td.foot-os { text-align: right; }
+    td.head-vol { text-align: center; }
+    div.Pp { margin: 1ex 0ex; }
+  </style>
+  <title>AptPkg(3pm)</title>
+</head>
+<body>
+<table class="head">
+  <tr>
+    <td class="head-ltitle">AptPkg(3pm)</td>
+    <td class="head-vol">User Contributed Perl Documentation</td>
+    <td class="head-rtitle">AptPkg(3pm)</td>
+  </tr>
+</table>
+<div class="manual-text">
+<h1 class="Sh" title="Sh" id="NAME"><a class="selflink" href="#NAME">NAME</a></h1>
+AptPkg - interface to libapt-pkg
+<h1 class="Sh" title="Sh" id="SYNOPSIS"><a class="selflink" href="#SYNOPSIS">SYNOPSIS</a></h1>
+use AptPkg;
+<h1 class="Sh" title="Sh" id="DESCRIPTION"><a class="selflink" href="#DESCRIPTION">DESCRIPTION</a></h1>
+The AptPkg module provides a low-level XS interface to libapt-pkg.
+<div class="Pp"></div>
+Note that this interface is intended to be internal, and may change, see the
+  AptPkg::Config, AptPkg::System, AptPkg::Version, AptPkg::Cache, Apt::Policy
+  and AptPkg::Source classes for a higher level interface.
+<h2 class="Ss" title="Ss" id="AptPkg"><a class="selflink" href="#AptPkg">AptPkg</a></h2>
+The AptPkg package provides the following functions:
+<dl class="Bl-tag">
+  <dt class="It-tag">_init_config(<i>CONF</i>)</dt>
+  <dd class="It-tag">Initialise a Configuration object (pkgInitConfig). See the
+      init method in AptPkg::Config.</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">_init_system(<i>CONF</i>)</dt>
+  <dd class="It-tag">Return a pointer to the system object (pkgInitSystem). See
+      the system method in AptPkg::Config.</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">_parse_cmdline(<i>CONF</i>, <i>ARG_DEFS</i>, ...)</dt>
+  <dd class="It-tag">Constructs a CommandLine instance, invokes the Parse method
+      and returns the remaining arguments. See the parse_cmdline method in
+      AptPkg::Config.</dd>
+</dl>
+<h2 class="Ss" title="Ss" id="AptPkg::_config"><a class="selflink" href="#AptPkg::_config">AptPkg::_config</a></h2>
+The AptPkg::_config package wraps a Perl class around the Configuration class.
+  It provides an instance of the global _config object, and exposes the
+  following methods:
+<div class="Pp"></div>
+<pre>
+    Find, FindFile, FindDir, FindB, FindAny, Set, Exists,
+    ExistsAny, Tree and Dump.
+</pre>
+<div class="Pp"></div>
+The functions ReadConfigFile and ReadConfigDir are also provided within the
+  package and may be used as methods.
+<h2 class="Ss" title="Ss" id="AptPkg::_config::item"><a class="selflink" href="#AptPkg::_config::item">AptPkg::_config::item</a></h2>
+The AptPkg::_config::item package wraps a Perl class around the
+  Configuration::Item class. The AptPkg::_config Tree method returns an instance
+  of this class.
+<div class="Pp"></div>
+Methods:
+<div class="Pp"></div>
+<pre>
+    Value, Tag, FullTag, Parent, Child and Next.
+</pre>
+<h2 class="Ss" title="Ss" id="AptPkg::System"><a class="selflink" href="#AptPkg::System">AptPkg::System</a></h2>
+The AptPkg::System package wraps a Perl class around the pkgSystem class. It
+  provides an instance of the global _system object, and exposes the following
+  methods:
+<div class="Pp"></div>
+<pre>
+    Label, VS, Lock and UnLock.
+</pre>
+<h2 class="Ss" title="Ss" id="AptPkg::Version"><a class="selflink" href="#AptPkg::Version">AptPkg::Version</a></h2>
+The AptPkg::Version package wraps a Perl class around the pkgVersioningSystem
+  class. It exposes the following methods:
+<div class="Pp"></div>
+<pre>
+    Label, CmpVersion, CmpReleaseVer, CheckDep and UpstreamVersion.
+</pre>
+<h2 class="Ss" title="Ss" id="AptPkg::_cache"><a class="selflink" href="#AptPkg::_cache">AptPkg::_cache</a></h2>
+The AptPkg::_cache package wraps a Perl class around the pkgCacheFile class. It
+  exposes the following methods:
+<div class="Pp"></div>
+<pre>
+    Open, Close, FindPkg, PkgBegin, FileList, Packages, Policy, MultiArchCache
+    and NativeArch.
+</pre>
+<h2 class="Ss" title="Ss" id="AptPkg::Cache::_package"><a class="selflink" href="#AptPkg::Cache::_package">AptPkg::Cache::_package</a></h2>
+The AptPkg::Cache::_package package wraps a Perl class around the
+  pkgCache::PkgIterator class. It exposes the following methods:
+<div class="Pp"></div>
+<pre>
+    Next, Name, FullName, Arch, Section, VersionList, CurrentVer,
+    RevDependsList, ProvidesList, Index, SelectedState, InstState,
+    CurrentState and Flags.
+</pre>
+<h2 class="Ss" title="Ss" id="AptPkg::Cache::_version"><a class="selflink" href="#AptPkg::Cache::_version">AptPkg::Cache::_version</a></h2>
+The AptPkg::Cache::_version package wraps a Perl class around the
+  pkgCache::VerIterator class. It exposes the following methods:
+<div class="Pp"></div>
+<pre>
+    VerStr, Section, MultiArch, Arch, ParentPkg, DescriptionList,
+    TranslatedDescription, DependsList, ProvidesList, FileList, Index
+    and Priority.
+</pre>
+<h2 class="Ss" title="Ss" id="AptPkg::Cache::_depends"><a class="selflink" href="#AptPkg::Cache::_depends">AptPkg::Cache::_depends</a></h2>
+The AptPkg::Cache::_depends package wraps a Perl class around the
+  pkgCache::DepIterator class. It exposes the following methods:
+<div class="Pp"></div>
+<pre>
+    TargetVer, TargetPkg, ParentVer, ParentPkg, Index, CompType and
+    DepType.
+</pre>
+<h2 class="Ss" title="Ss" id="AptPkg::Cache::_provides"><a class="selflink" href="#AptPkg::Cache::_provides">AptPkg::Cache::_provides</a></h2>
+The AptPkg::Cache::_provides package wraps a Perl class around the
+  pkgCache::PrvIterator class. It exposes the following methods:
+<div class="Pp"></div>
+<pre>
+    Name, ProvideVersion, OwnerVer, OwnerPkg and Index.
+</pre>
+<h2 class="Ss" title="Ss" id="AptPkg::Cache::_description"><a class="selflink" href="#AptPkg::Cache::_description">AptPkg::Cache::_description</a></h2>
+The AptPkg::Cache::_description package wraps a Perl class around the
+  pkgCache::DescIterator class. It exposes the following methods:
+<div class="Pp"></div>
+<pre>
+    LanguageCode, md5 and FileList.
+</pre>
+<h2 class="Ss" title="Ss" id="AptPkg::Cache::_pkg_file"><a class="selflink" href="#AptPkg::Cache::_pkg_file">AptPkg::Cache::_pkg_file</a></h2>
+The AptPkg::Cache::_pkg_file package wraps a Perl class around the
+  pkgCache::PkgFileIterator class. It exposes the following methods:
+<div class="Pp"></div>
+<pre>
+    FileName, Archive, Component, Version, Origin, Label, Site,
+    IndexType and Index.
+</pre>
+<h2 class="Ss" title="Ss" id="AptPkg::Cache::_ver_file"><a class="selflink" href="#AptPkg::Cache::_ver_file">AptPkg::Cache::_ver_file</a></h2>
+The AptPkg::Cache::_ver_file package wraps a Perl class around the
+  pkgCache::VerFileIterator class. It exposes the following methods:
+<div class="Pp"></div>
+<pre>
+    File, Index, Offset and Size.
+</pre>
+<h2 class="Ss" title="Ss" id="AptPkg::Cache::_desc_file"><a class="selflink" href="#AptPkg::Cache::_desc_file">AptPkg::Cache::_desc_file</a></h2>
+The AptPkg::Cache::_desc_file package wraps a Perl class around the
+  pkgCache::DescFileIterator class. It exposes the following methods:
+<div class="Pp"></div>
+<pre>
+    File
+</pre>
+<h2 class="Ss" title="Ss" id="AptPkg::Cache::_pkg_records"><a class="selflink" href="#AptPkg::Cache::_pkg_records">AptPkg::Cache::_pkg_records</a></h2>
+The AptPkg::Cache::_pkg_records package wraps a Perl class around the pkgRecords
+  class. It exposes the following methods:
+<div class="Pp"></div>
+<pre>
+    Lookup.
+</pre>
+<h2 class="Ss" title="Ss" id="AptPkg::_policy"><a class="selflink" href="#AptPkg::_policy">AptPkg::_policy</a></h2>
+The AptPkg::_policy package wraps a Perl class around the pkgPolicy class. It
+  exposes the following methods:
+<div class="Pp"></div>
+<pre>
+    GetPriority, GetMatch and GetCandidateVer.
+</pre>
+<h2 class="Ss" title="Ss" id="AptPkg::_source_list"><a class="selflink" href="#AptPkg::_source_list">AptPkg::_source_list</a></h2>
+The AptPkg::_source_list package wraps a Perl class around the pkgSourceList
+  class. Required as an argument to the AptPkg::_src_records constructor.
+<h2 class="Ss" title="Ss" id="AptPkg::_src_records"><a class="selflink" href="#AptPkg::_src_records">AptPkg::_src_records</a></h2>
+The AptPkg::_src_records package wraps a Perl class around the pkgSrcRecords
+  class. It exposes the following methods:
+<div class="Pp"></div>
+<pre>
+    Restart, Find.
+</pre>
+<h2 class="Ss" title="Ss" id="Constants"><a class="selflink" href="#Constants">Constants</a></h2>
+The following <b>APT</b> enumerations are included, used by attributes of
+  AptPkg::Cache.
+<div class="Pp"></div>
+<i>pkgCache::Version::VerMultiArch</i>
+<div class="Pp"></div>
+&quot;AptPkg::Version::None&quot;, &quot;AptPkg::Version::All&quot;,
+  &quot;AptPkg::Version::Foreign&quot;, &quot;AptPkg::Version::Same&quot;,
+  &quot;AptPkg::Version::Allowed&quot;, &quot;AptPkg::Version::AllForeign&quot;
+  and &quot;AptPkg::Version::AllAllowed&quot;.
+<div class="Pp"></div>
+<i>pkgCache::Dep::DepType</i>
+<div class="Pp"></div>
+&quot;AptPkg::Dep::Depends&quot;, &quot;AptPkg::Dep::PreDepends&quot;,
+  &quot;AptPkg::Dep::Suggests&quot;, &quot;AptPkg::Dep::Recommends&quot;,
+  &quot;AptPkg::Dep::Conflicts&quot;, &quot;AptPkg::Dep::Replaces&quot; and
+  &quot;AptPkg::Dep::Obsoletes&quot;.
+<div class="Pp"></div>
+<i>pkgCache::Dep::DepCompareOp</i>
+<div class="Pp"></div>
+&quot;AptPkg::Dep::Or&quot;, &quot;AptPkg::Dep::NoOp&quot;,
+  &quot;AptPkg::Dep::LessEq&quot;, &quot;AptPkg::Dep::GreaterEq&quot;,
+  &quot;AptPkg::Dep::Less&quot;, &quot;AptPkg::Dep::Greater&quot;,
+  &quot;AptPkg::Dep::Equals&quot; and &quot;AptPkg::Dep::NotEquals&quot;.
+<div class="Pp"></div>
+<i>pkgCache::State::VerPriority</i>
+<div class="Pp"></div>
+&quot;AptPkg::State::Important&quot;, &quot;AptPkg::State::Required&quot;,
+  &quot;AptPkg::State::Standard&quot;, &quot;AptPkg::State::Optional&quot; and
+  &quot;AptPkg::State::Extra&quot;.
+<div class="Pp"></div>
+<i>pkgCache::State::PkgSelectedState</i>
+<div class="Pp"></div>
+&quot;AptPkg::State::Unknown&quot;, &quot;AptPkg::State::Install&quot;,
+  &quot;AptPkg::State::Hold&quot;, &quot;AptPkg::State::DeInstall&quot; and
+  &quot;AptPkg::State::Purge&quot;.
+<div class="Pp"></div>
+<i>pkgCache::State::PkgInstState</i>
+<div class="Pp"></div>
+&quot;AptPkg::State::Ok&quot;, &quot;AptPkg::State::ReInstReq&quot;,
+  &quot;AptPkg::State::HoldInst&quot; and
+  &quot;AptPkg::State::HoldReInstReq&quot;.
+<div class="Pp"></div>
+<i>pkgCache::State::PkgCurrentState</i>
+<div class="Pp"></div>
+&quot;AptPkg::State::NotInstalled&quot;, &quot;AptPkg::State::UnPacked&quot;,
+  &quot;AptPkg::State::HalfConfigured&quot;,
+  &quot;AptPkg::State::HalfInstalled&quot;,
+  &quot;AptPkg::State::ConfigFiles&quot; and
+  &quot;AptPkg::State::Installed&quot;.
+<div class="Pp"></div>
+<i>pkgCache::Flag::PkgFlags</i>
+<div class="Pp"></div>
+&quot;AptPkg::Flag::Auto&quot;, &quot;AptPkg::Flag::Essential&quot; and
+  &quot;AptPkg::Flag::Important&quot;.
+<h1 class="Sh" title="Sh" id="SEE_ALSO"><a class="selflink" href="#SEE_ALSO">SEE
+  ALSO</a></h1>
+<i>AptPkg::Config</i>(3pm), <i>AptPkg::System</i>(3pm),
+  <i>AptPkg::Version</i>(3pm), <i>AptPkg::Cache</i>(3pm),
+  <i>AptPkg::Source</i>(3pm).
+<h1 class="Sh" title="Sh" id="AUTHOR"><a class="selflink" href="#AUTHOR">AUTHOR</a></h1>
+Brendan O'Dea &lt;bod@debian.org&gt;</div>
+<table class="foot">
+  <tr>
+    <td class="foot-date">2013-05-11</td>
+    <td class="foot-os">perl v5.18.1</td>
+  </tr>
+</table>
+</body>
+</html>

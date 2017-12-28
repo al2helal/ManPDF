@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <style>
+    table.head, table.foot { width: 100%; }
+    td.head-rtitle, td.foot-os { text-align: right; }
+    td.head-vol { text-align: center; }
+    div.Pp { margin: 1ex 0ex; }
+  </style>
+  <title>ASN1_OBJECT_new(3SSL)</title>
+</head>
+<body>
+<table class="head">
+  <tr>
+    <td class="head-ltitle">ASN1_OBJECT_new(3SSL)</td>
+    <td class="head-vol">OpenSSL</td>
+    <td class="head-rtitle">ASN1_OBJECT_new(3SSL)</td>
+  </tr>
+</table>
+<div class="manual-text">
+<h1 class="Sh" title="Sh" id="NAME"><a class="selflink" href="#NAME">NAME</a></h1>
+ASN1_OBJECT_new, ASN1_OBJECT_free, - object allocation functions
+<h1 class="Sh" title="Sh" id="SYNOPSIS"><a class="selflink" href="#SYNOPSIS">SYNOPSIS</a></h1>
+<pre>
+ #include &lt;openssl/asn1.h&gt;
+ ASN1_OBJECT *ASN1_OBJECT_new(void);
+ void ASN1_OBJECT_free(ASN1_OBJECT *a);
+</pre>
+<h1 class="Sh" title="Sh" id="DESCRIPTION"><a class="selflink" href="#DESCRIPTION">DESCRIPTION</a></h1>
+The ASN1_OBJECT allocation routines, allocate and free an ASN1_OBJECT structure,
+  which represents an ASN1 OBJECT IDENTIFIER.
+<div class="Pp"></div>
+<i>ASN1_OBJECT_new()</i> allocates and initializes a ASN1_OBJECT structure.
+<div class="Pp"></div>
+<i>ASN1_OBJECT_free()</i> frees up the <b>ASN1_OBJECT</b> structure <b>a</b>.
+<h1 class="Sh" title="Sh" id="NOTES"><a class="selflink" href="#NOTES">NOTES</a></h1>
+Although <i>ASN1_OBJECT_new()</i> allocates a new ASN1_OBJECT structure it is
+  almost never used in applications. The ASN1 object utility functions such as
+  <i>OBJ_nid2obj()</i> are used instead.
+<h1 class="Sh" title="Sh" id="RETURN_VALUES"><a class="selflink" href="#RETURN_VALUES">RETURN
+  VALUES</a></h1>
+If the allocation fails, <i>ASN1_OBJECT_new()</i> returns <b>NULL</b> and sets
+  an error code that can be obtained by <i>ERR_get_error</i>(3). Otherwise it
+  returns a pointer to the newly allocated structure.
+<div class="Pp"></div>
+<i>ASN1_OBJECT_free()</i> returns no value.
+<h1 class="Sh" title="Sh" id="SEE_ALSO"><a class="selflink" href="#SEE_ALSO">SEE
+  ALSO</a></h1>
+<i>ERR_get_error</i>(3), <i>d2i_ASN1_OBJECT</i>(3)
+<h1 class="Sh" title="Sh" id="HISTORY"><a class="selflink" href="#HISTORY">HISTORY</a></h1>
+<i>ASN1_OBJECT_new()</i> and <i>ASN1_OBJECT_free()</i> are available in all
+  versions of SSLeay and OpenSSL.</div>
+<table class="foot">
+  <tr>
+    <td class="foot-date">2014-01-06</td>
+    <td class="foot-os">1.0.1f</td>
+  </tr>
+</table>
+</body>
+</html>

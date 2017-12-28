@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <style>
+    table.head, table.foot { width: 100%; }
+    td.head-rtitle, td.foot-os { text-align: right; }
+    td.head-vol { text-align: center; }
+    div.Pp { margin: 1ex 0ex; }
+  </style>
+  <title>AllPlanes(3)</title>
+</head>
+<body>
+<table class="head">
+  <tr>
+    <td class="head-ltitle">AllPlanes(3)</td>
+    <td class="head-vol">XLIB FUNCTIONS</td>
+    <td class="head-rtitle">AllPlanes(3)</td>
+  </tr>
+</table>
+<div class="manual-text">
+<h1 class="Sh" title="Sh" id="NAME"><a class="selflink" href="#NAME">NAME</a></h1>
+AllPlanes, BlackPixel, WhitePixel, ConnectionNumber, DefaultColormap,
+  DefaultDepth, XListDepths, DefaultGC, DefaultRootWindow,
+  DefaultScreenOfDisplay, DefaultScreen, DefaultVisual, DisplayCells,
+  DisplayPlanes, DisplayString, XMaxRequestSize, XExtendedMaxRequestSize,
+  LastKnownRequestProcessed, NextRequest, ProtocolVersion, ProtocolRevision,
+  QLength, RootWindow, ScreenCount, ScreenOfDisplay, ServerVendor, VendorRelease
+  - Display macros and functions
+<h1 class="Sh" title="Sh" id="SYNTAX"><a class="selflink" href="#SYNTAX">SYNTAX</a></h1>
+unsigned long AllPlanes;
+<div class="Pp"></div>
+<div class="Pp" style="margin-left: 5.00ex; text-indent: -5.00ex;">unsigned long
+  BlackPixel(Display * <i>display</i>, int <i>screen_number</i>);</div>
+<div class="Pp"></div>
+<div class="Pp" style="margin-left: 5.00ex; text-indent: -5.00ex;">unsigned long
+  WhitePixel(Display * <i>display</i>, int <i>screen_number</i>);</div>
+<div class="Pp"></div>
+<div class="Pp" style="margin-left: 5.00ex; text-indent: -5.00ex;">int
+  ConnectionNumber(Display * <i>display</i>);</div>
+<div class="Pp"></div>
+<div class="Pp" style="margin-left: 5.00ex; text-indent: -5.00ex;">Colormap
+  DefaultColormap(Display * <i>display</i>, int <i>screen_number</i>);</div>
+<div class="Pp"></div>
+<div class="Pp" style="margin-left: 5.00ex; text-indent: -5.00ex;">int
+  DefaultDepth(Display * <i>display</i>, int <i>screen_number</i>);</div>
+<div class="Pp"></div>
+<div class="Pp" style="margin-left: 5.00ex; text-indent: -5.00ex;">int
+  *XListDepths(Display * <i>display</i>, int <i>screen_number</i>, int
+  <i>count_return</i>);</div>
+<div class="Pp"></div>
+<div class="Pp" style="margin-left: 5.00ex; text-indent: -5.00ex;">GC
+  DefaultGC(Display * <i>display</i>, int <i>screen_number</i>);</div>
+<div class="Pp"></div>
+<div class="Pp" style="margin-left: 5.00ex; text-indent: -5.00ex;">Window
+  DefaultRootWindow(Display * <i>display</i>);</div>
+<div class="Pp"></div>
+<div class="Pp" style="margin-left: 5.00ex; text-indent: -5.00ex;">Screen
+  *DefaultScreenOfDisplay(Display * <i>display</i>);</div>
+<div class="Pp"></div>
+<div class="Pp" style="margin-left: 5.00ex; text-indent: -5.00ex;">int
+  DefaultScreen(Display * <i>display</i>);</div>
+<div class="Pp"></div>
+<div class="Pp" style="margin-left: 5.00ex; text-indent: -5.00ex;">Visual
+  *DefaultVisual(Display * <i>display</i>, int <i>screen_number</i>);</div>
+<div class="Pp"></div>
+<div class="Pp" style="margin-left: 5.00ex; text-indent: -5.00ex;">int
+  DisplayCells(Display * <i>display</i>, int <i>screen_number</i>);</div>
+<div class="Pp"></div>
+<div class="Pp" style="margin-left: 5.00ex; text-indent: -5.00ex;">int
+  DisplayPlanes(Display * <i>display</i>, int <i>screen_number</i>);</div>
+<div class="Pp"></div>
+<div class="Pp" style="margin-left: 5.00ex; text-indent: -5.00ex;">char
+  *DisplayString(Display * <i>display</i>);</div>
+<div class="Pp"></div>
+<div class="Pp" style="margin-left: 5.00ex; text-indent: -5.00ex;">long
+  XMaxRequestSize(Display * <i>display</i>)</div>
+<div class="Pp"></div>
+<div class="Pp" style="margin-left: 5.00ex; text-indent: -5.00ex;">long
+  XExtendedMaxRequestSize(Display * <i>display</i>)</div>
+<div class="Pp"></div>
+<div class="Pp" style="margin-left: 5.00ex; text-indent: -5.00ex;">unsigned long
+  LastKnownRequestProcessed(Display * <i>display</i>);</div>
+<div class="Pp"></div>
+<div class="Pp" style="margin-left: 5.00ex; text-indent: -5.00ex;">unsigned long
+  NextRequest(Display * <i>display</i>);</div>
+<div class="Pp"></div>
+<div class="Pp" style="margin-left: 5.00ex; text-indent: -5.00ex;">int
+  ProtocolVersion(Display * <i>display</i>);</div>
+<div class="Pp"></div>
+<div class="Pp" style="margin-left: 5.00ex; text-indent: -5.00ex;">int
+  ProtocolRevision(Display * <i>display</i>);</div>
+<div class="Pp"></div>
+<div class="Pp" style="margin-left: 5.00ex; text-indent: -5.00ex;">int
+  QLength(Display * <i>display</i>);</div>
+<div class="Pp"></div>
+<div class="Pp" style="margin-left: 5.00ex; text-indent: -5.00ex;">Window
+  RootWindow(Display * <i>display</i>, int <i>screen_number</i>);</div>
+<div class="Pp"></div>
+<div class="Pp" style="margin-left: 5.00ex; text-indent: -5.00ex;">int
+  ScreenCount(Display * <i>display</i>);</div>
+<div class="Pp"></div>
+<div class="Pp" style="margin-left: 5.00ex; text-indent: -5.00ex;">Screen
+  *ScreenOfDisplay(Display * <i>display</i>, int <i>screen_number</i>);</div>
+<div class="Pp"></div>
+<div class="Pp" style="margin-left: 5.00ex; text-indent: -5.00ex;">char
+  *ServerVendor(Display * <i>display</i>)</div>
+<div class="Pp"></div>
+<div class="Pp" style="margin-left: 5.00ex; text-indent: -5.00ex;">int
+  VendorRelease(Display * <i>display</i>)</div>
+<h1 class="Sh" title="Sh" id="ARGUMENTS"><a class="selflink" href="#ARGUMENTS">ARGUMENTS</a></h1>
+<dl class="Bl-tag">
+  <dt class="It-tag"><i>display</i></dt>
+  <dd class="It-tag">Specifies the connection to the X server.</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag"><i>screen_number</i></dt>
+  <dd class="It-tag">Specifies the appropriate screen number on the host
+    server.</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag"><i>count_return</i></dt>
+  <dd class="It-tag">Returns the number of depths.</dd>
+</dl>
+<h1 class="Sh" title="Sh" id="DESCRIPTION"><a class="selflink" href="#DESCRIPTION">DESCRIPTION</a></h1>
+The <i>AllPlanes</i> macro returns a value with all bits set to 1 suitable for
+  use in a plane argument to a procedure.
+<div class="Pp"></div>
+The <i>BlackPixel</i> macro returns the black pixel value for the specified
+  screen.
+<div class="Pp"></div>
+The <i>WhitePixel</i> macro returns the white pixel value for the specified
+  screen.
+<div class="Pp"></div>
+The <i>ConnectionNumber</i> macro returns a connection number for the specified
+  display.
+<div class="Pp"></div>
+The <i>DefaultColormap</i> macro returns the default colormap ID for allocation
+  on the specified screen.
+<div class="Pp"></div>
+The <i>DefaultDepth</i> macro returns the depth (number of planes) of the
+  default root window for the specified screen.
+<div class="Pp"></div>
+The <i>XListDepths</i> function returns the array of depths that are available
+  on the specified screen. If the specified screen_number is valid and
+  sufficient memory for the array can be allocated, <i>XListDepths</i> sets
+  count_return to the number of available depths. Otherwise, it does not set
+  count_return and returns NULL. To release the memory allocated for the array
+  of depths, use <i>XFree</i>.
+<div class="Pp"></div>
+The <i>DefaultGC</i> macro returns the default GC for the root window of the
+  specified screen.
+<div class="Pp"></div>
+The <i>DefaultRootWindow</i> macro returns the root window for the default
+  screen.
+<div class="Pp"></div>
+The <i>DefaultScreenOfDisplay</i> macro returns the default screen of the
+  specified display.
+<div class="Pp"></div>
+The <i>DefaultScreen</i> macro returns the default screen number referenced in
+  the <i>XOpenDisplay</i> routine.
+<div class="Pp"></div>
+The <i>DefaultVisual</i> macro returns the default visual type for the specified
+  screen.
+<div class="Pp"></div>
+The <i>DisplayCells</i> macro returns the number of entries in the default
+  colormap.
+<div class="Pp"></div>
+The <i>DisplayPlanes</i> macro returns the depth of the root window of the
+  specified screen.
+<div class="Pp"></div>
+The <i>DisplayString</i> macro returns the string that was passed to
+  <i>XOpenDisplay</i> when the current display was opened.
+<div class="Pp"></div>
+The <i>XMaxRequestSize</i> function returns the maximum request size (in 4-byte
+  units) supported by the server without using an extended-length protocol
+  encoding. Single protocol requests to the server can be no larger than this
+  size unless an extended-length protocol encoding is supported by the server.
+  The protocol guarantees the size to be no smaller than 4096 units (16384
+  bytes). Xlib automatically breaks data up into multiple protocol requests as
+  necessary for the following functions: <i>XDrawPoints</i>,
+  <i>XDrawRectangles</i>, <i>XDrawSegments</i>, <i>XFillArcs</i>,
+  <i>XFillRectangles</i>, and <i>XPutImage</i>.
+<div class="Pp"></div>
+The <i>XExtendedMaxRequestSize</i> function returns zero if the specified
+  display does not support an extended-length protocol encoding; otherwise, it
+  returns the maximum request size (in 4-byte units) supported by the server
+  using the extended-length encoding. The Xlib functions <i>XDrawLines</i>,
+  <i>XDrawArcs</i>, <i>XFillPolygon</i>, <i>XChangeProperty</i>,
+  <i>XSetClipRectangles</i>, and <i>XSetRegion</i> will use the extended-length
+  encoding as necessary, if supported by the server. Use of the extended-length
+  encoding in other Xlib functions (for example, <i>XDrawPoints</i>,
+  <i>XDrawRectangles</i>, <i>XDrawSegments</i>, <i>XFillArcs</i>,
+  <i>XFillRectangles</i>, <i>XPutImage</i>) is permitted but not required; an
+  Xlib implementation may choose to split the data across multiple smaller
+  requests instead.
+<div class="Pp"></div>
+The <i>LastKnownRequestProcessed</i> macro extracts the full serial number of
+  the last request known by Xlib to have been processed by the X server.
+<div class="Pp"></div>
+The <i>NextRequest</i> macro extracts the full serial number that is to be used
+  for the next request.
+<div class="Pp"></div>
+The <i>ProtocolVersion</i> macro returns the major version number (11) of the X
+  protocol associated with the connected display.
+<div class="Pp"></div>
+The <i>ProtocolRevision</i> macro returns the minor protocol revision number of
+  the X server.
+<div class="Pp"></div>
+The <i>QLength</i> macro returns the length of the event queue for the connected
+  display.
+<div class="Pp"></div>
+The <i>RootWindow</i> macro returns the root window.
+<div class="Pp"></div>
+The <i>ScreenCount</i> macro returns the number of available screens.
+<div class="Pp"></div>
+The <i>ScreenOfDisplay</i> macro returns a pointer to the screen of the
+  specified display.
+<div class="Pp"></div>
+The <i>ServerVendor</i> macro returns a pointer to a null-terminated string that
+  provides some identification of the owner of the X server implementation.
+<div class="Pp"></div>
+The <i>VendorRelease</i> macro returns a number related to a vendor's release of
+  the X server.
+<h1 class="Sh" title="Sh" id="SEE_ALSO"><a class="selflink" href="#SEE_ALSO">SEE
+  ALSO</a></h1>
+BlackPixelOfScreen(3), ImageByteOrder(3), IsCursorKey(3), XOpenDisplay(3)
+<div>&#x00A0;</div>
+<i>Xlib - C Language X Interface</i></div>
+<table class="foot">
+  <tr>
+    <td class="foot-date">libX11 1.6.2</td>
+    <td class="foot-os">X Version 11</td>
+  </tr>
+</table>
+</body>
+</html>

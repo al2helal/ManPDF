@@ -1,0 +1,175 @@
+\documentclass[]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+    \usepackage{xltxtra,xunicode}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
+  \newcommand{\euro}{€}
+\fi
+% use microtype if available
+\IfFileExists{microtype.sty}{\usepackage{microtype}}{}
+\usepackage{longtable,booktabs}
+\ifxetex
+  \usepackage[setpagesize=false, % page size defined by xetex
+              unicode=false, % unicode breaks when used with xetex
+              xetex]{hyperref}
+\else
+  \usepackage[unicode=true]{hyperref}
+\fi
+\hypersetup{breaklinks=true,
+            bookmarks=true,
+            pdfauthor={},
+            pdftitle={AptPkg::Version(3pm)},
+            colorlinks=true,
+            citecolor=blue,
+            urlcolor=blue,
+            linkcolor=magenta,
+            pdfborder={0 0 0}}
+\urlstyle{same}  % don't use monospace font for urls
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\setcounter{secnumdepth}{0}
+\usepackage{pagecolor}
+
+% Set background colour (of the page)
+\definecolor{weirdbgcolor}{HTML}{FCF4F0}
+\pagecolor{weirdbgcolor}
+
+% Make bold text appear in a particular colour
+\definecolor{boldcolor}{HTML}{6E0002}
+\let\realtextbf=\textbf
+\renewcommand{\textbf}[1]{\textcolor{boldcolor}{\realtextbf{#1}}}
+
+% Use underlines instead of emphasis (ugh)
+\renewcommand{\emph}[1]{\underline{#1}}
+
+% % Use fixed-width font by default
+% \renewcommand*\familydefault{\ttdefault}
+
+\title{AptPkg::Version(3pm)}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{longtable}[c]{@{}lll@{}}
+\toprule\addlinespace
+AptPkg::Version(3pm) & User Contributed Perl Documentation &
+AptPkg::Version(3pm)
+\\\addlinespace
+\bottomrule
+\end{longtable}
+
+\hyperdef{}{NAME}{\section{\hyperref[NAME]{NAME}}\label{NAME}}
+
+AptPkg::Version - APT package versioning class
+
+\hyperdef{}{SYNOPSIS}{\section{\hyperref[SYNOPSIS]{SYNOPSIS}}\label{SYNOPSIS}}
+
+use AptPkg::Version;
+
+\hyperdef{}{DESCRIPTION}{\section{\hyperref[DESCRIPTION]{DESCRIPTION}}\label{DESCRIPTION}}
+
+The AptPkg::Version module provides an interface to \textbf{APT}'s
+package version handling.
+
+\hyperdef{}{AptPkg::Version}{\subsection{\hyperref[AptPkg::Version]{AptPkg::Version}}\label{AptPkg::Version}}
+
+The AptPkg::Version package implements the \textbf{APT}
+pkgVersioningSystem class.
+
+An instance of the AptPkg::Version class may be fetched using the
+``versioning'' method from an AptPkg::System object.
+
+The following methods are implemented:
+
+\begin{description}
+\item[label]
+Return the description of the versioning system, for example:
+
+~
+
+\begin{verbatim}
+    Standard .deb
+    
+\end{verbatim}
+
+~
+
+for Debian systems.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[compare(\emph{A}, \emph{B})]
+Compare package version \emph{A} with \emph{B}, returning a negative
+value if \emph{A} is an earlier version than \emph{B}, zero if the same
+or a positive value if \emph{A} is later.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[rel\_compare(\emph{A}, \emph{B})]
+Compare distribution release numbers.
+\end{description}
+
+\begin{description}
+\item[check\_dep(\emph{PKG}, \emph{OP}, \emph{DEP})]
+Check that the package version \emph{PKG} satisfies the relation
+\emph{OP} to the dependency version \emph{DEP}.
+
+~
+
+The relation \emph{OP} is specified in the Debian syntax regardless of
+the versioning system:
+
+~
+
+\begin{verbatim}
+    <<  strictly earlier
+    <=  earlier or equal
+    =   exactly equal
+    >=  later or equal
+    >>  strictly later
+    
+\end{verbatim}
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[upstream(\emph{VER})]
+Return the upstream component of the given version string.
+\end{description}
+
+\hyperdef{}{SEEux5fALSO}{\section{\hyperref[SEEux5fALSO]{SEE
+ALSO}}\label{SEEux5fALSO}}
+
+\emph{AptPkg::Config}(3pm), \emph{AptPkg::System}(3pm),
+\emph{AptPkg}(3pm).
+
+\hyperdef{}{AUTHOR}{\section{\hyperref[AUTHOR]{AUTHOR}}\label{AUTHOR}}
+
+Brendan O'Dea \textless{}bod@debian.org\textgreater{}
+
+\begin{longtable}[c]{@{}ll@{}}
+\toprule\addlinespace
+2013-03-01 & perl v5.18.1
+\\\addlinespace
+\bottomrule
+\end{longtable}
+
+\end{document}

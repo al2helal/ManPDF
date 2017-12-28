@@ -1,0 +1,179 @@
+\documentclass[]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+    \usepackage{xltxtra,xunicode}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
+  \newcommand{\euro}{€}
+\fi
+% use microtype if available
+\IfFileExists{microtype.sty}{\usepackage{microtype}}{}
+\usepackage{longtable,booktabs}
+\ifxetex
+  \usepackage[setpagesize=false, % page size defined by xetex
+              unicode=false, % unicode breaks when used with xetex
+              xetex]{hyperref}
+\else
+  \usepackage[unicode=true]{hyperref}
+\fi
+\hypersetup{breaklinks=true,
+            bookmarks=true,
+            pdfauthor={},
+            pdftitle={AIO\_FSYNC(3)},
+            colorlinks=true,
+            citecolor=blue,
+            urlcolor=blue,
+            linkcolor=magenta,
+            pdfborder={0 0 0}}
+\urlstyle{same}  % don't use monospace font for urls
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\setcounter{secnumdepth}{0}
+\usepackage{pagecolor}
+
+% Set background colour (of the page)
+\definecolor{weirdbgcolor}{HTML}{FCF4F0}
+\pagecolor{weirdbgcolor}
+
+% Make bold text appear in a particular colour
+\definecolor{boldcolor}{HTML}{6E0002}
+\let\realtextbf=\textbf
+\renewcommand{\textbf}[1]{\textcolor{boldcolor}{\realtextbf{#1}}}
+
+% Use underlines instead of emphasis (ugh)
+\renewcommand{\emph}[1]{\underline{#1}}
+
+% % Use fixed-width font by default
+% \renewcommand*\familydefault{\ttdefault}
+
+\title{AIO\_FSYNC(3)}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{longtable}[c]{@{}lll@{}}
+\toprule\addlinespace
+AIO\_FSYNC(3) & Linux Programmer's Manual & AIO\_FSYNC(3)
+\\\addlinespace
+\bottomrule
+\end{longtable}
+
+\hyperdef{}{NAME}{\section{\hyperref[NAME]{NAME}}\label{NAME}}
+
+aio\_fsync - asynchronous file synchronization
+
+\hyperdef{}{SYNOPSIS}{\section{\hyperref[SYNOPSIS]{SYNOPSIS}}\label{SYNOPSIS}}
+
+\textbf{\#include \textless{}aio.h\textgreater{}}
+
+~
+
+\textbf{int aio\_fsync(int}\emph{op}\textbf{, struct aiocb
+*}\emph{aiocbp}\textbf{);}
+
+~
+
+Link with \emph{-lrt}.
+
+\hyperdef{}{DESCRIPTION}{\section{\hyperref[DESCRIPTION]{DESCRIPTION}}\label{DESCRIPTION}}
+
+The \textbf{aio\_fsync}() function does a sync on all outstanding
+asynchronous I/O operations associated with
+\emph{aiocbp-\textgreater{}aio\_fildes}. (See \textbf{aio}(7) for a
+description of the \emph{aiocb} structure.)
+
+More precisely, if \emph{op} is \textbf{O\_SYNC}, then all currently
+queued I/O operations shall be completed as if by a call of
+\textbf{fsync}(2), and if \emph{op} is \textbf{O\_DSYNC}, this call is
+the asynchronous analog of \textbf{fdatasync}(2).
+
+~
+
+Note that this is a request only; it does not wait for I/O completion.
+
+Apart from \emph{aio\_fildes}, the only field in the structure pointed
+to by \emph{aiocbp} that is used by this call is the
+\emph{aio\_sigevent} field (a \emph{sigevent} structure, described in
+\textbf{sigevent}(7)), which indicates the desired type of asynchronous
+notification at completion. All other fields are ignored.
+
+\hyperdef{}{RETURNux5fVALUE}{\section{\hyperref[RETURNux5fVALUE]{RETURN
+VALUE}}\label{RETURNux5fVALUE}}
+
+On success (the sync request was successfully queued) this function
+returns 0. On error -1 is returned, and \emph{errno} is set
+appropriately.
+
+\hyperdef{}{ERRORS}{\section{\hyperref[ERRORS]{ERRORS}}\label{ERRORS}}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[\textbf{EAGAIN}]
+Out of resources.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[\textbf{EBADF}]
+\emph{aio\_fildes} is not a valid file descriptor open for writing.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[\textbf{EINVAL}]
+Synchronized I/O is not supported for this file, or \emph{op} is not
+\textbf{O\_SYNC} or \textbf{O\_DSYNC}.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[\textbf{ENOSYS}]
+\textbf{aio\_fsync}() is not implemented.
+\end{description}
+
+\hyperdef{}{VERSIONS}{\section{\hyperref[VERSIONS]{VERSIONS}}\label{VERSIONS}}
+
+The \textbf{aio\_fsync}() function is available since glibc 2.1.
+
+\hyperdef{}{CONFORMINGux5fTO}{\section{\hyperref[CONFORMINGux5fTO]{CONFORMING
+TO}}\label{CONFORMINGux5fTO}}
+
+POSIX.1-2001, POSIX.1-2008.
+
+\hyperdef{}{SEEux5fALSO}{\section{\hyperref[SEEux5fALSO]{SEE
+ALSO}}\label{SEEux5fALSO}}
+
+\textbf{aio\_cancel}(3), \textbf{aio\_error}(3), \textbf{aio\_read}(3),
+\textbf{aio\_return}(3), \textbf{aio\_suspend}(3),
+\textbf{aio\_write}(3), \textbf{lio\_listio}(3), \textbf{aio}(7),
+\textbf{sigevent}(7)
+
+\hyperdef{}{COLOPHON}{\section{\hyperref[COLOPHON]{COLOPHON}}\label{COLOPHON}}
+
+This page is part of release 3.54 of the Linux \emph{man-pages} project.
+A description of the project, and information about reporting bugs, can
+be found at http://www.kernel.org/doc/man-pages/.
+
+\begin{longtable}[c]{@{}ll@{}}
+\toprule\addlinespace
+2012-05-08 &
+\\\addlinespace
+\bottomrule
+\end{longtable}
+
+\end{document}

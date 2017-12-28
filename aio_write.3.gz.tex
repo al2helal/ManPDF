@@ -1,0 +1,217 @@
+\documentclass[]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+    \usepackage{xltxtra,xunicode}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
+  \newcommand{\euro}{€}
+\fi
+% use microtype if available
+\IfFileExists{microtype.sty}{\usepackage{microtype}}{}
+\usepackage{longtable,booktabs}
+\ifxetex
+  \usepackage[setpagesize=false, % page size defined by xetex
+              unicode=false, % unicode breaks when used with xetex
+              xetex]{hyperref}
+\else
+  \usepackage[unicode=true]{hyperref}
+\fi
+\hypersetup{breaklinks=true,
+            bookmarks=true,
+            pdfauthor={},
+            pdftitle={AIO\_WRITE(3)},
+            colorlinks=true,
+            citecolor=blue,
+            urlcolor=blue,
+            linkcolor=magenta,
+            pdfborder={0 0 0}}
+\urlstyle{same}  % don't use monospace font for urls
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\setcounter{secnumdepth}{0}
+\usepackage{pagecolor}
+
+% Set background colour (of the page)
+\definecolor{weirdbgcolor}{HTML}{FCF4F0}
+\pagecolor{weirdbgcolor}
+
+% Make bold text appear in a particular colour
+\definecolor{boldcolor}{HTML}{6E0002}
+\let\realtextbf=\textbf
+\renewcommand{\textbf}[1]{\textcolor{boldcolor}{\realtextbf{#1}}}
+
+% Use underlines instead of emphasis (ugh)
+\renewcommand{\emph}[1]{\underline{#1}}
+
+% % Use fixed-width font by default
+% \renewcommand*\familydefault{\ttdefault}
+
+\title{AIO\_WRITE(3)}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{longtable}[c]{@{}lll@{}}
+\toprule\addlinespace
+AIO\_WRITE(3) & Linux Programmer's Manual & AIO\_WRITE(3)
+\\\addlinespace
+\bottomrule
+\end{longtable}
+
+\hyperdef{}{NAME}{\section{\hyperref[NAME]{NAME}}\label{NAME}}
+
+aio\_write - asynchronous write
+
+\hyperdef{}{SYNOPSIS}{\section{\hyperref[SYNOPSIS]{SYNOPSIS}}\label{SYNOPSIS}}
+
+\textbf{\#include \textless{}aio.h\textgreater{}}
+
+~
+
+\textbf{int aio\_write(struct aiocb *}\emph{aiocbp}\textbf{);}
+
+~
+
+Link with \emph{-lrt}.
+
+\hyperdef{}{DESCRIPTION}{\section{\hyperref[DESCRIPTION]{DESCRIPTION}}\label{DESCRIPTION}}
+
+The \textbf{aio\_write}() function queues the I/O request described by
+the buffer pointed to by \emph{aiocbp}. This function is the
+asynchronous analog of \textbf{write}(2). The arguments of the call
+
+~
+
+write(fd, buf, count)
+
+~
+
+correspond (in order) to the fields \emph{aio\_fildes}, \emph{aio\_buf},
+and \emph{aio\_nbytes} of the structure pointed to by \emph{aiocbp}.
+(See \textbf{aio}(7) for a description of the \emph{aiocb} structure.)
+
+If \textbf{O\_APPEND} is not set, the data is written starting at the
+absolute file offset \emph{aiocbp-\textgreater{}aio\_offset}, regardless
+of the current file offset. If \textbf{O\_APPEND} is set, data is
+written at the end of the file in the same order as
+\textbf{aio\_write}() calls are made. After the call, the value of the
+current file offset is unspecified.
+
+The ``asynchronous'' means that this call returns as soon as the request
+has been enqueued; the write may or may not have completed when the call
+returns. One tests for completion using \textbf{aio\_error}(3). The
+return status of a completed I/O operation can be obtained
+\textbf{aio\_return}(3). Asynchronous notification of I/O completion can
+be obtained by setting \emph{aiocbp-\textgreater{}aio\_sigevent}
+appropriately; see \textbf{sigevent}(7) for details.
+
+If \textbf{\_POSIX\_PRIORITIZED\_IO} is defined, and this file supports
+it, then the asynchronous operation is submitted at a priority equal to
+that of the calling process minus
+\emph{aiocbp-\textgreater{}aio\_reqprio}.
+
+The field \emph{aiocbp-\textgreater{}aio\_lio\_opcode} is ignored.
+
+No data is written to a regular file beyond its maximum offset.
+
+\hyperdef{}{RETURNux5fVALUE}{\section{\hyperref[RETURNux5fVALUE]{RETURN
+VALUE}}\label{RETURNux5fVALUE}}
+
+On success, 0 is returned. On error the request is not enqueued, -1 is
+returned, and \emph{errno} is set appropriately. If an error is detected
+only later, it will be reported via \textbf{aio\_return}(3) (returns
+status -1) and \textbf{aio\_error}(3) (error status---whatever one would
+have gotten in \emph{errno}, such as \textbf{EBADF}).
+
+\hyperdef{}{ERRORS}{\section{\hyperref[ERRORS]{ERRORS}}\label{ERRORS}}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[\textbf{EAGAIN}]
+Out of resources.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[\textbf{EBADF}]
+\emph{aio\_fildes} is not a valid file descriptor open for writing.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[\textbf{EFBIG}]
+The file is a regular file, we want to write at least one byte, but the
+starting position is at or beyond the maximum offset for this file.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[\textbf{EINVAL}]
+One or more of \emph{aio\_offset}, \emph{aio\_reqprio},
+\emph{aio\_nbytes} are invalid.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[\textbf{ENOSYS}]
+\textbf{aio\_write}() is not implemented.
+\end{description}
+
+\hyperdef{}{VERSIONS}{\section{\hyperref[VERSIONS]{VERSIONS}}\label{VERSIONS}}
+
+The \textbf{aio\_write}() function is available since glibc 2.1.
+
+\hyperdef{}{CONFORMINGux5fTO}{\section{\hyperref[CONFORMINGux5fTO]{CONFORMING
+TO}}\label{CONFORMINGux5fTO}}
+
+POSIX.1-2001, POSIX.1-2008.
+
+\hyperdef{}{NOTES}{\section{\hyperref[NOTES]{NOTES}}\label{NOTES}}
+
+It is a good idea to zero out the control block before use. The control
+block must not be changed while the write operation is in progress. The
+buffer area being written out must not be accessed during the operation
+or undefined results may occur. The memory areas involved must remain
+valid.
+
+~
+
+Simultaneous I/O operations specifying the same \emph{aiocb} structure
+produce undefined results.
+
+\hyperdef{}{SEEux5fALSO}{\section{\hyperref[SEEux5fALSO]{SEE
+ALSO}}\label{SEEux5fALSO}}
+
+\textbf{aio\_cancel}(3), \textbf{aio\_error}(3), \textbf{aio\_fsync}(3),
+\textbf{aio\_read}(3), \textbf{aio\_return}(3),
+\textbf{aio\_suspend}(3), \textbf{lio\_listio}(3), \textbf{aio}(7)
+
+\hyperdef{}{COLOPHON}{\section{\hyperref[COLOPHON]{COLOPHON}}\label{COLOPHON}}
+
+This page is part of release 3.54 of the Linux \emph{man-pages} project.
+A description of the project, and information about reporting bugs, can
+be found at http://www.kernel.org/doc/man-pages/.
+
+\begin{longtable}[c]{@{}ll@{}}
+\toprule\addlinespace
+2012-05-08 &
+\\\addlinespace
+\bottomrule
+\end{longtable}
+
+\end{document}

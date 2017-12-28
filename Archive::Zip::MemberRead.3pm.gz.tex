@@ -1,0 +1,242 @@
+\documentclass[]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+    \usepackage{xltxtra,xunicode}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
+  \newcommand{\euro}{€}
+\fi
+% use microtype if available
+\IfFileExists{microtype.sty}{\usepackage{microtype}}{}
+\usepackage{longtable,booktabs}
+\ifxetex
+  \usepackage[setpagesize=false, % page size defined by xetex
+              unicode=false, % unicode breaks when used with xetex
+              xetex]{hyperref}
+\else
+  \usepackage[unicode=true]{hyperref}
+\fi
+\hypersetup{breaklinks=true,
+            bookmarks=true,
+            pdfauthor={},
+            pdftitle={Archive::Zip::MemberRead(3pm)},
+            colorlinks=true,
+            citecolor=blue,
+            urlcolor=blue,
+            linkcolor=magenta,
+            pdfborder={0 0 0}}
+\urlstyle{same}  % don't use monospace font for urls
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\setcounter{secnumdepth}{0}
+\usepackage{pagecolor}
+
+% Set background colour (of the page)
+\definecolor{weirdbgcolor}{HTML}{FCF4F0}
+\pagecolor{weirdbgcolor}
+
+% Make bold text appear in a particular colour
+\definecolor{boldcolor}{HTML}{6E0002}
+\let\realtextbf=\textbf
+\renewcommand{\textbf}[1]{\textcolor{boldcolor}{\realtextbf{#1}}}
+
+% Use underlines instead of emphasis (ugh)
+\renewcommand{\emph}[1]{\underline{#1}}
+
+% % Use fixed-width font by default
+% \renewcommand*\familydefault{\ttdefault}
+
+\title{Archive::Zip::MemberRead(3pm)}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{longtable}[c]{@{}lll@{}}
+\toprule\addlinespace
+Archive::Zip::MemberRead(3pm) & User Contributed Perl Documentation &
+Archive::Zip::MemberRead(3pm)
+\\\addlinespace
+\bottomrule
+\end{longtable}
+
+\hyperdef{}{NAME}{\section{\hyperref[NAME]{NAME}}\label{NAME}}
+
+Archive::Zip::MemberRead - A wrapper that lets you read Zip archive
+members as if they were files.
+
+\hyperdef{}{SYNOPSIS}{\section{\hyperref[SYNOPSIS]{SYNOPSIS}}\label{SYNOPSIS}}
+
+\begin{verbatim}
+  use Archive::Zip;
+  use Archive::Zip::MemberRead;
+  $zip = Archive::Zip->new("file.zip");
+  $fh  = Archive::Zip::MemberRead->new($zip, "subdir/abc.txt");
+  while (defined($line = $fh->getline()))
+  {
+      print $fh->input_line_number . "#: $line\n";
+  }
+  $read = $fh->read($buffer, 32*1024);
+  print "Read $read bytes as :$buffer:\n";
+\end{verbatim}
+
+\hyperdef{}{DESCRIPTION}{\section{\hyperref[DESCRIPTION]{DESCRIPTION}}\label{DESCRIPTION}}
+
+The Archive::Zip::MemberRead module lets you read Zip archive member
+data just like you read data from files.
+
+\hyperdef{}{METHODS}{\section{\hyperref[METHODS]{METHODS}}\label{METHODS}}
+
+\begin{description}
+\item[\emph{Archive::Zip::Member::readFileHandle()}]
+You can get a ``Archive::Zip::MemberRead'' from an archive member by
+calling ``readFileHandle()'':
+
+~
+
+\begin{verbatim}
+  my $member = $zip->memberNamed('abc/def.c');
+  my $fh = $member->readFileHandle();
+  while (defined($line = $fh->getline()))
+  {
+      # ...
+  }
+  $fh->close();
+    
+\end{verbatim}
+\end{description}
+
+\begin{description}
+\item[Archive::Zip::MemberRead-\textgreater{}new(\$zip, \$fileName)]
+\end{description}
+
+\begin{description}
+\item[Archive::Zip::MemberRead-\textgreater{}new(\$zip, \$member)]
+\end{description}
+
+\begin{description}
+\item[Archive::Zip::MemberRead-\textgreater{}new(\$member)]
+Construct a new Archive::Zip::MemberRead on the specified member.
+
+~
+
+\begin{verbatim}
+  my $fh = Archive::Zip::MemberRead->new($zip, 'fred.c')
+    
+\end{verbatim}
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[setLineEnd(expr)]
+Set the line end character to use. This is set to \textbackslash{}n by
+default except on Windows systems where it is set to
+\textbackslash{}r\textbackslash{}n. You will only need to set this on
+systems which are not Windows or Unix based and require a line end
+diffrent from \textbackslash{}n. This is a class method so call as
+``Archive::Zip::MemberRead''-\textgreater{}``setLineEnd(\$nl)''
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[\emph{rewind()}]
+Rewinds an ``Archive::Zip::MemberRead'' so that you can read from it
+again starting at the beginning.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[input\_record\_separator(expr)]
+If the argumnet is given, input\_record\_separator for this instance is
+set to it. The current setting (which may be the global \$/) is always
+returned.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[\emph{input\_line\_number()}]
+Returns the current line number, but only if you're using ``getline()''.
+Using ``read()'' will not update the line number.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[\emph{close()}]
+Closes the given file handle.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[buffer\_size({[} \$size {]})]
+Gets or sets the buffer size used for reads. Default is the chunk size
+used by Archive::Zip.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[\emph{getline()}]
+Returns the next line from the currently open member. Makes sense only
+for text files. A read error is considered fatal enough to die. Returns
+undef on eof. All subsequent calls would return undef, unless a
+\emph{rewind()} is called. Note: The line returned has the
+input\_record\_separator (default: newline) removed.
+\end{description}
+
+\begin{description}
+\item[read(\$buffer, \$num\_bytes\_to\_read)]
+Simulates a normal ``read()'' system call. Returns the no. of bytes
+read. ``undef'' on error, 0 on eof, \emph{e.g.}:
+
+~
+
+\begin{verbatim}
+  $fh = Archive::Zip::MemberRead->new($zip, "sreeji/secrets.bin");
+  while (1)
+  {
+    $read = $fh->read($buffer, 1024);
+    die "FATAL ERROR reading my secrets !\n" if (!defined($read));
+    last if (!$read);
+    # Do processing.
+    ....
+   }
+    
+\end{verbatim}
+\end{description}
+
+\hyperdef{}{AUTHOR}{\section{\hyperref[AUTHOR]{AUTHOR}}\label{AUTHOR}}
+
+Sreeji K. Das, \textless{}sreeji\_k@yahoo.com\textgreater{} See
+Archive::Zip by Ned Konz without which this module does not make any
+sense!
+
+Minor mods by Ned Konz.
+
+\hyperdef{}{COPYRIGHT}{\section{\hyperref[COPYRIGHT]{COPYRIGHT}}\label{COPYRIGHT}}
+
+Copyright 2002 Sreeji K. Das.
+
+This program is free software; you can redistribute it and/or modify it
+under the same terms as Perl itself.
+
+\begin{longtable}[c]{@{}ll@{}}
+\toprule\addlinespace
+2009-06-30 & perl v5.14.2
+\\\addlinespace
+\bottomrule
+\end{longtable}
+
+\end{document}

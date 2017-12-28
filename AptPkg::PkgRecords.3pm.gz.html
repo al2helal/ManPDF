@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <style>
+    table.head, table.foot { width: 100%; }
+    td.head-rtitle, td.foot-os { text-align: right; }
+    td.head-vol { text-align: center; }
+    div.Pp { margin: 1ex 0ex; }
+  </style>
+  <title>AptPkg::PkgRecords(3pm)</title>
+</head>
+<body>
+<table class="head">
+  <tr>
+    <td class="head-ltitle">AptPkg::PkgRecords(3pm)</td>
+    <td class="head-vol">User Contributed Perl Documentation</td>
+    <td class="head-rtitle">AptPkg::PkgRecords(3pm)</td>
+  </tr>
+</table>
+<div class="manual-text">
+<h1 class="Sh" title="Sh" id="NAME"><a class="selflink" href="#NAME">NAME</a></h1>
+AptPkg::PkgRecords - APT package description class
+<h1 class="Sh" title="Sh" id="SYNOPSIS"><a class="selflink" href="#SYNOPSIS">SYNOPSIS</a></h1>
+use AptPkg::PkgRecords;
+<h1 class="Sh" title="Sh" id="DESCRIPTION"><a class="selflink" href="#DESCRIPTION">DESCRIPTION</a></h1>
+The AptPkg::PkgRecords module provides an interface to the parsed contents of
+  package files.
+<h2 class="Ss" title="Ss" id="AptPkg::PkgRecords"><a class="selflink" href="#AptPkg::PkgRecords">AptPkg::PkgRecords</a></h2>
+The AptPkg::PkgRecords package Implements the <b>APT</b> pkgRecords class.
+<div class="Pp"></div>
+An instance of the AptPkg::PkgRecords class may be fetched using the
+  &quot;packages&quot; method from an AptPkg::Cache object.
+<div class="Pp"></div>
+<i>Methods</i>
+<dl class="Bl-tag">
+  <dt class="It-tag">lookup(<i>PACK</i>)</dt>
+  <dd class="It-tag">Return a hash (or hash reference, depending on context) for
+      the given package.
+    <div style="height: 1.00em;">&#x00A0;</div>
+     <i>PACK</i> may either be an AptPkg::Cache::VerFile object, an
+      AptPkg::Cache::DescFile object or a package name.
+    <div style="height: 1.00em;">&#x00A0;</div>
+    The hash contains the following keys:</dd>
+</dl>
+<div style="margin-left: 4.00ex;">
+<div style="height: 1.00em;">&#x00A0;</div>
+<div style="margin-left: 4.00ex;">&quot;FileName&quot;, &quot;MD5Hash&quot;,
+  &quot;SourcePkg&quot;, &quot;Maintainer&quot;, &quot;ShortDesc&quot;,
+  &quot;LongDesc&quot; and &quot;Name&quot;.</div>
+</div>
+<div style="margin-left: 4.00ex;">
+<div style="height: 1.00em;">&#x00A0;</div>
+with values taken from the packages or translation file.
+<div style="height: 1.00em;">&#x00A0;</div>
+Note that &quot;LongDesc&quot; is generally not useful for
+  AptPkg::Cache::VerFile objects, which refer to the Packages file, as these no
+  longer contain the full description (now in the Translation files).
+<div style="height: 1.00em;">&#x00A0;</div>
+If <i>PACK</i> is a package name, these additional values are set:
+<div style="height: 1.00em;">&#x00A0;</div>
+<div style="margin-left: 4.00ex;">&quot;Section&quot; and
+  &quot;VerStr&quot;.</div>
+</div>
+<div style="margin-left: 4.00ex;">
+<div style="height: 1.00em;">&#x00A0;</div>
+and the following values are overriden with the translated versions:
+<div style="height: 1.00em;">&#x00A0;</div>
+<div style="margin-left: 4.00ex;">&quot;ShortDesc&quot; and
+  &quot;LongDesc&quot;.</div>
+</div>
+<div style="margin-left: 4.00ex;"></div>
+<h1 class="Sh" title="Sh" id="SEE_ALSO"><a class="selflink" href="#SEE_ALSO">SEE
+  ALSO</a></h1>
+<i>AptPkg::Cache</i>(3pm), <i>AptPkg</i>(3pm).
+<h1 class="Sh" title="Sh" id="AUTHOR"><a class="selflink" href="#AUTHOR">AUTHOR</a></h1>
+Brendan O'Dea &lt;bod@debian.org&gt;</div>
+<table class="foot">
+  <tr>
+    <td class="foot-date">2013-05-10</td>
+    <td class="foot-os">perl v5.18.1</td>
+  </tr>
+</table>
+</body>
+</html>

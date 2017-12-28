@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <style>
+    table.head, table.foot { width: 100%; }
+    td.head-rtitle, td.foot-os { text-align: right; }
+    td.head-vol { text-align: center; }
+    div.Pp { margin: 1ex 0ex; }
+  </style>
+  <title>BCMP(3)</title>
+</head>
+<body>
+<table class="head">
+  <tr>
+    <td class="head-ltitle">BCMP(3)</td>
+    <td class="head-vol">Linux Programmer's Manual</td>
+    <td class="head-rtitle">BCMP(3)</td>
+  </tr>
+</table>
+<div class="manual-text">
+<h1 class="Sh" title="Sh" id="NAME"><a class="selflink" href="#NAME">NAME</a></h1>
+bcmp - compare byte sequences
+<h1 class="Sh" title="Sh" id="SYNOPSIS"><a class="selflink" href="#SYNOPSIS">SYNOPSIS</a></h1>
+<pre>
+<b>#include &lt;strings.h&gt;</b>
+<div style="height: 1.00em;">&#x00A0;</div>
+<b>int bcmp(const void *</b><i>s1</i><b>, const void *</b><i>s2</i><b>, size_t </b><i>n</i><b>);</b>
+</pre>
+<h1 class="Sh" title="Sh" id="DESCRIPTION"><a class="selflink" href="#DESCRIPTION">DESCRIPTION</a></h1>
+The <b>bcmp</b>() function compares the two byte sequences <i>s1</i> and
+  <i>s2</i> of length <i>n</i> each. If they are equal, and in particular if
+  <i>n</i> is zero, <b>bcmp</b>() returns 0. Otherwise it returns a nonzero
+  result.
+<h1 class="Sh" title="Sh" id="RETURN_VALUE"><a class="selflink" href="#RETURN_VALUE">RETURN
+  VALUE</a></h1>
+The <b>bcmp</b>() function returns 0 if the byte sequences are equal, otherwise
+  a nonzero result is returned.
+<h1 class="Sh" title="Sh" id="CONFORMING_TO"><a class="selflink" href="#CONFORMING_TO">CONFORMING
+  TO</a></h1>
+4.3BSD. This function is deprecated (marked as LEGACY in POSIX.1-2001): use
+  <b>memcmp</b>(3) in new programs. POSIX.1-2008 removes the specification of
+  <b>bcmp</b>().
+<h1 class="Sh" title="Sh" id="SEE_ALSO"><a class="selflink" href="#SEE_ALSO">SEE
+  ALSO</a></h1>
+<b>memcmp</b>(3), <b>strcasecmp</b>(3), <b>strcmp</b>(3), <b>strcoll</b>(3),
+  <b>strncasecmp</b>(3), <b>strncmp</b>(3)
+<h1 class="Sh" title="Sh" id="COLOPHON"><a class="selflink" href="#COLOPHON">COLOPHON</a></h1>
+This page is part of release 3.54 of the Linux <i>man-pages</i> project. A
+  description of the project, and information about reporting bugs, can be found
+  at http://www.kernel.org/doc/man-pages/.</div>
+<table class="foot">
+  <tr>
+    <td class="foot-date">2008-08-06</td>
+    <td class="foot-os">Linux</td>
+  </tr>
+</table>
+</body>
+</html>

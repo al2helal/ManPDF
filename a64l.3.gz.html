@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <style>
+    table.head, table.foot { width: 100%; }
+    td.head-rtitle, td.foot-os { text-align: right; }
+    td.head-vol { text-align: center; }
+    div.Pp { margin: 1ex 0ex; }
+  </style>
+  <title>A64L(3)</title>
+</head>
+<body>
+<table class="head">
+  <tr>
+    <td class="head-ltitle">A64L(3)</td>
+    <td class="head-vol">Linux Programmer's Manual</td>
+    <td class="head-rtitle">A64L(3)</td>
+  </tr>
+</table>
+<div class="manual-text">
+<h1 class="Sh" title="Sh" id="NAME"><a class="selflink" href="#NAME">NAME</a></h1>
+a64l, l64a - convert between long and base-64
+<h1 class="Sh" title="Sh" id="SYNOPSIS"><a class="selflink" href="#SYNOPSIS">SYNOPSIS</a></h1>
+<b>#include &lt;stdlib.h&gt;</b>
+<div style="height: 1.00em;">&#x00A0;</div>
+<b>long a64l(char *</b><i>str64</i><b>);</b>
+<div style="height: 1.00em;">&#x00A0;</div>
+<b>char *l64a(long </b><i>value</i><b>);</b>
+<div style="height: 1.00em;">&#x00A0;</div>
+<br/>
+Feature Test Macro Requirements for glibc (see <b>feature_test_macros</b>(7)):
+<br/>
+<div style="height: 1.00em;">&#x00A0;</div>
+<b>a64l</b>(), <b>l64a</b>():
+<div>&#x00A0;</div>
+<div style="margin-left: 4.00ex;">_SVID_SOURCE ||
+  _XOPEN_SOURCE&#x00A0;&gt;=&#x00A0;500 ||
+  _XOPEN_SOURCE&#x00A0;&amp;&amp;&#x00A0;_XOPEN_SOURCE_EXTENDED</div>
+<h1 class="Sh" title="Sh" id="DESCRIPTION"><a class="selflink" href="#DESCRIPTION">DESCRIPTION</a></h1>
+These functions provide a conversion between 32-bit long integers and
+  little-endian base-64 ASCII strings (of length zero to six). If the string
+  used as argument for <b>a64l</b>() has length greater than six, only the first
+  six bytes are used. If the type <i>long</i> has more than 32 bits, then
+  <b>l64a</b>() uses only the low order 32 bits of <i>value</i>, and
+  <b>a64l</b>() sign-extends its 32-bit result.
+<div class="Pp"></div>
+The 64 digits in the base-64 system are:
+<div style="margin-left: 5.00ex;">
+<pre>
+<div class="Pp"></div>
+'.'	represents a 0
+'/'	represents a 1
+0-9	represent  2-11
+A-Z	represent 12-37
+a-z	represent 38-63
+<div class="Pp"></div>
+</pre>
+</div>
+So 123 = 59*64^0 + 1*64^1 = &quot;v/&quot;.
+<h1 class="Sh" title="Sh" id="ATTRIBUTES"><a class="selflink" href="#ATTRIBUTES">ATTRIBUTES</a></h1>
+<h2 class="Ss" title="Ss" id="Multithreading_(see_pthreads(7))"><a class="selflink" href="#Multithreading_(see_pthreads(7))">Multithreading
+  (see pthreads(7))</a></h2>
+The <b>l64a</b>() function is not thread-safe.
+<div class="Pp"></div>
+The <b>a64l</b>() function is thread-safe.
+<h1 class="Sh" title="Sh" id="CONFORMING_TO"><a class="selflink" href="#CONFORMING_TO">CONFORMING
+  TO</a></h1>
+POSIX.1-2001.
+<h1 class="Sh" title="Sh" id="NOTES"><a class="selflink" href="#NOTES">NOTES</a></h1>
+The value returned by <b>l64a</b>() may be a pointer to a static buffer,
+  possibly overwritten by later calls.
+<div class="Pp"></div>
+The behavior of <b>l64a</b>() is undefined when <i>value</i> is negative. If
+  <i>value</i> is zero, it returns an empty string.
+<div class="Pp"></div>
+These functions are broken in glibc before 2.2.5 (puts most significant digit
+  first).
+<div class="Pp"></div>
+This is not the encoding used by <b>uuencode</b>(1).
+<h1 class="Sh" title="Sh" id="SEE_ALSO"><a class="selflink" href="#SEE_ALSO">SEE
+  ALSO</a></h1>
+<b>uuencode</b>(1), <b>strtoul</b>(3)
+<h1 class="Sh" title="Sh" id="COLOPHON"><a class="selflink" href="#COLOPHON">COLOPHON</a></h1>
+This page is part of release 3.54 of the Linux <i>man-pages</i> project. A
+  description of the project, and information about reporting bugs, can be found
+  at http://www.kernel.org/doc/man-pages/.</div>
+<table class="foot">
+  <tr>
+    <td class="foot-date">2013-06-21</td>
+    <td class="foot-os"></td>
+  </tr>
+</table>
+</body>
+</html>

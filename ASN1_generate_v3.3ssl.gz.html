@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <style>
+    table.head, table.foot { width: 100%; }
+    td.head-rtitle, td.foot-os { text-align: right; }
+    td.head-vol { text-align: center; }
+    div.Pp { margin: 1ex 0ex; }
+  </style>
+  <title>ASN1_generate_nconf(3SSL)</title>
+</head>
+<body>
+<table class="head">
+  <tr>
+    <td class="head-ltitle">ASN1_generate_nconf(3SSL)</td>
+    <td class="head-vol">OpenSSL</td>
+    <td class="head-rtitle">ASN1_generate_nconf(3SSL)</td>
+  </tr>
+</table>
+<div class="manual-text">
+<h1 class="Sh" title="Sh" id="NAME"><a class="selflink" href="#NAME">NAME</a></h1>
+ASN1_generate_nconf, ASN1_generate_v3 - ASN1 generation functions
+<h1 class="Sh" title="Sh" id="SYNOPSIS"><a class="selflink" href="#SYNOPSIS">SYNOPSIS</a></h1>
+<pre>
+ #include &lt;openssl/asn1.h&gt;
+ ASN1_TYPE *ASN1_generate_nconf(char *str, CONF *nconf);
+ ASN1_TYPE *ASN1_generate_v3(char *str, X509V3_CTX *cnf);
+</pre>
+<h1 class="Sh" title="Sh" id="DESCRIPTION"><a class="selflink" href="#DESCRIPTION">DESCRIPTION</a></h1>
+These functions generate the ASN1 encoding of a string in an <b>ASN1_TYPE</b>
+  structure.
+<div class="Pp"></div>
+<b>str</b> contains the string to encode <b>nconf</b> or <b>cnf</b> contains the
+  optional configuration information where additional strings will be read from.
+  <b>nconf</b> will typically come from a config file wherease <b>cnf</b> is
+  obtained from an <b>X509V3_CTX</b> structure which will typically be used by
+  X509 v3 certificate extension functions. <b>cnf</b> or <b>nconf</b> can be set
+  to <b>NULL</b> if no additional configuration will be used.
+<h1 class="Sh" title="Sh" id="GENERATION_STRING_FORMAT"><a class="selflink" href="#GENERATION_STRING_FORMAT">GENERATION
+  STRING FORMAT</a></h1>
+The actual data encoded is determined by the string <b>str</b> and the
+  configuration information. The general format of the string is:
+<dl class="Bl-tag">
+  <dt class="It-tag"><b>[modifier,]type[:value]</b></dt>
+  <dd class="It-tag"></dd>
+</dl>
+<div class="Pp"></div>
+That is zero or more comma separated modifiers followed by a type followed by an
+  optional colon and a value. The formats of <b>type</b>, <b>value</b> and
+  <b>modifier</b> are explained below.
+<h2 class="Ss" title="Ss" id="SUPPORTED_TYPES"><a class="selflink" href="#SUPPORTED_TYPES">SUPPORTED
+  TYPES</a></h2>
+The supported types are listed below. Unless otherwise specified only the
+  <b>ASCII</b> format is permissible.
+<dl class="Bl-tag">
+  <dt class="It-tag"><b>BOOLEAN</b>, <b>BOOL</b></dt>
+  <dd class="It-tag">This encodes a boolean type. The <b>value</b> string is
+      mandatory and should be <b>TRUE</b> or <b>FALSE</b>. Additionally
+      <b>TRUE</b>, <b>true</b>, <b>Y</b>, <b>y</b>, <b>YES</b>, <b>yes</b>,
+      <b>FALSE</b>, <b>false</b>, <b>N</b>, <b>n</b>, <b>NO</b> and <b>no</b>
+      are acceptable.</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag"><b>NULL</b></dt>
+  <dd class="It-tag">Encode the <b>NULL</b> type, the <b>value</b> string must
+      not be present.</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag"><b>INTEGER</b>, <b>INT</b></dt>
+  <dd class="It-tag">Encodes an ASN1 <b>INTEGER</b> type. The <b>value</b>
+      string represents the value of the integer, it can be preceded by a minus
+      sign and is normally interpreted as a decimal value unless the prefix
+      <b>0x</b> is included.</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag"><b>ENUMERATED</b>, <b>ENUM</b></dt>
+  <dd class="It-tag">Encodes the ASN1 <b>ENUMERATED</b> type, it is otherwise
+      identical to <b>INTEGER</b>.</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag"><b>OBJECT</b>, <b>OID</b></dt>
+  <dd class="It-tag">Encodes an ASN1 <b>OBJECT IDENTIFIER</b>, the <b>value</b>
+      string can be a short name, a long name or numerical format.</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag"><b>UTCTIME</b>, <b>UTC</b></dt>
+  <dd class="It-tag">Encodes an ASN1 <b>UTCTime</b> structure, the value should
+      be in the format <b>YYMMDDHHMMSSZ</b>.</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag"><b>GENERALIZEDTIME</b>, <b>GENTIME</b></dt>
+  <dd class="It-tag">Encodes an ASN1 <b>GeneralizedTime</b> structure, the value
+      should be in the format <b>YYYYMMDDHHMMSSZ</b>.</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag"><b>OCTETSTRING</b>, <b>OCT</b></dt>
+  <dd class="It-tag">Encodes an ASN1 <b>OCTET STRING</b>. <b>value</b>
+      represents the contents of this structure, the format strings <b>ASCII</b>
+      and <b>HEX</b> can be used to specify the format of <b>value</b>.</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag"><b>BITSTRING</b>, <b>BITSTR</b></dt>
+  <dd class="It-tag">Encodes an ASN1 <b>BIT STRING</b>. <b>value</b> represents
+      the contents of this structure, the format strings <b>ASCII</b>,
+      <b>HEX</b> and <b>BITLIST</b> can be used to specify the format of
+      <b>value</b>.
+    <div style="height: 1.00em;">&#x00A0;</div>
+    If the format is anything other than <b>BITLIST</b> the number of unused
+      bits is set to zero.</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag"><b>UNIVERSALSTRING</b>, <b>UNIV</b>, <b>IA5</b>,
+    <b>IA5STRING</b>, <b>UTF8</b>, <b>UTF8String</b>, <b>BMP</b>,
+    <b>BMPSTRING</b>, <b>VISIBLESTRING</b>, <b>VISIBLE</b>,
+    <b>PRINTABLESTRING</b>, <b>PRINTABLE</b>, <b>T61</b>, <b>T61STRING</b>,
+    <b>TELETEXSTRING</b>, <b>GeneralString</b>, <b>NUMERICSTRING</b>,
+    <b>NUMERIC</b></dt>
+  <dd class="It-tag">These encode the corresponding string types. <b>value</b>
+      represents the contents of this structure. The format can be <b>ASCII</b>
+      or <b>UTF8</b>.</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag"><b>SEQUENCE</b>, <b>SEQ</b>, <b>SET</b></dt>
+  <dd class="It-tag">Formats the result as an ASN1 <b>SEQUENCE</b> or <b>SET</b>
+      type. <b>value</b> should be a section name which will contain the
+      contents. The field names in the section are ignored and the values are in
+      the generated string format. If <b>value</b> is absent then an empty
+      SEQUENCE will be encoded.</dd>
+</dl>
+<h2 class="Ss" title="Ss" id="MODIFIERS"><a class="selflink" href="#MODIFIERS">MODIFIERS</a></h2>
+Modifiers affect the following structure, they can be used to add EXPLICIT or
+  IMPLICIT tagging, add wrappers or to change the string format of the final
+  type and value. The supported formats are documented below.
+<dl class="Bl-tag">
+  <dt class="It-tag"><b>EXPLICIT</b>, <b>EXP</b></dt>
+  <dd class="It-tag">Add an explicit tag to the following structure. This string
+      should be followed by a colon and the tag value to use as a decimal value.
+    <div style="height: 1.00em;">&#x00A0;</div>
+    By following the number with <b>U</b>, <b>A</b>, <b>P</b> or <b>C</b>
+      UNIVERSAL, APPLICATION, PRIVATE or CONTEXT SPECIFIC tagging can be used,
+      the default is CONTEXT SPECIFIC.</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag"><b>IMPLICIT</b>, <b>IMP</b></dt>
+  <dd class="It-tag">This is the same as <b>EXPLICIT</b> except IMPLICIT tagging
+      is used instead.</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag"><b>OCTWRAP</b>, <b>SEQWRAP</b>, <b>SETWRAP</b>,
+    <b>BITWRAP</b></dt>
+  <dd class="It-tag">The following structure is surrounded by an OCTET STRING, a
+      SEQUENCE, a SET or a BIT STRING respectively. For a BIT STRING the number
+      of unused bits is set to zero.</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag"><b>FORMAT</b></dt>
+  <dd class="It-tag">This specifies the format of the ultimate value. It should
+      be followed by a colon and one of the strings <b>ASCII</b>, <b>UTF8</b>,
+      <b>HEX</b> or <b>BITLIST</b>.
+    <div style="height: 1.00em;">&#x00A0;</div>
+    If no format specifier is included then <b>ASCII</b> is used. If <b>UTF8</b>
+      is specified then the value string must be a valid <b>UTF8</b> string. For
+      <b>HEX</b> the output must be a set of hex digits. <b>BITLIST</b> (which
+      is only valid for a BIT STRING) is a comma separated list of the indices
+      of the set bits, all other bits are zero.</dd>
+</dl>
+<h1 class="Sh" title="Sh" id="EXAMPLES"><a class="selflink" href="#EXAMPLES">EXAMPLES</a></h1>
+A simple IA5String:
+<div class="Pp"></div>
+<pre>
+ IA5STRING:Hello World
+</pre>
+<div class="Pp"></div>
+An IA5String explicitly tagged:
+<div class="Pp"></div>
+<pre>
+ EXPLICIT:0,IA5STRING:Hello World
+</pre>
+<div class="Pp"></div>
+An IA5String explicitly tagged using APPLICATION tagging:
+<div class="Pp"></div>
+<pre>
+ EXPLICIT:0A,IA5STRING:Hello World
+</pre>
+<div class="Pp"></div>
+A BITSTRING with bits 1 and 5 set and all others zero:
+<div class="Pp"></div>
+<pre>
+ FORMAT:BITLIST,BITSTRING:1,5
+</pre>
+<div class="Pp"></div>
+A more complex example using a config file to produce a SEQUENCE consiting of a
+  BOOL an OID and a UTF8String:
+<div class="Pp"></div>
+<pre>
+ asn1 = SEQUENCE:seq_section
+ [seq_section]
+ field1 = BOOLEAN:TRUE
+ field2 = OID:commonName
+ field3 = UTF8:Third field
+</pre>
+<div class="Pp"></div>
+This example produces an RSAPrivateKey structure, this is the key contained in
+  the file client.pem in all OpenSSL distributions (note: the field names such
+  as 'coeff' are ignored and are present just for clarity):
+<div class="Pp"></div>
+<pre>
+ asn1=SEQUENCE:private_key
+ [private_key]
+ version=INTEGER:0
+ n=INTEGER:0xBB6FE79432CC6EA2D8F970675A5A87BFBE1AFF0BE63E879F2AFFB93644\
+ D4D2C6D000430DEC66ABF47829E74B8C5108623A1C0EE8BE217B3AD8D36D5EB4FCA1D9
+ e=INTEGER:0x010001
+ d=INTEGER:0x6F05EAD2F27FFAEC84BEC360C4B928FD5F3A9865D0FCAAD291E2A52F4A\
+ F810DC6373278C006A0ABBA27DC8C63BF97F7E666E27C5284D7D3B1FFFE16B7A87B51D
+ p=INTEGER:0xF3929B9435608F8A22C208D86795271D54EBDFB09DDEF539AB083DA912\
+ D4BD57
+ q=INTEGER:0xC50016F89DFF2561347ED1186A46E150E28BF2D0F539A1594BBD7FE467\
+ 46EC4F
+ exp1=INTEGER:0x9E7D4326C924AFC1DEA40B45650134966D6F9DFA3A7F9D698CD4ABEA\
+ 9C0A39B9
+ exp2=INTEGER:0xBA84003BB95355AFB7C50DF140C60513D0BA51D637272E355E397779\
+ E7B2458F
+ coeff=INTEGER:0x30B9E4F2AFA5AC679F920FC83F1F2DF1BAF1779CF989447FABC2F5\
+ 628657053A
+</pre>
+<div class="Pp"></div>
+This example is the corresponding public key in a SubjectPublicKeyInfo
+  structure:
+<div class="Pp"></div>
+<pre>
+ # Start with a SEQUENCE
+ asn1=SEQUENCE:pubkeyinfo
+ # pubkeyinfo contains an algorithm identifier and the public key wrapped
+ # in a BIT STRING
+ [pubkeyinfo]
+ algorithm=SEQUENCE:rsa_alg
+ pubkey=BITWRAP,SEQUENCE:rsapubkey
+ # algorithm ID for RSA is just an OID and a NULL
+ [rsa_alg]
+ algorithm=OID:rsaEncryption
+ parameter=NULL
+ # Actual public key: modulus and exponent
+ [rsapubkey]
+ n=INTEGER:0xBB6FE79432CC6EA2D8F970675A5A87BFBE1AFF0BE63E879F2AFFB93644\
+ D4D2C6D000430DEC66ABF47829E74B8C5108623A1C0EE8BE217B3AD8D36D5EB4FCA1D9
+ e=INTEGER:0x010001
+</pre>
+<h1 class="Sh" title="Sh" id="RETURN_VALUES"><a class="selflink" href="#RETURN_VALUES">RETURN
+  VALUES</a></h1>
+<i>ASN1_generate_nconf()</i> and <i>ASN1_generate_v3()</i> return the encoded
+  data as an <b>ASN1_TYPE</b> structure or <b>NULL</b> if an error occurred.
+<div class="Pp"></div>
+The error codes that can be obtained by <i>ERR_get_error</i>(3).
+<h1 class="Sh" title="Sh" id="SEE_ALSO"><a class="selflink" href="#SEE_ALSO">SEE
+  ALSO</a></h1>
+<i>ERR_get_error</i>(3)
+<h1 class="Sh" title="Sh" id="HISTORY"><a class="selflink" href="#HISTORY">HISTORY</a></h1>
+<i>ASN1_generate_nconf()</i> and <i>ASN1_generate_v3()</i> were added to OpenSSL
+  0.9.8</div>
+<table class="foot">
+  <tr>
+    <td class="foot-date">2017-11-02</td>
+    <td class="foot-os">1.0.1f</td>
+  </tr>
+</table>
+</body>
+</html>

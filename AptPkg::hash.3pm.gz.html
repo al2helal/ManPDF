@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <style>
+    table.head, table.foot { width: 100%; }
+    td.head-rtitle, td.foot-os { text-align: right; }
+    td.head-vol { text-align: center; }
+    div.Pp { margin: 1ex 0ex; }
+  </style>
+  <title>AptPkg::hash(3pm)</title>
+</head>
+<body>
+<table class="head">
+  <tr>
+    <td class="head-ltitle">AptPkg::hash(3pm)</td>
+    <td class="head-vol">User Contributed Perl Documentation</td>
+    <td class="head-rtitle">AptPkg::hash(3pm)</td>
+  </tr>
+</table>
+<div class="manual-text">
+<h1 class="Sh" title="Sh" id="NAME"><a class="selflink" href="#NAME">NAME</a></h1>
+AptPkg::hash - a helper class for implementing tied hashes
+<h1 class="Sh" title="Sh" id="SYNOPSIS"><a class="selflink" href="#SYNOPSIS">SYNOPSIS</a></h1>
+use AptPkg::hash;
+<h1 class="Sh" title="Sh" id="DESCRIPTION"><a class="selflink" href="#DESCRIPTION">DESCRIPTION</a></h1>
+The AptPkg::hash class provides hash-like access for objects which have an
+  underlying XS implementation.
+<div class="Pp"></div>
+Such objects need to add AptPkg::hash to @ISA, provide get, set and exists
+  methods, and an iterator class.
+<h2 class="Ss" title="Ss" id="AptPkg::hash"><a class="selflink" href="#AptPkg::hash">AptPkg::hash</a></h2>
+<dl class="Bl-tag">
+  <dt class="It-tag">new([<i>XS_OBJECT</i>])</dt>
+  <dd class="It-tag">Create a object as a tied hash. The object is implemented
+      as a hash reference blessed into the class, which in turn is tied to
+      AptPkg::hash.
+    <div style="height: 1.00em;">&#x00A0;</div>
+    This means that both $obj-&gt; <i>method()</i> and $obj-&gt;{key} valid, the
+      latter invoking get/set (through FETCH/STORE).
+    <div style="height: 1.00em;">&#x00A0;</div>
+    The tie associates an array reference with the hash, which initially
+      contains a reference to the hash, the XS object and an anon hash which may
+      be used by subclasses to store state information.
+    <div style="height: 1.00em;">&#x00A0;</div>
+    If no XS object is passed, one is created via new in the XS class. The name
+      of that class is constructed from the class name, by lower-casing the last
+      component and prefixing it with an underscore (eg. AptPkg::Config becomes
+      AptPkg::_config).
+    <div style="height: 1.00em;">&#x00A0;</div>
+    If the module contains a @KEYS array, then the private hash will be
+      populated with those entries as keys (see the description below of the
+      AptPkg::hash::method class).</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">_self, _xs, _priv</dt>
+  <dd class="It-tag">Accessors which may be used in subclass methods to fetch
+      the three array elements associated with the hash reference.</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">keys(<i>ARGS</i>)</dt>
+  <dd class="It-tag">In a scalar context, creates and returns a new iterator
+      object (the class name with the suffix ::Iter appended).
+    <div style="height: 1.00em;">&#x00A0;</div>
+    The XS object, the private hash and any arguments are passed to the
+      constructor.
+    <div style="height: 1.00em;">&#x00A0;</div>
+    In an array context, the iterator is used to generate a list of keys which
+      are then returned.
+    <div style="height: 1.00em;">&#x00A0;</div>
+    The iterator class must implement a next method, which returns the current
+      key and advances to the next.</dd>
+</dl>
+<h2 class="Ss" title="Ss" id="AptPkg::hash::method"><a class="selflink" href="#AptPkg::hash::method">AptPkg::hash::method</a></h2>
+The AptPkg::hash::method class extends AptPkg::hash, providing a simple way to
+  map a fixed set of keys (defined by the @KEYS array) into method calls on
+  either the object, or the internal XS object.
+<div class="Pp"></div>
+Classes inheriting from AptPkg::hash::method should provide an iterator class
+  which inherits from AptPkg::hash::method::iter.
+<h1 class="Sh" title="Sh" id="AUTHOR"><a class="selflink" href="#AUTHOR">AUTHOR</a></h1>
+Brendan O'Dea &lt;bod@debian.org&gt;</div>
+<table class="foot">
+  <tr>
+    <td class="foot-date">2013-05-10</td>
+    <td class="foot-os">perl v5.18.1</td>
+  </tr>
+</table>
+</body>
+</html>

@@ -1,0 +1,295 @@
+\documentclass[]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+    \usepackage{xltxtra,xunicode}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
+  \newcommand{\euro}{€}
+\fi
+% use microtype if available
+\IfFileExists{microtype.sty}{\usepackage{microtype}}{}
+\usepackage{longtable,booktabs}
+\ifxetex
+  \usepackage[setpagesize=false, % page size defined by xetex
+              unicode=false, % unicode breaks when used with xetex
+              xetex]{hyperref}
+\else
+  \usepackage[unicode=true]{hyperref}
+\fi
+\hypersetup{breaklinks=true,
+            bookmarks=true,
+            pdfauthor={},
+            pdftitle={BACKTRACE(3)},
+            colorlinks=true,
+            citecolor=blue,
+            urlcolor=blue,
+            linkcolor=magenta,
+            pdfborder={0 0 0}}
+\urlstyle{same}  % don't use monospace font for urls
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\setcounter{secnumdepth}{0}
+\usepackage{pagecolor}
+
+% Set background colour (of the page)
+\definecolor{weirdbgcolor}{HTML}{FCF4F0}
+\pagecolor{weirdbgcolor}
+
+% Make bold text appear in a particular colour
+\definecolor{boldcolor}{HTML}{6E0002}
+\let\realtextbf=\textbf
+\renewcommand{\textbf}[1]{\textcolor{boldcolor}{\realtextbf{#1}}}
+
+% Use underlines instead of emphasis (ugh)
+\renewcommand{\emph}[1]{\underline{#1}}
+
+% % Use fixed-width font by default
+% \renewcommand*\familydefault{\ttdefault}
+
+\title{BACKTRACE(3)}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{longtable}[c]{@{}lll@{}}
+\toprule\addlinespace
+BACKTRACE(3) & Linux Programmer's Manual & BACKTRACE(3)
+\\\addlinespace
+\bottomrule
+\end{longtable}
+
+\hyperdef{}{NAME}{\section{\hyperref[NAME]{NAME}}\label{NAME}}
+
+backtrace, backtrace\_symbols, backtrace\_symbols\_fd - support for
+application self-debugging
+
+\hyperdef{}{SYNOPSIS}{\section{\hyperref[SYNOPSIS]{SYNOPSIS}}\label{SYNOPSIS}}
+
+\textbf{\#include \textless{}execinfo.h\textgreater{}}
+
+~
+
+\textbf{int backtrace(void} \textbf{**}\emph{buffer}\textbf{,}
+\textbf{int} \emph{size}\textbf{);}
+
+~
+
+\textbf{char **backtrace\_symbols(void *const}
+\textbf{*}\emph{buffer}\textbf{,} \textbf{int} \emph{size}\textbf{);}
+
+~
+
+\textbf{void backtrace\_symbols\_fd(void *const}
+\textbf{*}\emph{buffer}\textbf{,} \textbf{int} \emph{size}\textbf{,}
+\textbf{int} \emph{fd}\textbf{);}
+
+\hyperdef{}{DESCRIPTION}{\section{\hyperref[DESCRIPTION]{DESCRIPTION}}\label{DESCRIPTION}}
+
+\textbf{backtrace}() returns a backtrace for the calling program, in the
+array pointed to by \emph{buffer}. A backtrace is the series of
+currently active function calls for the program. Each item in the array
+pointed to by \emph{buffer} is of type \emph{void~*}, and is the return
+address from the corresponding stack frame. The \emph{size} argument
+specifies the maximum number of addresses that can be stored in
+\emph{buffer}. If the backtrace is larger than \emph{size}, then the
+addresses corresponding to the \emph{size} most recent function calls
+are returned; to obtain the complete backtrace, make sure that
+\emph{buffer} and \emph{size} are large enough.
+
+~
+
+Given the set of addresses returned by \textbf{backtrace}() in
+\emph{buffer}, \textbf{backtrace\_symbols}() translates the addresses
+into an array of strings that describe the addresses symbolically. The
+\emph{size} argument specifies the number of addresses in \emph{buffer}.
+The symbolic representation of each address consists of the function
+name (if this can be determined), a hexadecimal offset into the
+function, and the actual return address (in hexadecimal). The address of
+the array of string pointers is returned as the function result of
+\textbf{backtrace\_symbols}(). This array is \textbf{malloc}(3)ed by
+\textbf{backtrace\_symbols}(), and must be freed by the caller. (The
+strings pointed to by the array of pointers need not and should not be
+freed.)
+
+~
+
+\textbf{backtrace\_symbols\_fd}() takes the same \emph{buffer} and
+\emph{size} arguments as \textbf{backtrace\_symbols}(), but instead of
+returning an array of strings to the caller, it writes the strings, one
+per line, to the file descriptor \emph{fd}.
+\textbf{backtrace\_symbols\_fd}() does not call \textbf{malloc}(3), and
+so can be employed in situations where the latter function might fail.
+
+\hyperdef{}{RETURNux5fVALUE}{\section{\hyperref[RETURNux5fVALUE]{RETURN
+VALUE}}\label{RETURNux5fVALUE}}
+
+\textbf{backtrace}() returns the number of addresses returned in
+\emph{buffer}, which is not greater than \emph{size}. If the return
+value is less than \emph{size}, then the full backtrace was stored; if
+it is equal to \emph{size}, then it may have been truncated, in which
+case the addresses of the oldest stack frames are not returned.
+
+~
+
+On success, \textbf{backtrace\_symbols}() returns a pointer to the array
+\textbf{malloc}(3)ed by the call; on error, NULL is returned.
+
+\hyperdef{}{VERSIONS}{\section{\hyperref[VERSIONS]{VERSIONS}}\label{VERSIONS}}
+
+\textbf{backtrace}(), \textbf{backtrace\_symbols}(), and
+\textbf{backtrace\_symbols\_fd}() are provided in glibc since version
+2.1.
+
+\hyperdef{}{CONFORMINGux5fTO}{\section{\hyperref[CONFORMINGux5fTO]{CONFORMING
+TO}}\label{CONFORMINGux5fTO}}
+
+These functions are GNU extensions.
+
+\hyperdef{}{NOTES}{\section{\hyperref[NOTES]{NOTES}}\label{NOTES}}
+
+These functions make some assumptions about how a function's return
+address is stored on the stack. Note the following:
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[*]
+Omission of the frame pointers (as implied by any of \textbf{gcc}(1)'s
+nonzero optimization levels) may cause these assumptions to be violated.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[*]
+Inlined functions do not have stack frames.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[*]
+Tail-call optimization causes one stack frame to replace another.
+\end{description}
+
+The symbol names may be unavailable without the use of special linker
+options. For systems using the GNU linker, it is necessary to use the
+\emph{-rdynamic} linker option. Note that names of ``static'' functions
+are not exposed, and won't be available in the backtrace.
+
+\hyperdef{}{EXAMPLE}{\section{\hyperref[EXAMPLE]{EXAMPLE}}\label{EXAMPLE}}
+
+The program below demonstrates the use of \textbf{backtrace}() and
+\textbf{backtrace\_symbols}(). The following shell session shows what we
+might see when running the program:
+
+\begin{verbatim}
+
+
+$ cc -rdynamic prog.c -o prog
+$ ./prog 3
+backtrace() returned 8 addresses
+./prog(myfunc3+0x5c) [0x80487f0]
+./prog [0x8048871]
+./prog(myfunc+0x21) [0x8048894]
+./prog(myfunc+0x1a) [0x804888d]
+./prog(myfunc+0x1a) [0x804888d]
+./prog(main+0x65) [0x80488fb]
+/lib/libc.so.6(__libc_start_main+0xdc) [0xb7e38f9c]
+./prog [0x8048711]
+\end{verbatim}
+
+\hyperdef{}{Programux5fsource}{\subsection{\hyperref[Programux5fsource]{Program
+source}}\label{Programux5fsource}}
+
+\begin{verbatim}
+#include <execinfo.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+
+void
+myfunc3(void)
+{
+    int j, nptrs;
+#define SIZE 100
+    void *buffer[100];
+    char **strings;
+
+    nptrs = backtrace(buffer, SIZE);
+    printf("backtrace() returned %d addresses\n", nptrs);
+
+    /* The call backtrace_symbols_fd(buffer, nptrs, STDOUT_FILENO)
+       would produce similar output to the following: */
+
+    strings = backtrace_symbols(buffer, nptrs);
+    if (strings == NULL) {
+        perror("backtrace_symbols");
+        exit(EXIT_FAILURE);
+    }
+
+    for (j = 0; j < nptrs; j++)
+        printf("%s\n", strings[j]);
+
+    free(strings);
+}
+
+static void   /* "static" means don't export the symbol... */
+myfunc2(void)
+{
+    myfunc3();
+}
+
+void
+myfunc(int ncalls)
+{
+    if (ncalls > 1)
+        myfunc(ncalls - 1);
+    else
+        myfunc2();
+}
+
+int
+main(int argc, char *argv[])
+{
+    if (argc != 2) {
+        fprintf(stderr, "%s num-calls\n", argv[0]);
+        exit(EXIT_FAILURE);
+    }
+
+    myfunc(atoi(argv[1]));
+    exit(EXIT_SUCCESS);
+}
+\end{verbatim}
+
+\hyperdef{}{SEEux5fALSO}{\section{\hyperref[SEEux5fALSO]{SEE
+ALSO}}\label{SEEux5fALSO}}
+
+\textbf{gcc}(1), \textbf{ld}(1), \textbf{dlopen}(3), \textbf{malloc}(3)
+
+\hyperdef{}{COLOPHON}{\section{\hyperref[COLOPHON]{COLOPHON}}\label{COLOPHON}}
+
+This page is part of release 3.54 of the Linux \emph{man-pages} project.
+A description of the project, and information about reporting bugs, can
+be found at http://www.kernel.org/doc/man-pages/.
+
+\begin{longtable}[c]{@{}ll@{}}
+\toprule\addlinespace
+2008-06-14 & GNU
+\\\addlinespace
+\bottomrule
+\end{longtable}
+
+\end{document}

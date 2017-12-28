@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <style>
+    table.head, table.foot { width: 100%; }
+    td.head-rtitle, td.foot-os { text-align: right; }
+    td.head-vol { text-align: center; }
+    div.Pp { margin: 1ex 0ex; }
+  </style>
+  <title>AptPkg::Source(3pm)</title>
+</head>
+<body>
+<table class="head">
+  <tr>
+    <td class="head-ltitle">AptPkg::Source(3pm)</td>
+    <td class="head-vol">User Contributed Perl Documentation</td>
+    <td class="head-rtitle">AptPkg::Source(3pm)</td>
+  </tr>
+</table>
+<div class="manual-text">
+<h1 class="Sh" title="Sh" id="NAME"><a class="selflink" href="#NAME">NAME</a></h1>
+AptPkg::Source - APT source package interface
+<h1 class="Sh" title="Sh" id="SYNOPSIS"><a class="selflink" href="#SYNOPSIS">SYNOPSIS</a></h1>
+use AptPkg::Source;
+<h1 class="Sh" title="Sh" id="DESCRIPTION"><a class="selflink" href="#DESCRIPTION">DESCRIPTION</a></h1>
+The AptPkg::Source module provides an interface to <b>APT</b>'s source package
+  lists.
+<h2 class="Ss" title="Ss" id="AptPkg::Source"><a class="selflink" href="#AptPkg::Source">AptPkg::Source</a></h2>
+The AptPkg::Source package implements the <b>APT</b> pkgSrcRecords class as a
+  hash reference (inherits from AptPkg::hash). The hash is keyed on source or
+  binary package name and the value is an array reference of the details of
+  matching source packages.
+<div class="Pp"></div>
+Note that there is no iterator class, so it is not possible to get a list of all
+  keys (with keys or each).
+<div class="Pp"></div>
+<i>Constructor</i>
+<dl class="Bl-tag">
+  <dt class="It-tag">new([<i>SOURCELIST</i>])</dt>
+  <dd class="It-tag">Instantiation of the object uses configuration from the
+      $AptPkg::Config::_config object (automatically initialised if not done
+      explicitly).
+    <div style="height: 1.00em;">&#x00A0;</div>
+    If no <i>SOURCELIST</i> is specified, then the value of Dir::Etc::sourcelist
+      from the configuration object is used (generally
+    /etc/apt/sources.list).</dd>
+</dl>
+<div class="Pp"></div>
+<i>Methods</i>
+<dl class="Bl-tag">
+  <dt class="It-tag">find(<i>PACK</i>, [<i>SRCONLY</i>])</dt>
+  <dd class="It-tag">In a list context, return a list of source package details
+      for the given <i>PACK</i>, which may either be a source package name, or
+      the name of one of the binaries provided (unless <i>SRCONLY</i> is
+      provided and true).
+    <div style="height: 1.00em;">&#x00A0;</div>
+    In a scalar context, the source package name of the first entry is
+    returned.</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">get, exists</dt>
+  <dd class="It-tag">These methods are used to implement the hashref
+      abstraction: $obj-&gt;get($pack) and $obj-&gt;{$pack} are equivalent.
+    <div style="height: 1.00em;">&#x00A0;</div>
+    The get method has the same semantics as find, but returns an array
+      reference in a scalar context.</dd>
+</dl>
+<div class="Pp"></div>
+The list returned by the find (and get) methods consists of hashes which
+  describe each available source package (in order of discovery from the deb-src
+  files described in sources.list).
+<div class="Pp"></div>
+Each hash contains the following entries:
+<dl class="Bl-tag">
+  <dt class="It-tag">Package</dt>
+  <dd class="It-tag"></dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">Version</dt>
+  <dd class="It-tag"></dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">Maintainer</dt>
+  <dd class="It-tag"></dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">Section</dt>
+  <dd class="It-tag">Strings giving the source package name, version, maintainer
+      and section.</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">Binaries</dt>
+  <dd class="It-tag">A list of binary package names from the package.</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">BuildDepends</dt>
+  <dd class="It-tag">A hash describing the build dependencies of the package.
+      Possible keys are:</dd>
+</dl>
+<div style="margin-left: 4.00ex;">
+<div style="height: 1.00em;">&#x00A0;</div>
+<div style="margin-left: 4.00ex;">&quot;Build-Depends&quot;,
+  &quot;Build-Depends-Indep&quot;, &quot;Build-Conflicts&quot;,
+  &quot;Build-Conflicts-Indep&quot;.</div>
+</div>
+<div style="margin-left: 4.00ex;">
+<div style="height: 1.00em;">&#x00A0;</div>
+The values are a list of dependencies/conflicts with each item being a list
+  containing the package name followed optionally by an operator and version
+  number.
+<div style="height: 1.00em;">&#x00A0;</div>
+Operator values evaluate to a comparison string* (&gt;, &gt;=, etc) or one of
+  the AptPkg::Dep:: constants in a numeric context (see
+  &quot;pkgCache::Dep::DepCompareOp&quot; in <i>AptPkg</i>(3pm)).
+<div style="height: 1.00em;">&#x00A0;</div>
+*Note that this is a normalised, rather than Debian-style (&gt;&gt; vs &gt;)
+  string.</div>
+<dl class="Bl-tag">
+  <dt class="It-tag">Files</dt>
+  <dd class="It-tag">A list of files making up the source package, each
+      described by a hash containing the keys:</dd>
+</dl>
+<div style="margin-left: 4.00ex;">
+<div style="height: 1.00em;">&#x00A0;</div>
+<div style="margin-left: 4.00ex;">&quot;MD5Hash&quot;, &quot;Size&quot;,
+  &quot;ArchiveURI&quot;, &quot;Type&quot;.</div>
+</div>
+<div style="margin-left: 4.00ex;"></div>
+<h1 class="Sh" title="Sh" id="SEE_ALSO"><a class="selflink" href="#SEE_ALSO">SEE
+  ALSO</a></h1>
+<i>AptPkg::Config</i>(3pm), <i>AptPkg::Cache</i>(3pm), <i>AptPkg</i>(3pm),
+  <i>AptPkg::hash</i>(3pm).
+<h1 class="Sh" title="Sh" id="AUTHOR"><a class="selflink" href="#AUTHOR">AUTHOR</a></h1>
+Brendan O'Dea &lt;bod@debian.org&gt;</div>
+<table class="foot">
+  <tr>
+    <td class="foot-date">2013-05-10</td>
+    <td class="foot-os">perl v5.18.1</td>
+  </tr>
+</table>
+</body>
+</html>

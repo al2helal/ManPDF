@@ -1,0 +1,315 @@
+\documentclass[]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+    \usepackage{xltxtra,xunicode}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
+  \newcommand{\euro}{€}
+\fi
+% use microtype if available
+\IfFileExists{microtype.sty}{\usepackage{microtype}}{}
+\usepackage{longtable,booktabs}
+\ifxetex
+  \usepackage[setpagesize=false, % page size defined by xetex
+              unicode=false, % unicode breaks when used with xetex
+              xetex]{hyperref}
+\else
+  \usepackage[unicode=true]{hyperref}
+\fi
+\hypersetup{breaklinks=true,
+            bookmarks=true,
+            pdfauthor={},
+            pdftitle={POSIX\_MEMALIGN(3)},
+            colorlinks=true,
+            citecolor=blue,
+            urlcolor=blue,
+            linkcolor=magenta,
+            pdfborder={0 0 0}}
+\urlstyle{same}  % don't use monospace font for urls
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\setcounter{secnumdepth}{0}
+\usepackage{pagecolor}
+
+% Set background colour (of the page)
+\definecolor{weirdbgcolor}{HTML}{FCF4F0}
+\pagecolor{weirdbgcolor}
+
+% Make bold text appear in a particular colour
+\definecolor{boldcolor}{HTML}{6E0002}
+\let\realtextbf=\textbf
+\renewcommand{\textbf}[1]{\textcolor{boldcolor}{\realtextbf{#1}}}
+
+% Use underlines instead of emphasis (ugh)
+\renewcommand{\emph}[1]{\underline{#1}}
+
+% % Use fixed-width font by default
+% \renewcommand*\familydefault{\ttdefault}
+
+\title{POSIX\_MEMALIGN(3)}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{longtable}[c]{@{}lll@{}}
+\toprule\addlinespace
+POSIX\_MEMALIGN(3) & Linux Programmer's Manual & POSIX\_MEMALIGN(3)
+\\\addlinespace
+\bottomrule
+\end{longtable}
+
+\hyperdef{}{NAME}{\section{\hyperref[NAME]{NAME}}\label{NAME}}
+
+posix\_memalign, aligned\_alloc, memalign, valloc, pvalloc - allocate
+aligned memory
+
+\hyperdef{}{SYNOPSIS}{\section{\hyperref[SYNOPSIS]{SYNOPSIS}}\label{SYNOPSIS}}
+
+\begin{verbatim}
+#include <stdlib.h>
+ 
+int posix_memalign(void **memptr, size_t alignment, size_t size);
+void *aligned_alloc(size_t alignment, size_t size);
+void *valloc(size_t size);
+ 
+#include <malloc.h>
+ 
+void *memalign(size_t alignment, size_t size);
+void *pvalloc(size_t size);
+\end{verbatim}
+
+~
+
+Feature Test Macro Requirements for glibc (see
+\textbf{feature\_test\_macros}(7)): \\
+
+~
+
+\textbf{posix\_memalign}(): \_POSIX\_C\_SOURCE~\textgreater{}=~200112L
+\textbar{}\textbar{} \_XOPEN\_SOURCE~\textgreater{}=~600
+
+~
+
+\textbf{aligned\_alloc}(): \_ISOC11\_SOURCE
+
+~
+
+\textbf{valloc}():
+
+~
+
+\begin{description}
+\item[Since glibc 2.12:]
+\begin{verbatim}
+_BSD_SOURCE ||
+    (_XOPEN_SOURCE >= 500 ||
+        _XOPEN_SOURCE && _XOPEN_SOURCE_EXTENDED) &&
+    !(_POSIX_C_SOURCE >= 200112L || _XOPEN_SOURCE >= 600)
+ 
+    
+\end{verbatim}
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[Before glibc 2.12:]
+\_BSD\_SOURCE \textbar{}\textbar{} \_XOPEN\_SOURCE~\textgreater{}=~500
+\textbar{}\textbar{} \_XOPEN\_SOURCE~\&\&~\_XOPEN\_SOURCE\_EXTENDED
+
+~
+
+(The (nonstandard) header file \emph{\textless{}malloc.h\textgreater{}}
+also exposes the declaration of \textbf{valloc}(); no feature test
+macros are required.)
+\end{description}
+
+\hyperdef{}{DESCRIPTION}{\section{\hyperref[DESCRIPTION]{DESCRIPTION}}\label{DESCRIPTION}}
+
+The function \textbf{posix\_memalign}() allocates \emph{size} bytes and
+places the address of the allocated memory in \emph{*memptr}. The
+address of the allocated memory will be a multiple of \emph{alignment},
+which must be a power of two and a multiple of \emph{sizeof(void~*)}. If
+\emph{size} is 0, then the value placed in \emph{*memptr} is either
+NULL, or a unique pointer value that can later be successfully passed to
+\textbf{free}(3).
+
+~
+
+The obsolete function \textbf{memalign}() allocates \emph{size} bytes
+and returns a pointer to the allocated memory. The memory address will
+be a multiple of \emph{alignment}, which must be a power of two.
+
+~
+
+The function \textbf{aligned\_alloc}() is the same as
+\textbf{memalign}(), except for the added restriction that \emph{size}
+should be a multiple of \emph{alignment}.
+
+~
+
+The obsolete function \textbf{valloc}() allocates \emph{size} bytes and
+returns a pointer to the allocated memory. The memory address will be a
+multiple of the page size. It is equivalent to
+\emph{memalign(sysconf(\_SC\_PAGESIZE),size)}.
+
+~
+
+The obsolete function \textbf{pvalloc}() is similar to
+\textbf{valloc}(), but rounds the size of the allocation up to the next
+multiple of the system page size.
+
+~
+
+For all of these functions, the memory is not zeroed.
+
+\hyperdef{}{RETURNux5fVALUE}{\section{\hyperref[RETURNux5fVALUE]{RETURN
+VALUE}}\label{RETURNux5fVALUE}}
+
+\textbf{aligned\_alloc}(), \textbf{memalign}(), \textbf{valloc}(), and
+\textbf{pvalloc}() return a pointer to the allocated memory, or NULL if
+the request fails.
+
+~
+
+\textbf{posix\_memalign}() returns zero on success, or one of the error
+values listed in the next section on failure. The value of \emph{errno}
+is indeterminate after a call to \textbf{posix\_memalign}().
+
+\hyperdef{}{ERRORS}{\section{\hyperref[ERRORS]{ERRORS}}\label{ERRORS}}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[\textbf{EINVAL}]
+The \emph{alignment} argument was not a power of two, or was not a
+multiple of \emph{sizeof(void~*)}.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[\textbf{ENOMEM}]
+There was insufficient memory to fulfill the allocation request.
+\end{description}
+
+\hyperdef{}{VERSIONS}{\section{\hyperref[VERSIONS]{VERSIONS}}\label{VERSIONS}}
+
+The functions \textbf{memalign}(), \textbf{valloc}(), and
+\textbf{pvalloc}() have been available in all Linux libc libraries.
+
+~
+
+The function \textbf{aligned\_alloc}() was added to glibc in version
+2.16.
+
+~
+
+The function \textbf{posix\_memalign}() is available since glibc 2.1.91.
+
+\hyperdef{}{CONFORMINGux5fTO}{\section{\hyperref[CONFORMINGux5fTO]{CONFORMING
+TO}}\label{CONFORMINGux5fTO}}
+
+The function \textbf{valloc}() appeared in 3.0BSD. It is documented as
+being obsolete in 4.3BSD, and as legacy in SUSv2. It does not appear in
+POSIX.1-2001.
+
+~
+
+The function \textbf{pvalloc}() is a GNU extension.
+
+~
+
+The function \textbf{memalign}() appears in SunOS 4.1.3 but not in
+4.4BSD.
+
+~
+
+The function \textbf{posix\_memalign}() comes from POSIX.1d.
+
+~
+
+The function \textbf{aligned\_alloc}() is specified in the C11 standard.
+
+\hyperdef{}{Headers}{\subsection{\hyperref[Headers]{Headers}}\label{Headers}}
+
+Everybody agrees that \textbf{posix\_memalign}() is declared in
+\emph{\textless{}stdlib.h\textgreater{}}.
+
+~
+
+On some systems \textbf{memalign}() is declared in
+\emph{\textless{}stdlib.h\textgreater{}} instead of
+\emph{\textless{}malloc.h\textgreater{}}.
+
+~
+
+According to SUSv2, \textbf{valloc}() is declared in
+\emph{\textless{}stdlib.h\textgreater{}}. Libc4,5 and glibc declare it
+in \emph{\textless{}malloc.h\textgreater{}}, and also in
+\emph{\textless{}stdlib.h\textgreater{}} if suitable feature test macros
+are defined (see above).
+
+\hyperdef{}{NOTES}{\section{\hyperref[NOTES]{NOTES}}\label{NOTES}}
+
+On many systems there are alignment restrictions, for example, on
+buffers used for direct block device I/O. POSIX specifies the
+\emph{pathconf(path,\_PC\_REC\_XFER\_ALIGN)} call that tells what
+alignment is needed. Now one can use \textbf{posix\_memalign}() to
+satisfy this requirement.
+
+~
+
+\textbf{posix\_memalign}() verifies that \emph{alignment} matches the
+requirements detailed above. \textbf{memalign}() may not check that the
+\emph{alignment} argument is correct.
+
+~
+
+POSIX requires that memory obtained from \textbf{posix\_memalign}() can
+be freed using \textbf{free}(3). Some systems provide no way to reclaim
+memory allocated with \textbf{memalign}() or \textbf{valloc}() (because
+one can pass to \textbf{free}(3) only a pointer obtained from
+\textbf{malloc}(3), while, for example, \textbf{memalign}() would call
+\textbf{malloc}(3) and then align the obtained value). The glibc
+implementation allows memory obtained from any of these functions to be
+reclaimed with \textbf{free}(3).
+
+~
+
+The glibc \textbf{malloc}(3) always returns 8-byte aligned memory
+addresses, so these functions are needed only if you require larger
+alignment values.
+
+\hyperdef{}{SEEux5fALSO}{\section{\hyperref[SEEux5fALSO]{SEE
+ALSO}}\label{SEEux5fALSO}}
+
+\textbf{brk}(2), \textbf{getpagesize}(2), \textbf{free}(3),
+\textbf{malloc}(3)
+
+\hyperdef{}{COLOPHON}{\section{\hyperref[COLOPHON]{COLOPHON}}\label{COLOPHON}}
+
+This page is part of release 3.54 of the Linux \emph{man-pages} project.
+A description of the project, and information about reporting bugs, can
+be found at http://www.kernel.org/doc/man-pages/.
+
+\begin{longtable}[c]{@{}ll@{}}
+\toprule\addlinespace
+2013-09-02 & GNU
+\\\addlinespace
+\bottomrule
+\end{longtable}
+
+\end{document}

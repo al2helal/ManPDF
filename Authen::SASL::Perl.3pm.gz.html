@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <style>
+    table.head, table.foot { width: 100%; }
+    td.head-rtitle, td.foot-os { text-align: right; }
+    td.head-vol { text-align: center; }
+    div.Pp { margin: 1ex 0ex; }
+  </style>
+  <title>Authen::SASL::Perl(3pm)</title>
+</head>
+<body>
+<table class="head">
+  <tr>
+    <td class="head-ltitle">Authen::SASL::Perl(3pm)</td>
+    <td class="head-vol">User Contributed Perl Documentation</td>
+    <td class="head-rtitle">Authen::SASL::Perl(3pm)</td>
+  </tr>
+</table>
+<div class="manual-text">
+<h1 class="Sh" title="Sh" id="NAME"><a class="selflink" href="#NAME">NAME</a></h1>
+Authen::SASL::Perl -- Perl implementation of the SASL Authentication framework
+<h1 class="Sh" title="Sh" id="SYNOPSIS"><a class="selflink" href="#SYNOPSIS">SYNOPSIS</a></h1>
+<pre>
+ use Authen::SASL qw(Perl);
+ $sasl = Authen::SASL-&gt;new(
+   mechanism =&gt; 'CRAM-MD5 PLAIN ANONYMOUS',
+   callback =&gt; {
+     user =&gt; $user,
+     pass =&gt; \&amp;fetch_password
+   }
+ );
+</pre>
+<h1 class="Sh" title="Sh" id="DESCRIPTION"><a class="selflink" href="#DESCRIPTION">DESCRIPTION</a></h1>
+<b>Authen::SASL::Perl</b> is the pure Perl implementation of SASL mechanisms in
+  the <b>Authen::SASL</b> framework.
+<div class="Pp"></div>
+At the time of this writing it provides the client part implementation for the
+  following SASL mechanisms:
+<dl class="Bl-tag">
+  <dt class="It-tag">ANONYMOUS</dt>
+  <dd class="It-tag">The Anonymous SASL Mechanism as defined in RFC 2245 resp.
+      in IETF Draft draft-ietf-sasl-anon-03.txt from February 2004 provides a
+      method to anonymously access internet services.
+    <div style="height: 1.00em;">&#x00A0;</div>
+    Since it does no authentication it does not need to send any confidential
+      information such as passwords in plain text over the network.</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">CRAM-MD5</dt>
+  <dd class="It-tag">The CRAM-MD5 SASL Mechanism as defined in RFC2195 resp. in
+      IETF Draft draft-ietf-sasl-crammd5-XX.txt offers a simple
+      challenge-response authentication mechanism.
+    <div style="height: 1.00em;">&#x00A0;</div>
+    Since it is a challenge-response authentication mechanism no passwords are
+      transferred in clear-text over the wire.
+    <div style="height: 1.00em;">&#x00A0;</div>
+    Due to the simplicity of the protocol CRAM-MD5 is susceptible to replay and
+      dictionary attacks, so DIGEST-MD5 should be used in preferrence.</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">DIGEST-MD5</dt>
+  <dd class="It-tag">The DIGEST-MD5 SASL Mechanism as defined in RFC 2831 resp.
+      in IETF Draft draft-ietf-sasl-rfc2831bis-XX.txt offers the HTTP Digest
+      Access Authentication as SASL mechanism.
+    <div style="height: 1.00em;">&#x00A0;</div>
+    Like CRAM-MD5 it is a challenge-response authentication method that does not
+      send plain text passwords over the network.
+    <div style="height: 1.00em;">&#x00A0;</div>
+    Compared to CRAM-MD5, DIGEST-MD5 prevents chosen plaintext attacks, and
+      permits the use of third party authentication servers, so that it is
+      recommended to use DIGEST-MD5 instead of CRAM-MD5 when possible.</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">EXTERNAL</dt>
+  <dd class="It-tag">The EXTERNAL SASL mechanism as defined in RFC 2222 allows
+      the use of external authentication systems as SASL mechanisms.</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">GSSAPI</dt>
+  <dd class="It-tag">The GSSAPI SASL mechanism as defined in RFC 2222 resp. IETF
+      Draft draft-ietf-sasl-gssapi-XX.txt allows using the Generic Security
+      Service Application Program Interface [GSSAPI] KERBEROS V5 as as SASL
+      mechanism.
+    <div style="height: 1.00em;">&#x00A0;</div>
+    Although GSSAPI is a general mechanism for authentication it is almost
+      exlusively used for Kerberos 5.</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">LOGIN</dt>
+  <dd class="It-tag">The LOGIN SASL Mechanism as defined in IETF Draft
+      draft-murchison-sasl-login-XX.txt allows the combination of username and
+      clear-text password to be used in a SASL mechanism.
+    <div style="height: 1.00em;">&#x00A0;</div>
+    It does does not provide a security layer and sends the credentials in clear
+      over the wire. Thus this mechanism should not be used without adequate
+      security protection.</dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">PLAIN</dt>
+  <dd class="It-tag">The Plain SASL Mechanism as defined in RFC 2595 resp. IETF
+      Draft draft-ietf-sasl-plain-XX.txt is another SASL mechanism that allows
+      username and clear-text password combinations in SASL environments.
+    <div style="height: 1.00em;">&#x00A0;</div>
+    Like LOGIN it sends the credentials in clear over the network and should not
+      be used without sufficient security protection.</dd>
+</dl>
+<div class="Pp"></div>
+As for server support, only <i>PLAIN</i>, <i>LOGIN</i> and <i>DIGEST-MD5</i> are
+  supported at the time of this writing.
+<div class="Pp"></div>
+&quot;server_new&quot; OPTIONS is a hashref that is only relevant for
+  <i>DIGEST-MD5</i> for now and it supports the following options:
+<dl class="Bl-tag">
+  <dt class="It-tag">- no_integrity</dt>
+  <dd class="It-tag"></dd>
+</dl>
+<dl class="Bl-tag">
+  <dt class="It-tag">- no_confidentiality</dt>
+  <dd class="It-tag"></dd>
+</dl>
+<div class="Pp"></div>
+which configures how the security layers are negotiated with the client (or
+  rather imposed to the client).
+<h1 class="Sh" title="Sh" id="SEE_ALSO"><a class="selflink" href="#SEE_ALSO">SEE
+  ALSO</a></h1>
+Authen::SASL, Authen::SASL::Perl::ANONYMOUS, Authen::SASL::Perl::CRAM_MD5,
+  Authen::SASL::Perl::DIGEST_MD5, Authen::SASL::Perl::EXTERNAL,
+  Authen::SASL::Perl::GSSAPI, Authen::SASL::Perl::LOGIN,
+  Authen::SASL::Perl::PLAIN
+<h1 class="Sh" title="Sh" id="AUTHOR"><a class="selflink" href="#AUTHOR">AUTHOR</a></h1>
+Peter Marschall &lt;peter@adpm.de&gt;
+<div class="Pp"></div>
+Please report any bugs, or post any suggestions, to the perl-ldap mailing list
+  &lt;perl-ldap@perl.org&gt;
+<h1 class="Sh" title="Sh" id="COPYRIGHT"><a class="selflink" href="#COPYRIGHT">COPYRIGHT</a></h1>
+Copyright (c) 2004-2006 Peter Marschall. All rights reserved. This document is
+  distributed, and may be redistributed, under the same terms as Perl
+  itself.</div>
+<table class="foot">
+  <tr>
+    <td class="foot-date">2010-03-11</td>
+    <td class="foot-os">perl v5.10.1</td>
+  </tr>
+</table>
+</body>
+</html>

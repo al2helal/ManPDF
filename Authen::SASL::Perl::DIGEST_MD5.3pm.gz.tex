@@ -1,0 +1,231 @@
+\documentclass[]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+    \usepackage{xltxtra,xunicode}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
+  \newcommand{\euro}{€}
+\fi
+% use microtype if available
+\IfFileExists{microtype.sty}{\usepackage{microtype}}{}
+\usepackage{longtable,booktabs}
+\ifxetex
+  \usepackage[setpagesize=false, % page size defined by xetex
+              unicode=false, % unicode breaks when used with xetex
+              xetex]{hyperref}
+\else
+  \usepackage[unicode=true]{hyperref}
+\fi
+\hypersetup{breaklinks=true,
+            bookmarks=true,
+            pdfauthor={},
+            pdftitle={Authen::SASL::Perl::DIGEST\_MD5(3pm)},
+            colorlinks=true,
+            citecolor=blue,
+            urlcolor=blue,
+            linkcolor=magenta,
+            pdfborder={0 0 0}}
+\urlstyle{same}  % don't use monospace font for urls
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\setcounter{secnumdepth}{0}
+\usepackage{pagecolor}
+
+% Set background colour (of the page)
+\definecolor{weirdbgcolor}{HTML}{FCF4F0}
+\pagecolor{weirdbgcolor}
+
+% Make bold text appear in a particular colour
+\definecolor{boldcolor}{HTML}{6E0002}
+\let\realtextbf=\textbf
+\renewcommand{\textbf}[1]{\textcolor{boldcolor}{\realtextbf{#1}}}
+
+% Use underlines instead of emphasis (ugh)
+\renewcommand{\emph}[1]{\underline{#1}}
+
+% % Use fixed-width font by default
+% \renewcommand*\familydefault{\ttdefault}
+
+\title{Authen::SASL::Perl::DIGEST\_MD5(3pm)}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{longtable}[c]{@{}lll@{}}
+\toprule\addlinespace
+Authen::SASL::Perl::DIGEST\_MD5(3pm) & User Contributed Perl
+Documentation & Authen::SASL::Perl::DIGEST\_MD5(3pm)
+\\\addlinespace
+\bottomrule
+\end{longtable}
+
+\hyperdef{}{NAME}{\section{\hyperref[NAME]{NAME}}\label{NAME}}
+
+Authen::SASL::Perl::DIGEST\_MD5 - Digest MD5 Authentication class
+
+\hyperdef{}{SYNOPSIS}{\section{\hyperref[SYNOPSIS]{SYNOPSIS}}\label{SYNOPSIS}}
+
+\begin{verbatim}
+  use Authen::SASL qw(Perl);
+  $sasl = Authen::SASL->new(
+    mechanism => 'DIGEST-MD5',
+    callback  => {
+      user => $user, 
+      pass => $pass,
+      serv => $serv
+    },
+  );
+\end{verbatim}
+
+\hyperdef{}{DESCRIPTION}{\section{\hyperref[DESCRIPTION]{DESCRIPTION}}\label{DESCRIPTION}}
+
+This method implements the client and server parts of the DIGEST-MD5
+SASL algorithm, as described in RFC 2831.
+
+\hyperdef{}{CALLBACK}{\subsection{\hyperref[CALLBACK]{CALLBACK}}\label{CALLBACK}}
+
+The callbacks used are:
+
+\emph{client}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[authname]
+The authorization id to use after successful authentication
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[user]
+The username to be used in the response
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[pass]
+The password to be used to compute the response.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[serv]
+The service name when authenticating to a replicated service
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[realm]
+The authentication realm when overriding the server-provided default. If
+not given the server-provided value is used.
+
+~
+
+The callback will be passed the list of realms that the server provided
+in the initial response.
+\end{description}
+
+\emph{server}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[realm]
+The default realm to provide to the client
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[getsecret(username, realm, authzid)]
+returns the password associated with ``username'' and ``realm''
+\end{description}
+
+\hyperdef{}{PROPERTIES}{\subsection{\hyperref[PROPERTIES]{PROPERTIES}}\label{PROPERTIES}}
+
+The properties used are:
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[maxbuf]
+The maximum buffer size for receiving cipher text
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[minssf]
+The minimum SSF value that should be provided by the SASL security
+layer. The default is 0
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[maxssf]
+The maximum SSF value that should be provided by the SASL security
+layer. The default is 2**31
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[externalssf]
+The SSF value provided by an underlying external security layer. The
+default is 0
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[ssf]
+The actual SSF value provided by the SASL security layer after the SASL
+authentication phase has been completed. This value is read-only and set
+by the implementation after the SASL authentication phase has been
+completed.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[maxout]
+The maximum plaintext buffer size for sending data to the peer. This
+value is set by the implementation after the SASL authentication phase
+has been completed and a SASL security layer is in effect.
+\end{description}
+
+\hyperdef{}{SEEux5fALSO}{\section{\hyperref[SEEux5fALSO]{SEE
+ALSO}}\label{SEEux5fALSO}}
+
+Authen::SASL, Authen::SASL::Perl
+
+\hyperdef{}{AUTHORS}{\section{\hyperref[AUTHORS]{AUTHORS}}\label{AUTHORS}}
+
+Graham Barr, Djamel Boudjerda (NEXOR), Paul Connolly, Julian Onions
+(NEXOR), Yann Kerherve.
+
+Please report any bugs, or post any suggestions, to the perl-ldap
+mailing list \textless{}perl-ldap@perl.org\textgreater{}
+
+\hyperdef{}{COPYRIGHT}{\section{\hyperref[COPYRIGHT]{COPYRIGHT}}\label{COPYRIGHT}}
+
+Copyright (c) 2003-2009 Graham Barr, Djamel Boudjerda, Paul Connolly,
+Julian Onions, Nexor, Peter Marschall and Yann Kerherve. All rights
+reserved. This program is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself.
+
+\begin{longtable}[c]{@{}ll@{}}
+\toprule\addlinespace
+2010-06-07 & perl v5.10.1
+\\\addlinespace
+\bottomrule
+\end{longtable}
+
+\end{document}

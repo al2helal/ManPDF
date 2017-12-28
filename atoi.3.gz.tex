@@ -1,0 +1,169 @@
+\documentclass[]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+    \usepackage{xltxtra,xunicode}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
+  \newcommand{\euro}{€}
+\fi
+% use microtype if available
+\IfFileExists{microtype.sty}{\usepackage{microtype}}{}
+\usepackage{longtable,booktabs}
+\ifxetex
+  \usepackage[setpagesize=false, % page size defined by xetex
+              unicode=false, % unicode breaks when used with xetex
+              xetex]{hyperref}
+\else
+  \usepackage[unicode=true]{hyperref}
+\fi
+\hypersetup{breaklinks=true,
+            bookmarks=true,
+            pdfauthor={},
+            pdftitle={ATOI(3)},
+            colorlinks=true,
+            citecolor=blue,
+            urlcolor=blue,
+            linkcolor=magenta,
+            pdfborder={0 0 0}}
+\urlstyle{same}  % don't use monospace font for urls
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\setcounter{secnumdepth}{0}
+\usepackage{pagecolor}
+
+% Set background colour (of the page)
+\definecolor{weirdbgcolor}{HTML}{FCF4F0}
+\pagecolor{weirdbgcolor}
+
+% Make bold text appear in a particular colour
+\definecolor{boldcolor}{HTML}{6E0002}
+\let\realtextbf=\textbf
+\renewcommand{\textbf}[1]{\textcolor{boldcolor}{\realtextbf{#1}}}
+
+% Use underlines instead of emphasis (ugh)
+\renewcommand{\emph}[1]{\underline{#1}}
+
+% % Use fixed-width font by default
+% \renewcommand*\familydefault{\ttdefault}
+
+\title{ATOI(3)}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{longtable}[c]{@{}lll@{}}
+\toprule\addlinespace
+ATOI(3) & Linux Programmer's Manual & ATOI(3)
+\\\addlinespace
+\bottomrule
+\end{longtable}
+
+\hyperdef{}{NAME}{\section{\hyperref[NAME]{NAME}}\label{NAME}}
+
+atoi, atol, atoll, atoq - convert a string to an integer
+
+\hyperdef{}{SYNOPSIS}{\section{\hyperref[SYNOPSIS]{SYNOPSIS}}\label{SYNOPSIS}}
+
+\begin{verbatim}
+#include <stdlib.h>
+ 
+int atoi(const char *nptr);
+ 
+long atol(const char *nptr);
+ 
+long long atoll(const char *nptr);
+ 
+long long atoq(const char *nptr);
+\end{verbatim}
+
+~
+
+Feature Test Macro Requirements for glibc (see
+\textbf{feature\_test\_macros}(7)): \\
+
+~
+
+\textbf{atoll}():
+
+\_BSD\_SOURCE \textbar{}\textbar{} \_SVID\_SOURCE \textbar{}\textbar{}
+\_XOPEN\_SOURCE~\textgreater{}=~600 \textbar{}\textbar{}
+\_ISOC99\_SOURCE \textbar{}\textbar{}
+\_POSIX\_C\_SOURCE~\textgreater{}=~200112L;
+
+~
+
+or \emph{cc~-std=c99}
+
+\hyperdef{}{DESCRIPTION}{\section{\hyperref[DESCRIPTION]{DESCRIPTION}}\label{DESCRIPTION}}
+
+The \textbf{atoi}() function converts the initial portion of the string
+pointed to by \emph{nptr} to \emph{int}. The behavior is the same as
+
+~
+
+strtol(nptr, NULL, 10); \\
+
+~
+
+except that \textbf{atoi}() does not detect errors.
+
+The \textbf{atol}() and \textbf{atoll}() functions behave the same as
+\textbf{atoi}(), except that they convert the initial portion of the
+string to their return type of \emph{long} or \emph{long long}.
+\textbf{atoq}() is an obsolete name for \textbf{atoll}().
+
+\hyperdef{}{RETURNux5fVALUE}{\section{\hyperref[RETURNux5fVALUE]{RETURN
+VALUE}}\label{RETURNux5fVALUE}}
+
+The converted value.
+
+\hyperdef{}{CONFORMINGux5fTO}{\section{\hyperref[CONFORMINGux5fTO]{CONFORMING
+TO}}\label{CONFORMINGux5fTO}}
+
+SVr4, POSIX.1-2001, 4.3BSD, C99. C89 and POSIX.1-1996 include the
+functions \textbf{atoi}() and \textbf{atol}() only. \textbf{atoq}() is a
+GNU extension.
+
+\hyperdef{}{NOTES}{\section{\hyperref[NOTES]{NOTES}}\label{NOTES}}
+
+The nonstandard \textbf{atoq}() function is not present in libc 4.6.27
+or glibc 2, but is present in libc5 and libc 4.7 (though only as an
+inline function in \emph{\textless{}stdlib.h\textgreater{}} until libc
+5.4.44). The \textbf{atoll}() function is present in glibc 2 since
+version 2.0.2, but not in libc4 or libc5.
+
+\hyperdef{}{SEEux5fALSO}{\section{\hyperref[SEEux5fALSO]{SEE
+ALSO}}\label{SEEux5fALSO}}
+
+\textbf{atof}(3), \textbf{strtod}(3), \textbf{strtol}(3),
+\textbf{strtoul}(3)
+
+\hyperdef{}{COLOPHON}{\section{\hyperref[COLOPHON]{COLOPHON}}\label{COLOPHON}}
+
+This page is part of release 3.54 of the Linux \emph{man-pages} project.
+A description of the project, and information about reporting bugs, can
+be found at http://www.kernel.org/doc/man-pages/.
+
+\begin{longtable}[c]{@{}ll@{}}
+\toprule\addlinespace
+2012-08-03 & GNU
+\\\addlinespace
+\bottomrule
+\end{longtable}
+
+\end{document}

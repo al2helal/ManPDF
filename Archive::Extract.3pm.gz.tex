@@ -1,0 +1,488 @@
+\documentclass[]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+    \usepackage{xltxtra,xunicode}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
+  \newcommand{\euro}{€}
+\fi
+% use microtype if available
+\IfFileExists{microtype.sty}{\usepackage{microtype}}{}
+\usepackage{longtable,booktabs}
+\ifxetex
+  \usepackage[setpagesize=false, % page size defined by xetex
+              unicode=false, % unicode breaks when used with xetex
+              xetex]{hyperref}
+\else
+  \usepackage[unicode=true]{hyperref}
+\fi
+\hypersetup{breaklinks=true,
+            bookmarks=true,
+            pdfauthor={},
+            pdftitle={Archive::Extract(3pm)},
+            colorlinks=true,
+            citecolor=blue,
+            urlcolor=blue,
+            linkcolor=magenta,
+            pdfborder={0 0 0}}
+\urlstyle{same}  % don't use monospace font for urls
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\setcounter{secnumdepth}{0}
+\usepackage{pagecolor}
+
+% Set background colour (of the page)
+\definecolor{weirdbgcolor}{HTML}{FCF4F0}
+\pagecolor{weirdbgcolor}
+
+% Make bold text appear in a particular colour
+\definecolor{boldcolor}{HTML}{6E0002}
+\let\realtextbf=\textbf
+\renewcommand{\textbf}[1]{\textcolor{boldcolor}{\realtextbf{#1}}}
+
+% Use underlines instead of emphasis (ugh)
+\renewcommand{\emph}[1]{\underline{#1}}
+
+% % Use fixed-width font by default
+% \renewcommand*\familydefault{\ttdefault}
+
+\title{Archive::Extract(3pm)}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{longtable}[c]{@{}lll@{}}
+\toprule\addlinespace
+Archive::Extract(3pm) & User Contributed Perl Documentation &
+Archive::Extract(3pm)
+\\\addlinespace
+\bottomrule
+\end{longtable}
+
+\hyperdef{}{NAME}{\section{\hyperref[NAME]{NAME}}\label{NAME}}
+
+Archive::Extract - A generic archive extracting mechanism
+
+\hyperdef{}{SYNOPSIS}{\section{\hyperref[SYNOPSIS]{SYNOPSIS}}\label{SYNOPSIS}}
+
+\begin{verbatim}
+    use Archive::Extract;
+    ### build an Archive::Extract object ###
+    my $ae = Archive::Extract->new( archive => 'foo.tgz' );
+    ### extract to cwd() ###
+    my $ok = $ae->extract;
+    ### extract to /tmp ###
+    my $ok = $ae->extract( to => '/tmp' );
+    ### what if something went wrong?
+    my $ok = $ae->extract or die $ae->error;
+    ### files from the archive ###
+    my $files   = $ae->files;
+    ### dir that was extracted to ###
+    my $outdir  = $ae->extract_path;
+    ### quick check methods ###
+    $ae->is_tar     # is it a .tar file?
+    $ae->is_tgz     # is it a .tar.gz or .tgz file?
+    $ae->is_gz;     # is it a .gz file?
+    $ae->is_zip;    # is it a .zip file?
+    $ae->is_bz2;    # is it a .bz2 file?
+    $ae->is_tbz;    # is it a .tar.bz2 or .tbz file?
+    $ae->is_lzma;   # is it a .lzma file?
+    $ae->is_xz;     # is it a .xz file?
+    $ae->is_txz;    # is it a .tar.xz or .txz file?
+    ### absolute path to the archive you provided ###
+    $ae->archive;
+    ### commandline tools, if found ###
+    $ae->bin_tar     # path to /bin/tar, if found
+    $ae->bin_gzip    # path to /bin/gzip, if found
+    $ae->bin_unzip   # path to /bin/unzip, if found
+    $ae->bin_bunzip2 # path to /bin/bunzip2 if found
+    $ae->bin_unlzma  # path to /bin/unlzma if found
+    $ae->bin_unxz    # path to /bin/unxz if found
+\end{verbatim}
+
+\hyperdef{}{DESCRIPTION}{\section{\hyperref[DESCRIPTION]{DESCRIPTION}}\label{DESCRIPTION}}
+
+Archive::Extract is a generic archive extraction mechanism.
+
+It allows you to extract any archive file of the type .tar, .tar.gz,
+.gz, .Z, tar.bz2, .tbz, .bz2, .zip, .xz,, .txz, .tar.xz or .lzma without
+having to worry how it does so, or use different interfaces for each
+type by using either perl modules, or commandline tools on your system.
+
+See the ``HOW IT WORKS'' section further down for details.
+
+\hyperdef{}{METHODS}{\section{\hyperref[METHODS]{METHODS}}\label{METHODS}}
+
+\hyperdef{}{ux24aeux5f=ux5fArchive::Extract-ux3enewux28archiveux5f=ux3eux5fux27ux2fpathux2ftoux2farchiveux27ux2cux5btypeux5f=ux3eux5fTYPEux5dux29}{\subsection{\hyperref[ux5cux24aeux5f=ux5fArchive::Extract-ux5ctextgreaterux7bux7dnewux28archiveux5f=ux5ctextgreaterux7bux7dux5fux27ux2fpathux2ftoux2farchiveux27ux2cux7bux5bux7dtypeux5f=ux5ctextgreaterux7bux7dux5fTYPEux7bux5dux7dux29]{\$ae
+= Archive::Extract-\textgreater{}new(archive =\textgreater{}
+`/path/to/archive',{[}type =\textgreater{}
+TYPE{]})}}\label{ux24aeux5f=ux5fArchive::Extract-ux3enewux28archiveux5f=ux3eux5fux27ux2fpathux2ftoux2farchiveux27ux2cux5btypeux5f=ux3eux5fTYPEux5dux29}}
+
+Creates a new ``Archive::Extract'' object based on the archive file you
+passed it. Automatically determines the type of archive based on the
+extension, but you can override that by explicitly providing the
+``type'' argument.
+
+Valid values for ``type'' are:
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[tar]
+Standard tar files, as produced by, for example, ``/bin/tar''.
+Corresponds to a ``.tar'' suffix.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[tgz]
+Gzip compressed tar files, as produced by, for example ``/bin/tar -z''.
+Corresponds to a ``.tgz'' or ``.tar.gz'' suffix.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[gz]
+Gzip compressed file, as produced by, for example ``/bin/gzip''.
+Corresponds to a ``.gz'' suffix.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[Z]
+Lempel-Ziv compressed file, as produced by, for example
+``/bin/compress''. Corresponds to a ``.Z'' suffix.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[zip]
+Zip compressed file, as produced by, for example ``/bin/zip''.
+Corresponds to a ``.zip'', ``.jar'' or ``.par'' suffix.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[bz2]
+Bzip2 compressed file, as produced by, for example, ``/bin/bzip2''.
+Corresponds to a ``.bz2'' suffix.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[tbz]
+Bzip2 compressed tar file, as produced by, for example ``/bin/tar -j''.
+Corresponds to a ``.tbz'' or ``.tar.bz2'' suffix.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[lzma]
+Lzma compressed file, as produced by ``/bin/lzma''. Corresponds to a
+``.lzma'' suffix.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[xz]
+Xz compressed file, as produced by ``/bin/xz''. Corresponds to a ``.xz''
+suffix.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[txz]
+Xz compressed tar file, as produced by, for example ``/bin/tar -J''.
+Corresponds to a ``.txz'' or ``.tar.xz'' suffix.
+\end{description}
+
+Returns a ``Archive::Extract'' object on success, or false on failure.
+
+\hyperdef{}{ux24ae-ux3eextractux28ux5fux5btoux5f=ux3eux5fux27ux2foutputux2fpathux27ux5dux5fux29}{\subsection{\hyperref[ux5cux24ae-ux5ctextgreaterux7bux7dextractux28ux5fux7bux5bux7dtoux5f=ux5ctextgreaterux7bux7dux5fux27ux2foutputux2fpathux27ux7bux5dux7dux5fux29]{\$ae-\textgreater{}extract(
+{[}to =\textgreater{} `/output/path'{]}
+)}}\label{ux24ae-ux3eextractux28ux5fux5btoux5f=ux3eux5fux27ux2foutputux2fpathux27ux5dux5fux29}}
+
+Extracts the archive represented by the ``Archive::Extract'' object to
+the path of your choice as specified by the ``to'' argument. Defaults to
+``cwd()''.
+
+Since ``.gz'' files never hold a directory, but only a single file; if
+the ``to'' argument is an existing directory, the file is extracted
+there, with its ``.gz'' suffix stripped. If the ``to'' argument is not
+an existing directory, the ``to'' argument is understood to be a
+filename, if the archive type is ``gz''. In the case that you did not
+specify a ``to'' argument, the output file will be the name of the
+archive file, stripped from its ``.gz'' suffix, in the current working
+directory.
+
+``extract'' will try a pure perl solution first, and then fall back to
+commandline tools if they are available. See the ``GLOBAL VARIABLES''
+section below on how to alter this behaviour.
+
+It will return true on success, and false on failure.
+
+On success, it will also set the follow attributes in the object:
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[\$ae-\textgreater{}extract\_path]
+This is the directory that the files where extracted to.
+\end{description}
+
+\begin{description}
+\item[\$ae-\textgreater{}files]
+This is an array ref with the paths of all the files in the archive,
+relative to the ``to'' argument you specified. To get the full path to
+an extracted file, you would use:
+
+~
+
+\begin{verbatim}
+    File::Spec->catfile( $to, $ae->files->[0] );
+    
+\end{verbatim}
+
+~
+
+Note that all files from a tar archive will be in unix format, as per
+the tar specification.
+\end{description}
+
+\hyperdef{}{ACCESSORS}{\section{\hyperref[ACCESSORS]{ACCESSORS}}\label{ACCESSORS}}
+
+\hyperdef{}{ux24ae-ux3eerrorux28ux5bBOOLux5dux29}{\subsection{\hyperref[ux5cux24ae-ux5ctextgreaterux7bux7derrorux28ux7bux5bux7dBOOLux7bux5dux7dux29]{\$ae-\textgreater{}error({[}BOOL{]})}}\label{ux24ae-ux3eerrorux28ux5bBOOLux5dux29}}
+
+Returns the last encountered error as string. Pass it a true value to
+get the ``Carp::longmess()'' output instead.
+
+\hyperdef{}{ux24ae-ux3eextractux5fpath}{\subsection{\hyperref[ux5cux24ae-ux5ctextgreaterux7bux7dextractux5fpath]{\$ae-\textgreater{}extract\_path}}\label{ux24ae-ux3eextractux5fpath}}
+
+This is the directory the archive got extracted to. See ``extract()''
+for details.
+
+\hyperdef{}{ux24ae-ux3efiles}{\subsection{\hyperref[ux5cux24ae-ux5ctextgreaterux7bux7dfiles]{\$ae-\textgreater{}files}}\label{ux24ae-ux3efiles}}
+
+This is an array ref holding all the paths from the archive. See
+``extract()'' for details.
+
+\hyperdef{}{ux24ae-ux3earchive}{\subsection{\hyperref[ux5cux24ae-ux5ctextgreaterux7bux7darchive]{\$ae-\textgreater{}archive}}\label{ux24ae-ux3earchive}}
+
+This is the full path to the archive file represented by this
+``Archive::Extract'' object.
+
+\hyperdef{}{ux24ae-ux3etype}{\subsection{\hyperref[ux5cux24ae-ux5ctextgreaterux7bux7dtype]{\$ae-\textgreater{}type}}\label{ux24ae-ux3etype}}
+
+This is the type of archive represented by this ``Archive::Extract''
+object. See accessors below for an easier way to use this. See the
+``new()'' method for details.
+
+\hyperdef{}{ux24ae-ux3etypes}{\subsection{\hyperref[ux5cux24ae-ux5ctextgreaterux7bux7dtypes]{\$ae-\textgreater{}types}}\label{ux24ae-ux3etypes}}
+
+Returns a list of all known ``types'' for ``Archive::Extract'''s ``new''
+method.
+
+\hyperdef{}{ux24ae-ux3eisux5ftgz}{\subsection{\hyperref[ux5cux24ae-ux5ctextgreaterux7bux7disux5ftgz]{\$ae-\textgreater{}is\_tgz}}\label{ux24ae-ux3eisux5ftgz}}
+
+Returns true if the file is of type ``.tar.gz''. See the ``new()''
+method for details.
+
+\hyperdef{}{ux24ae-ux3eisux5ftar}{\subsection{\hyperref[ux5cux24ae-ux5ctextgreaterux7bux7disux5ftar]{\$ae-\textgreater{}is\_tar}}\label{ux24ae-ux3eisux5ftar}}
+
+Returns true if the file is of type ``.tar''. See the ``new()'' method
+for details.
+
+\hyperdef{}{ux24ae-ux3eisux5fgz}{\subsection{\hyperref[ux5cux24ae-ux5ctextgreaterux7bux7disux5fgz]{\$ae-\textgreater{}is\_gz}}\label{ux24ae-ux3eisux5fgz}}
+
+Returns true if the file is of type ``.gz''. See the ``new()'' method
+for details.
+
+\hyperdef{}{ux24ae-ux3eisux5fZ}{\subsection{\hyperref[ux5cux24ae-ux5ctextgreaterux7bux7disux5fZ]{\$ae-\textgreater{}is\_Z}}\label{ux24ae-ux3eisux5fZ}}
+
+Returns true if the file is of type ``.Z''. See the ``new()'' method for
+details.
+
+\hyperdef{}{ux24ae-ux3eisux5fzip}{\subsection{\hyperref[ux5cux24ae-ux5ctextgreaterux7bux7disux5fzip]{\$ae-\textgreater{}is\_zip}}\label{ux24ae-ux3eisux5fzip}}
+
+Returns true if the file is of type ``.zip''. See the ``new()'' method
+for details.
+
+\hyperdef{}{ux24ae-ux3eisux5flzma}{\subsection{\hyperref[ux5cux24ae-ux5ctextgreaterux7bux7disux5flzma]{\$ae-\textgreater{}is\_lzma}}\label{ux24ae-ux3eisux5flzma}}
+
+Returns true if the file is of type ``.lzma''. See the ``new()'' method
+for details.
+
+\hyperdef{}{ux24ae-ux3eisux5fxz}{\subsection{\hyperref[ux5cux24ae-ux5ctextgreaterux7bux7disux5fxz]{\$ae-\textgreater{}is\_xz}}\label{ux24ae-ux3eisux5fxz}}
+
+Returns true if the file is of type ``.xz''. See the ``new()'' method
+for details.
+
+\hyperdef{}{ux24ae-ux3ebinux5ftar}{\subsection{\hyperref[ux5cux24ae-ux5ctextgreaterux7bux7dbinux5ftar]{\$ae-\textgreater{}bin\_tar}}\label{ux24ae-ux3ebinux5ftar}}
+
+Returns the full path to your tar binary, if found.
+
+\hyperdef{}{ux24ae-ux3ebinux5fgzip}{\subsection{\hyperref[ux5cux24ae-ux5ctextgreaterux7bux7dbinux5fgzip]{\$ae-\textgreater{}bin\_gzip}}\label{ux24ae-ux3ebinux5fgzip}}
+
+Returns the full path to your gzip binary, if found
+
+\hyperdef{}{ux24ae-ux3ebinux5funzip}{\subsection{\hyperref[ux5cux24ae-ux5ctextgreaterux7bux7dbinux5funzip]{\$ae-\textgreater{}bin\_unzip}}\label{ux24ae-ux3ebinux5funzip}}
+
+Returns the full path to your unzip binary, if found
+
+\hyperdef{}{ux24ae-ux3ebinux5funlzma}{\subsection{\hyperref[ux5cux24ae-ux5ctextgreaterux7bux7dbinux5funlzma]{\$ae-\textgreater{}bin\_unlzma}}\label{ux24ae-ux3ebinux5funlzma}}
+
+Returns the full path to your unlzma binary, if found
+
+\hyperdef{}{ux24ae-ux3ebinux5funxz}{\subsection{\hyperref[ux5cux24ae-ux5ctextgreaterux7bux7dbinux5funxz]{\$ae-\textgreater{}bin\_unxz}}\label{ux24ae-ux3ebinux5funxz}}
+
+Returns the full path to your unxz binary, if found
+
+\hyperdef{}{ux24boolux5f=ux5fux24ae-ux3ehaveux5foldux5fbunzip2}{\subsection{\hyperref[ux5cux24boolux5f=ux5fux5cux24ae-ux5ctextgreaterux7bux7dhaveux5foldux5fbunzip2]{\$bool
+=
+\$ae-\textgreater{}have\_old\_bunzip2}}\label{ux24boolux5f=ux5fux24ae-ux3ehaveux5foldux5fbunzip2}}
+
+Older versions of ``/bin/bunzip2'', from before the ``bunzip2 1.0''
+release, require all archive names to end in ``.bz2'' or it will not
+extract them. This method checks if you have a recent version of
+``bunzip2'' that allows any extension, or an older one that doesn't.
+
+\hyperdef{}{debugux28ux5fMESSAGEux5fux29}{\subsection{\hyperref[debugux28ux5fMESSAGEux5fux29]{debug(
+MESSAGE )}}\label{debugux28ux5fMESSAGEux5fux29}}
+
+This method outputs MESSAGE to the default filehandle if \$DEBUG is
+true. It's a small method, but it's here if you'd like to subclass it so
+you can so something else with any debugging output.
+
+\hyperdef{}{HOWux5fITux5fWORKS}{\section{\hyperref[HOWux5fITux5fWORKS]{HOW
+IT WORKS}}\label{HOWux5fITux5fWORKS}}
+
+``Archive::Extract'' tries first to determine what type of archive you
+are passing it, by inspecting its suffix. It does not do this by using
+Mime magic, or something related. See ``CAVEATS'' below.
+
+Once it has determined the file type, it knows which extraction methods
+it can use on the archive. It will try a perl solution first, then fall
+back to a commandline tool if that fails. If that also fails, it will
+return false, indicating it was unable to extract the archive. See the
+section on ``GLOBAL VARIABLES'' to see how to alter this order.
+
+\hyperdef{}{CAVEATS}{\section{\hyperref[CAVEATS]{CAVEATS}}\label{CAVEATS}}
+
+\hyperdef{}{Fileux5fExtensions}{\subsection{\hyperref[Fileux5fExtensions]{File
+Extensions}}\label{Fileux5fExtensions}}
+
+``Archive::Extract'' trusts on the extension of the archive to determine
+what type it is, and what extractor methods therefore can be used. If
+your archives do not have any of the extensions as described in the
+``new()'' method, you will have to specify the type explicitly, or
+``Archive::Extract'' will not be able to extract the archive for you.
+
+\hyperdef{}{Supportingux5fVeryux5fLargeux5fFiles}{\subsection{\hyperref[Supportingux5fVeryux5fLargeux5fFiles]{Supporting
+Very Large Files}}\label{Supportingux5fVeryux5fLargeux5fFiles}}
+
+``Archive::Extract'' can use either pure perl modules or command line
+programs under the hood. Some of the pure perl modules (like
+``Archive::Tar'' and Compress::unLZMA) take the entire contents of the
+archive into memory, which may not be feasible on your system. Consider
+setting the global variable \$Archive::Extract::PREFER\_BIN to 1, which
+will prefer the use of command line programs and won't consume so much
+memory.
+
+See the ``GLOBAL VARIABLES'' section below for details.
+
+\hyperdef{}{Bunzip2ux5fsupportux5fofux5farbitraryux5fextensions.}{\subsection{\hyperref[Bunzip2ux5fsupportux5fofux5farbitraryux5fextensions.]{Bunzip2
+support of arbitrary
+extensions.}}\label{Bunzip2ux5fsupportux5fofux5farbitraryux5fextensions.}}
+
+Older versions of ``/bin/bunzip2'' do not support arbitrary file
+extensions and insist on a ``.bz2'' suffix. Although we do our best to
+guard against this, if you experience a bunzip2 error, it may be related
+to this. For details, please see the ``have\_old\_bunzip2'' method.
+
+\hyperdef{}{GLOBALux5fVARIABLES}{\section{\hyperref[GLOBALux5fVARIABLES]{GLOBAL
+VARIABLES}}\label{GLOBALux5fVARIABLES}}
+
+\hyperdef{}{ux24Archive::Extract::DEBUG}{\subsection{\hyperref[ux5cux24Archive::Extract::DEBUG]{\$Archive::Extract::DEBUG}}\label{ux24Archive::Extract::DEBUG}}
+
+Set this variable to ``true'' to have all calls to command line tools be
+printed out, including all their output. This also enables
+``Carp::longmess'' errors, instead of the regular ``carp'' errors.
+
+Good for tracking down why things don't work with your particular setup.
+
+Defaults to ``false''.
+
+\hyperdef{}{ux24Archive::Extract::WARN}{\subsection{\hyperref[ux5cux24Archive::Extract::WARN]{\$Archive::Extract::WARN}}\label{ux24Archive::Extract::WARN}}
+
+This variable controls whether errors encountered internally by
+``Archive::Extract'' should be ``carp'''d or not.
+
+Set to false to silence warnings. Inspect the output of the ``error()''
+method manually to see what went wrong.
+
+Defaults to ``true''.
+
+\hyperdef{}{ux24Archive::Extract::PREFERux5fBIN}{\subsection{\hyperref[ux5cux24Archive::Extract::PREFERux5fBIN]{\$Archive::Extract::PREFER\_BIN}}\label{ux24Archive::Extract::PREFERux5fBIN}}
+
+This variables controls whether ``Archive::Extract'' should prefer the
+use of perl modules, or commandline tools to extract archives.
+
+Set to ``true'' to have ``Archive::Extract'' prefer commandline tools.
+
+Defaults to ``false''.
+
+\hyperdef{}{TODOux5fux2fux5fCAVEATS}{\section{\hyperref[TODOux5fux2fux5fCAVEATS]{TODO
+/ CAVEATS}}\label{TODOux5fux2fux5fCAVEATS}}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[Mime magic support]
+Maybe this module should use something like ``File::Type'' to determine
+the type, rather than blindly trust the suffix.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[Thread safety]
+Currently, ``Archive::Extract'' does a ``chdir'' to the extraction dir
+before extraction, and a ``chdir'' back again after. This is not
+necessarily thread safe. See ``rt.cpan.org'' bug ``\#45671'' for
+details.
+\end{description}
+
+\hyperdef{}{BUGux5fREPORTS}{\section{\hyperref[BUGux5fREPORTS]{BUG
+REPORTS}}\label{BUGux5fREPORTS}}
+
+Please report bugs or other issues to
+\textless{}bug-archive-extract@rt.cpan.org\textgreater{}.
+
+\hyperdef{}{AUTHOR}{\section{\hyperref[AUTHOR]{AUTHOR}}\label{AUTHOR}}
+
+This module by Jos Boumans \textless{}kane@cpan.org\textgreater{}.
+
+\hyperdef{}{COPYRIGHT}{\section{\hyperref[COPYRIGHT]{COPYRIGHT}}\label{COPYRIGHT}}
+
+This library is free software; you may redistribute and/or modify it
+under the same terms as Perl itself.
+
+\begin{longtable}[c]{@{}ll@{}}
+\toprule\addlinespace
+2013-11-09 & perl v5.18.1
+\\\addlinespace
+\bottomrule
+\end{longtable}
+
+\end{document}

@@ -1,0 +1,164 @@
+\documentclass[]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+    \usepackage{xltxtra,xunicode}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
+  \newcommand{\euro}{€}
+\fi
+% use microtype if available
+\IfFileExists{microtype.sty}{\usepackage{microtype}}{}
+\usepackage{longtable,booktabs}
+\ifxetex
+  \usepackage[setpagesize=false, % page size defined by xetex
+              unicode=false, % unicode breaks when used with xetex
+              xetex]{hyperref}
+\else
+  \usepackage[unicode=true]{hyperref}
+\fi
+\hypersetup{breaklinks=true,
+            bookmarks=true,
+            pdfauthor={},
+            pdftitle={AptPkg::PkgRecords(3pm)},
+            colorlinks=true,
+            citecolor=blue,
+            urlcolor=blue,
+            linkcolor=magenta,
+            pdfborder={0 0 0}}
+\urlstyle{same}  % don't use monospace font for urls
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\setcounter{secnumdepth}{0}
+\usepackage{pagecolor}
+
+% Set background colour (of the page)
+\definecolor{weirdbgcolor}{HTML}{FCF4F0}
+\pagecolor{weirdbgcolor}
+
+% Make bold text appear in a particular colour
+\definecolor{boldcolor}{HTML}{6E0002}
+\let\realtextbf=\textbf
+\renewcommand{\textbf}[1]{\textcolor{boldcolor}{\realtextbf{#1}}}
+
+% Use underlines instead of emphasis (ugh)
+\renewcommand{\emph}[1]{\underline{#1}}
+
+% % Use fixed-width font by default
+% \renewcommand*\familydefault{\ttdefault}
+
+\title{AptPkg::PkgRecords(3pm)}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{longtable}[c]{@{}lll@{}}
+\toprule\addlinespace
+AptPkg::PkgRecords(3pm) & User Contributed Perl Documentation &
+AptPkg::PkgRecords(3pm)
+\\\addlinespace
+\bottomrule
+\end{longtable}
+
+\hyperdef{}{NAME}{\section{\hyperref[NAME]{NAME}}\label{NAME}}
+
+AptPkg::PkgRecords - APT package description class
+
+\hyperdef{}{SYNOPSIS}{\section{\hyperref[SYNOPSIS]{SYNOPSIS}}\label{SYNOPSIS}}
+
+use AptPkg::PkgRecords;
+
+\hyperdef{}{DESCRIPTION}{\section{\hyperref[DESCRIPTION]{DESCRIPTION}}\label{DESCRIPTION}}
+
+The AptPkg::PkgRecords module provides an interface to the parsed
+contents of package files.
+
+\hyperdef{}{AptPkg::PkgRecords}{\subsection{\hyperref[AptPkg::PkgRecords]{AptPkg::PkgRecords}}\label{AptPkg::PkgRecords}}
+
+The AptPkg::PkgRecords package Implements the \textbf{APT} pkgRecords
+class.
+
+An instance of the AptPkg::PkgRecords class may be fetched using the
+``packages'' method from an AptPkg::Cache object.
+
+\emph{Methods}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[lookup(\emph{PACK})]
+Return a hash (or hash reference, depending on context) for the given
+package.
+
+~
+
+\emph{PACK} may either be an AptPkg::Cache::VerFile object, an
+AptPkg::Cache::DescFile object or a package name.
+
+~
+
+The hash contains the following keys:
+\end{description}
+
+~
+
+``FileName'', ``MD5Hash'', ``SourcePkg'', ``Maintainer'', ``ShortDesc'',
+``LongDesc'' and ``Name''.
+
+~
+
+with values taken from the packages or translation file.
+
+~
+
+Note that ``LongDesc'' is generally not useful for
+AptPkg::Cache::VerFile objects, which refer to the Packages file, as
+these no longer contain the full description (now in the Translation
+files).
+
+~
+
+If \emph{PACK} is a package name, these additional values are set:
+
+~
+
+``Section'' and ``VerStr''.
+
+~
+
+and the following values are overriden with the translated versions:
+
+~
+
+``ShortDesc'' and ``LongDesc''.
+
+\hyperdef{}{SEEux5fALSO}{\section{\hyperref[SEEux5fALSO]{SEE
+ALSO}}\label{SEEux5fALSO}}
+
+\emph{AptPkg::Cache}(3pm), \emph{AptPkg}(3pm).
+
+\hyperdef{}{AUTHOR}{\section{\hyperref[AUTHOR]{AUTHOR}}\label{AUTHOR}}
+
+Brendan O'Dea \textless{}bod@debian.org\textgreater{}
+
+\begin{longtable}[c]{@{}ll@{}}
+\toprule\addlinespace
+2013-05-10 & perl v5.18.1
+\\\addlinespace
+\bottomrule
+\end{longtable}
+
+\end{document}

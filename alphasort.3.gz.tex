@@ -1,0 +1,241 @@
+\documentclass[]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+    \usepackage{xltxtra,xunicode}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
+  \newcommand{\euro}{€}
+\fi
+% use microtype if available
+\IfFileExists{microtype.sty}{\usepackage{microtype}}{}
+\usepackage{longtable,booktabs}
+\ifxetex
+  \usepackage[setpagesize=false, % page size defined by xetex
+              unicode=false, % unicode breaks when used with xetex
+              xetex]{hyperref}
+\else
+  \usepackage[unicode=true]{hyperref}
+\fi
+\hypersetup{breaklinks=true,
+            bookmarks=true,
+            pdfauthor={},
+            pdftitle={SCANDIR(3)},
+            colorlinks=true,
+            citecolor=blue,
+            urlcolor=blue,
+            linkcolor=magenta,
+            pdfborder={0 0 0}}
+\urlstyle{same}  % don't use monospace font for urls
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\setcounter{secnumdepth}{0}
+\usepackage{pagecolor}
+
+% Set background colour (of the page)
+\definecolor{weirdbgcolor}{HTML}{FCF4F0}
+\pagecolor{weirdbgcolor}
+
+% Make bold text appear in a particular colour
+\definecolor{boldcolor}{HTML}{6E0002}
+\let\realtextbf=\textbf
+\renewcommand{\textbf}[1]{\textcolor{boldcolor}{\realtextbf{#1}}}
+
+% Use underlines instead of emphasis (ugh)
+\renewcommand{\emph}[1]{\underline{#1}}
+
+% % Use fixed-width font by default
+% \renewcommand*\familydefault{\ttdefault}
+
+\title{SCANDIR(3)}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{longtable}[c]{@{}lll@{}}
+\toprule\addlinespace
+SCANDIR(3) & Linux Programmer's Manual & SCANDIR(3)
+\\\addlinespace
+\bottomrule
+\end{longtable}
+
+\hyperdef{}{NAME}{\section{\hyperref[NAME]{NAME}}\label{NAME}}
+
+scandir, alphasort, versionsort - scan a directory for matching entries
+
+\hyperdef{}{SYNOPSIS}{\section{\hyperref[SYNOPSIS]{SYNOPSIS}}\label{SYNOPSIS}}
+
+\begin{verbatim}
+#include <dirent.h>
+ 
+int scandir(const char *dirp, struct dirent ***namelist,
+\end{verbatim}
+
+\begin{verbatim}
+int (*filter)(const struct dirent *),
+int (*compar)(const struct dirent **, const struct dirent **));
+\end{verbatim}
+
+\begin{verbatim}
+ 
+int alphasort(const void *a, const void *b);
+ 
+int versionsort(const void *a, const void *b);
+\end{verbatim}
+
+~
+
+Feature Test Macro Requirements for glibc (see
+\textbf{feature\_test\_macros}(7)): \\
+
+~
+
+\textbf{scandir}(), \textbf{alphasort}(): \_BSD\_SOURCE
+\textbar{}\textbar{} \_SVID\_SOURCE
+
+~
+
+\textbf{versionsort}(): \_GNU\_SOURCE
+
+\hyperdef{}{DESCRIPTION}{\section{\hyperref[DESCRIPTION]{DESCRIPTION}}\label{DESCRIPTION}}
+
+The \textbf{scandir}() function scans the directory \emph{dirp}, calling
+\emph{filter}() on each directory entry. Entries for which
+\emph{filter}() returns nonzero are stored in strings allocated via
+\textbf{malloc}(3), sorted using \textbf{qsort}(3) with the comparison
+function \emph{compar}(), and collected in array \emph{namelist} which
+is allocated via \textbf{malloc}(3). If \emph{filter} is NULL, all
+entries are selected.
+
+The \textbf{alphasort}() and \textbf{versionsort}() functions can be
+used as the comparison function \emph{compar}(). The former sorts
+directory entries using \textbf{strcoll}(3), the latter using
+\textbf{strverscmp}(3) on the strings \emph{(*a)-\textgreater{}d\_name}
+and \emph{(*b)-\textgreater{}d\_name}.
+
+\hyperdef{}{RETURNux5fVALUE}{\section{\hyperref[RETURNux5fVALUE]{RETURN
+VALUE}}\label{RETURNux5fVALUE}}
+
+The \textbf{scandir}() function returns the number of directory entries
+selected. On error, -1 is returned, with \emph{errno} set to indicate
+the cause of the error.
+
+The \textbf{alphasort}() and \textbf{versionsort}() functions return an
+integer less than, equal to, or greater than zero if the first argument
+is considered to be respectively less than, equal to, or greater than
+the second.
+
+\hyperdef{}{ERRORS}{\section{\hyperref[ERRORS]{ERRORS}}\label{ERRORS}}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[\textbf{ENOENT}]
+The path in \emph{dirp} does not exist.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[\textbf{ENOMEM}]
+Insufficient memory to complete the operation.
+\end{description}
+
+\begin{description}
+\itemsep1pt\parskip0pt\parsep0pt
+\item[\textbf{ENOTDIR}]
+The path in \emph{dirp} is not a directory.
+\end{description}
+
+\hyperdef{}{VERSIONS}{\section{\hyperref[VERSIONS]{VERSIONS}}\label{VERSIONS}}
+
+\textbf{versionsort}() was added to glibc in version 2.1.
+
+\hyperdef{}{CONFORMINGux5fTO}{\section{\hyperref[CONFORMINGux5fTO]{CONFORMING
+TO}}\label{CONFORMINGux5fTO}}
+
+\textbf{alphasort}() and \textbf{scandir}() are specified in
+POSIX.1-2008, and are widely available. \textbf{versionsort}() is a GNU
+extension.
+
+The functions \textbf{scandir}() and \textbf{alphasort}() are from
+4.3BSD, and have been available under Linux since libc4. Libc4 and libc5
+use the more precise prototype
+
+~
+
+\begin{verbatim}
+    int alphasort(const struct dirent ** a,
+                  const struct dirent **b);
+\end{verbatim}
+
+~
+
+but glibc 2.0 returns to the imprecise BSD prototype.
+
+The function \textbf{versionsort}() is a GNU extension, available since
+glibc 2.1.
+
+Since glibc 2.1, \textbf{alphasort}() calls \textbf{strcoll}(3); earlier
+it used \textbf{strcmp}(3).
+
+\hyperdef{}{EXAMPLE}{\section{\hyperref[EXAMPLE]{EXAMPLE}}\label{EXAMPLE}}
+
+\begin{verbatim}
+#define _SVID_SOURCE
+/* print files in current directory in reverse order */
+#include <dirent.h>
+
+int
+main(void)
+{
+    struct dirent **namelist;
+    int n;
+
+    n = scandir(".", &namelist, NULL, alphasort);
+    if (n < 0)
+        perror("scandir");
+    else {
+        while (n--) {
+            printf("%s\n", namelist[n]->d_name);
+            free(namelist[n]);
+        }
+        free(namelist);
+    }
+}
+\end{verbatim}
+
+\hyperdef{}{SEEux5fALSO}{\section{\hyperref[SEEux5fALSO]{SEE
+ALSO}}\label{SEEux5fALSO}}
+
+\textbf{closedir}(3), \textbf{fnmatch}(3), \textbf{opendir}(3),
+\textbf{readdir}(3), \textbf{rewinddir}(3), \textbf{scandirat}(3),
+\textbf{seekdir}(3), \textbf{strcmp}(3), \textbf{strcoll}(3),
+\textbf{strverscmp}(3), \textbf{telldir}(3)
+
+\hyperdef{}{COLOPHON}{\section{\hyperref[COLOPHON]{COLOPHON}}\label{COLOPHON}}
+
+This page is part of release 3.54 of the Linux \emph{man-pages} project.
+A description of the project, and information about reporting bugs, can
+be found at http://www.kernel.org/doc/man-pages/.
+
+\begin{longtable}[c]{@{}ll@{}}
+\toprule\addlinespace
+2013-04-19 & GNU
+\\\addlinespace
+\bottomrule
+\end{longtable}
+
+\end{document}
